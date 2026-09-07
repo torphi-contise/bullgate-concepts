@@ -1,0 +1,499 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="only light">
+  <meta name="robots" content="noindex">
+  <title>Resolução de identidade — Bullgate Access</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&display=swap">
+  <style>
+    :root {
+      --canvas:#f5f7fb;--surface:#fff;--surface-2:#eef3fb;--ink:#172033;--ink-2:#3d475b;
+      --muted:#667085;--hair:#d9dfeb;--gate:#1f4b99;--gate-dark:#15366f;--gate-soft:#eaf1fd;
+      --brass:#b4560e;--brass-soft:#fff3e8;--green:#147a54;--green-soft:#e8f7f1;
+      --red:#a33535;--red-soft:#fff0f0;--code:#111a2d;--code-ink:#dbe7ff;
+      --mono:"SFMono-Regular",Consolas,"Liberation Mono",monospace;
+      --sans:"Segoe UI Variable Text",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,system-ui,sans-serif;
+      --display:"Archivo",var(--sans);
+    }
+    *{box-sizing:border-box}
+    html,body{width:100%;max-width:100%;overflow-x:hidden;overflow-x:clip}
+    html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+    body{margin:0;background:var(--canvas);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased}
+    a{color:var(--gate);text-decoration-thickness:1px;text-underline-offset:.18em}
+    a:hover{color:var(--gate-dark)}
+    code{font-family:var(--mono);font-size:.84em;overflow-wrap:anywhere;word-break:break-word}
+    strong{font-weight:700}
+    p{margin:0}
+    h1,h2,h3,h4{margin:0;font-family:var(--display);letter-spacing:-.02em;line-height:1.15}
+    h1{max-width:52rem;font-size:clamp(2.1rem,5.5vw,4rem);text-transform:uppercase}
+    h1 em{color:var(--brass);font-style:normal}
+    h2{font-size:clamp(1.55rem,3.5vw,2.15rem)}
+    h3{font-size:1.12rem}
+
+    .layout{width:100%;max-width:92rem;min-width:0;margin:0 auto;display:grid;grid-template-columns:18rem minmax(0,1fr)}
+    .sidebar{position:sticky;top:0;align-self:start;height:100vh;overflow-y:auto;padding:1.65rem 1.2rem 2rem 1.5rem;border-right:1px solid var(--hair);background:#f8faff}
+    .brand{display:flex;align-items:center;gap:.65rem;color:var(--ink);text-decoration:none}
+    .brand-mark{width:1.55rem;height:.58rem;flex:0 0 auto;background:repeating-linear-gradient(90deg,var(--gate) 0 4px,transparent 4px 7px,var(--gate) 7px 11px,transparent 11px 14px,var(--brass) 14px 18px,transparent 18px 21px)}
+    .brand b{font-family:var(--display);font-size:1rem;letter-spacing:.02em;text-transform:uppercase}
+    .brand em{color:var(--brass);font-style:normal}
+    .edition{margin:.85rem 0 1.45rem;color:var(--muted);font-family:var(--mono);font-size:.75rem}
+    .sidebar nav{display:flex;flex-direction:column;gap:.12rem}
+    .sidebar nav p{margin:1rem 0 .3rem;padding-left:.65rem;color:var(--gate);font-family:var(--mono);font-size:.75rem;letter-spacing:.1em;text-transform:uppercase}
+    .sidebar nav a{display:block;padding:.36rem .65rem;border-left:2px solid transparent;border-radius:0 4px 4px 0;color:var(--ink-2);font-size:.9rem;line-height:1.35;text-decoration:none}
+    .sidebar nav a:hover{border-left-color:var(--gate);background:var(--gate-soft);color:var(--gate-dark)}
+    .sidebar nav a[aria-current="page"]{border-left-color:var(--green);background:var(--green-soft);color:var(--gate-dark);font-weight:700}
+    .sidebar .back{margin-top:1.4rem;padding-top:1rem;border-top:1px solid var(--hair);font-size:.9rem}
+    .mobilebar{display:none}
+    main{width:100%;min-width:0;padding:0 clamp(1.25rem,4vw,4rem) 5rem}
+    .content{width:100%;max-width:68rem;min-width:0}
+    section{min-width:0;scroll-margin-top:1.3rem;padding:2.7rem 0;border-top:1px solid var(--hair)}
+    section:first-child{border-top:0}
+    section>*{min-width:0}
+    .intro{padding-top:clamp(2.2rem,6vw,5rem)}
+    .kicker{margin:0 0 .65rem;color:var(--gate);font-family:var(--mono);font-size:.78rem;letter-spacing:.1em;text-transform:uppercase}
+    .lead{max-width:52rem;margin:1.15rem 0 0;color:var(--ink-2);font-size:1.08rem}
+    .section-head{display:flex;flex-direction:column;gap:.45rem;margin-bottom:1.25rem}
+    .section-head p{max-width:51rem;color:var(--ink-2)}
+    .statusline{display:flex;flex-wrap:wrap;gap:.55rem;margin-top:1.4rem}
+    .badge{display:inline-flex;align-items:center;gap:.35rem;padding:.32rem .62rem;border:1px solid var(--hair);border-radius:999px;background:var(--surface);color:var(--ink-2);font-family:var(--mono);font-size:.75rem}
+    .badge.live{color:var(--green);border-color:#9ed9c4;background:var(--green-soft)}
+    .badge.phase{color:var(--gate-dark);border-color:#abc2ec;background:var(--gate-soft)}
+    .notice{margin-top:1.35rem;padding:1rem 1.1rem;border:1px solid #e8bd95;border-left:4px solid var(--brass);border-radius:5px;background:var(--brass-soft);color:#5d3518}
+    .notice.blue{border-color:#afc6ed;border-left-color:var(--gate);background:var(--gate-soft);color:var(--gate-dark)}
+    .notice.green{border-color:#a7d9c8;border-left-color:var(--green);background:var(--green-soft);color:#0e5d40}
+    .notice strong{display:block;margin-bottom:.15rem}
+
+    .cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.85rem;margin-top:1rem}
+    .card{min-width:0;padding:1rem 1.05rem;border:1px solid var(--hair);border-radius:6px;background:var(--surface)}
+    .card.current{border-top:3px solid var(--gate)}
+    .card.previous{border-top:3px solid var(--brass)}
+    .card p{margin-top:.45rem;color:var(--ink-2);font-size:.9rem}
+    .card ul{margin:.6rem 0 0;padding-left:1.1rem;color:var(--ink-2);font-size:.9rem}
+    .card code{color:var(--gate-dark)}
+
+    .flow{counter-reset:flow;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.8rem;margin-top:1.2rem}
+    .flow article{position:relative;min-width:0;padding:1rem;border:1px solid var(--hair);border-radius:6px;background:var(--surface)}
+    .flow article::before{counter-increment:flow;content:counter(flow,decimal-leading-zero);display:block;margin-bottom:.55rem;color:var(--brass);font-family:var(--mono);font-size:.78rem;font-weight:700}
+    .flow p{margin-top:.35rem;color:var(--ink-2);font-size:.9rem}
+
+    .states{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.65rem;margin-top:1.2rem}
+    .state{min-width:0;padding:.9rem;border:1px solid #afc6ed;border-top:3px solid var(--gate);border-radius:6px;background:var(--gate-soft)}
+    .state b{display:block;font-family:var(--mono);font-size:.8rem;color:var(--gate-dark);overflow-wrap:anywhere}
+    .state span{display:block;margin-top:.4rem;color:var(--ink-2);font-size:.85rem;line-height:1.45}
+
+    .schema{margin-top:1rem;border:1px solid var(--hair);border-radius:6px;background:var(--surface);overflow:hidden}
+    .schema-row{display:grid;grid-template-columns:minmax(11rem,.72fr) minmax(0,1.28fr);gap:1rem;padding:.78rem .9rem;border-bottom:1px solid var(--hair)}
+    .schema-row:last-child{border-bottom:0}
+    .schema-row b{font-family:var(--mono);font-size:.82rem;overflow-wrap:anywhere}
+    .schema-row span{color:var(--ink-2);font-size:.9rem}
+    .table-wrap{width:100%;max-width:100%;min-width:0;overflow-x:auto;margin-top:1rem;border:1px solid var(--hair);border-radius:6px;background:var(--surface);overscroll-behavior-inline:contain}
+    table{width:100%;min-width:44rem;border-collapse:collapse;font-size:.9rem}
+    th,td{padding:.78rem .85rem;border-bottom:1px solid var(--hair);text-align:left;vertical-align:top}
+    tr:last-child td{border-bottom:0}
+    th{color:var(--gate-dark);background:var(--surface-2);font-family:var(--mono);font-size:.73rem;letter-spacing:.06em;text-transform:uppercase}
+    td{color:var(--ink-2)}
+    td:first-child{color:var(--ink);font-weight:650}
+    td code{color:var(--gate-dark)}
+    .code-block{position:relative;margin:1rem 0 0}
+    .code-label{margin:0 0 .35rem;color:var(--muted);font-family:var(--mono);font-size:.75rem}
+    pre{width:100%;max-width:100%;min-width:0;margin:0;padding:1.05rem 1.15rem;overflow-x:auto;border:1px solid #263651;border-left:4px solid var(--gate);border-radius:6px;background:var(--code);color:var(--code-ink);font-family:var(--mono);font-size:.82rem;line-height:1.65;overscroll-behavior-inline:contain;tab-size:2}
+    pre code{white-space:pre;overflow-wrap:normal;word-break:normal;font-size:inherit}
+    .comment{color:#89a0c4}
+    .checklist{margin:.8rem 0 0;padding-left:1.25rem;color:var(--ink-2)}
+    .checklist li{margin:.45rem 0}
+    .split{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.85rem;margin-top:1rem}
+    .split article{padding:1rem 1.05rem;border:1px solid var(--hair);border-radius:6px;background:var(--surface)}
+    .split article:first-child{border-top:3px solid var(--green)}
+    .split article:last-child{border-top:3px solid var(--brass)}
+    .split ul{margin:.65rem 0 0;padding-left:1.1rem;color:var(--ink-2);font-size:.9rem}
+
+    .contact-fab{position:fixed;right:1.1rem;bottom:1.1rem;z-index:90}
+    .contact-fab summary{display:inline-flex;align-items:center;gap:.5rem;min-height:3rem;padding:.7rem 1rem;border:1px solid var(--gate);border-radius:999px;background:var(--gate);color:#fff;font-family:var(--display);font-size:.9rem;font-weight:750;cursor:pointer;box-shadow:0 10px 28px rgba(23,42,75,.22);list-style:none}
+    .contact-fab summary::-webkit-details-marker{display:none}
+    .contact-fab summary::before{content:"?";display:grid;width:1.35rem;height:1.35rem;place-items:center;border:1px solid rgba(255,255,255,.7);border-radius:50%;font-family:var(--mono)}
+    .contact-panel{position:absolute;right:0;bottom:calc(100% + .65rem);width:min(23rem,calc(100vw - 2.2rem));max-height:min(35rem,calc(100vh - 6rem));overflow-y:auto;padding:1rem;border:1px solid var(--hair);border-top:3px solid var(--brass);border-radius:6px;background:var(--surface);box-shadow:0 16px 40px rgba(23,42,75,.18)}
+    .chat-head{display:flex;align-items:center;justify-content:space-between;gap:.75rem;padding-bottom:.75rem;border-bottom:1px solid var(--hair)}
+    .chat-head b{font-family:var(--display);font-size:1.05rem}.chat-head span{color:var(--green);font-family:var(--mono);font-size:.75rem}
+    .chat-log{display:flex;flex-direction:column;gap:.7rem;max-height:19rem;overflow-y:auto;padding:.9rem .15rem .9rem 0}
+    .chat-message{max-width:88%;padding:.75rem .85rem;font-size:.9rem;line-height:1.5;overflow-wrap:anywhere}
+    .chat-message.bot{align-self:flex-start;border-radius:4px 12px 12px 12px;background:var(--gate-soft);color:var(--gate-dark)}
+    .chat-message.user{align-self:flex-end;border-radius:12px 4px 12px 12px;background:var(--gate);color:#fff}
+    .contact-card{margin-top:.7rem;padding-top:.65rem;border-top:1px solid #afc6ed}.contact-card strong{display:block;font-family:var(--display)}
+    .contact-links{display:flex;flex-wrap:wrap;gap:.45rem;margin-top:.55rem}.contact-links a{padding:.38rem .55rem;border:1px solid #afc6ed;border-radius:4px;background:var(--surface);color:var(--gate-dark);font-size:.78rem;text-decoration:none}
+    .chat-composer{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:.5rem;padding-top:.8rem;border-top:1px solid var(--hair)}
+    .chat-composer textarea{width:100%;min-height:3rem;max-height:7rem;resize:vertical;border:1px solid var(--hair);border-radius:6px;background:var(--canvas);color:var(--ink);font:400 1rem/1.35 var(--sans);padding:.72rem}
+    .chat-composer textarea:focus{outline:2px solid #afc6ed;border-color:var(--gate)}
+    .chat-composer button{width:3rem;height:3rem;border:1px solid var(--green);border-radius:6px;background:var(--green);color:#fff;font-family:var(--display);font-size:1.25rem;font-weight:750;cursor:pointer}
+    .chat-note{margin:.55rem 0 0;color:var(--muted);font-family:var(--mono);font-size:.68rem;line-height:1.4}
+    footer{padding:2rem 0;border-top:1px solid var(--hair);color:var(--muted);font-size:.82rem}
+
+    @media(max-width:72rem){.flow{grid-template-columns:repeat(2,minmax(0,1fr))}.states{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:62rem){.layout{display:block}.sidebar{display:none}.mobilebar{display:block;position:sticky;top:0;z-index:50;border-bottom:1px solid var(--hair);background:rgba(248,250,255,.97);backdrop-filter:blur(10px)}.mobilebar summary{display:flex;align-items:center;gap:.65rem;min-width:0;padding:.78rem 1.2rem;cursor:pointer;list-style:none}.mobilebar summary::-webkit-details-marker{display:none}.mobilebar summary::after{content:"índice";margin-left:auto;padding:.2rem .55rem;border:1px solid #afc6ed;border-radius:999px;color:var(--gate-dark);background:var(--gate-soft);font-family:var(--mono);font-size:.72rem}.mobilebar details[open] summary::after{content:"fechar"}.mobilebar nav{max-height:calc(100vh - 3.6rem);overflow-y:auto;padding:.35rem 1.2rem 1rem;border-top:1px solid var(--hair)}.mobilebar nav a{display:block;padding:.42rem 0;color:var(--ink-2);text-decoration:none}.mobilebar nav a[aria-current="page"]{color:var(--green);font-weight:700}section{scroll-margin-top:4.2rem}}
+    @media(max-width:46rem){main{padding-inline:1.1rem}.cards,.flow,.states,.split{grid-template-columns:1fr}.schema-row{grid-template-columns:1fr;gap:.2rem}table{min-width:39rem}pre{font-size:.76rem}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar" aria-label="Índice da resolução de identidade">
+      <a class="brand" href="/"><span class="brand-mark" aria-hidden="true"></span><b>Bull<em>gate</em> Access</b></a>
+      <p class="edition">Resolução de identidade · fase 1</p>
+      <nav>
+        <p>Guias do Access</p>
+        <a href="/docs/access/">Integração</a>
+        <a href="/docs/access/politicas/">Políticas</a>
+        <a href="/docs/access/resolucao-de-identidade/" aria-current="page">Resolução de identidade</a>
+        <a href="/docs/access/erros/">Erros e mensagens</a>
+        <p>Nesta página</p>
+        <a href="#inicio">Contrato atual</a>
+        <a href="#atores">Atores e ownership</a>
+        <a href="#deteccao">Detecção do conflito</a>
+        <a href="#sequencia">Sequência completa</a>
+        <p>Integrar</p>
+        <a href="#snapshot">Snapshot recebido</a>
+        <a href="#acao">Executar a ação</a>
+        <a href="#resultado">Resultado terminal</a>
+        <a href="#feedback">Feedback e erros</a>
+        <p>Garantias</p>
+        <a href="#provas">Provas e limites</a>
+        <a href="#estados">Estados do caso</a>
+        <a href="#atomico">Transação e concorrência</a>
+        <a href="#frontend">Responsabilidade da UI</a>
+        <a href="#limites">Fora da fase 1</a>
+      </nav>
+      <div class="back"><a href="/docs/">← Índice técnico</a><br><a href="/">Visão do produto</a></div>
+    </aside>
+
+    <div class="mobilebar">
+      <details id="mobile-index">
+        <summary><span class="brand"><span class="brand-mark" aria-hidden="true"></span><b>Bull<em>gate</em> Docs</b></span></summary>
+        <nav>
+          <a href="/docs/access/">Integração</a><a href="/docs/access/politicas/">Políticas</a><a href="/docs/access/resolucao-de-identidade/" aria-current="page">Resolução de identidade</a><a href="/docs/access/erros/">Erros e mensagens</a>
+          <a href="#inicio">Contrato atual</a><a href="#atores">Atores</a><a href="#deteccao">Detecção</a>
+          <a href="#sequencia">Sequência</a><a href="#snapshot">Snapshot</a><a href="#acao">Ação</a>
+          <a href="#resultado">Resultado</a><a href="#feedback">Feedback e erros</a><a href="#provas">Provas</a>
+          <a href="#estados">Estados</a><a href="#atomico">Transação</a><a href="#frontend">Frontend</a>
+          <a href="#limites">Fora da fase 1</a><a href="/docs/">← Índice técnico</a>
+        </nav>
+      </details>
+    </div>
+
+    <main>
+      <div class="content">
+        <section id="inicio" class="intro">
+          <p class="kicker">Bullgate Access · documentação técnica</p>
+          <h1>Resolução de <em>identidade</em></h1>
+          <p class="lead">Contrato da fase 1 para o caso em que uma pessoa comprova um telefone durante o cadastro, mas esse telefone verificado já pertence a outra identity no mesmo realm.</p>
+          <div class="statusline">
+            <span class="badge live">Implementado no código</span>
+            <span class="badge phase">AccessFlow v1</span>
+            <span class="badge">Conflito de telefone</span>
+            <span class="badge">Atualizado em 04/09/2026</span>
+          </div>
+          <div class="notice">
+            <strong>A fase 1 move somente o telefone</strong>
+            Não faz merge de identities, e-mails, senhas ou perfis do produto. Não cria e-mail alternativo e não recupera automaticamente a conta anterior.
+          </div>
+        </section>
+
+        <section id="atores">
+          <div class="section-head">
+            <p class="kicker">Modelo mental</p>
+            <h2>Quatro objetos, quatro donos diferentes</h2>
+            <p>O conflito fica simples quando a integração não chama tudo de “conta”. A operação age sobre um identifier; as identities permanecem distintas.</p>
+          </div>
+          <div class="cards">
+            <article class="card current"><h3><code>currentIdentity</code></h3><p>Identity da sessão <code>Registration</code> que está executando o flow. Recebe o telefone quando a transferência termina.</p></article>
+            <article class="card previous"><h3><code>previousIdentity</code></h3><p>Identity que já possui o telefone verificado. Mantém seu e-mail, credenciais, estado e referências existentes.</p></article>
+            <article class="card"><h3><code>phone identifier</code></h3><p>É o único objeto transferido. O mesmo registro passa a apontar para a identity atual; não nasce uma cópia concorrente.</p></article>
+            <article class="card"><h3>Perfil do produto</h3><p>Pertence ao sistema integrador. O Bullgate não mistura dados, histórico ou cadastros locais das duas identities.</p></article>
+          </div>
+        </section>
+
+        <section id="deteccao">
+          <div class="section-head">
+            <p class="kicker">Quando o caso nasce</p>
+            <h2>O conflito só aparece depois da prova do telefone</h2>
+            <p>O código consulta o dono do telefone verificado depois que o OTP foi aprovado. Conhecer ou digitar um número não abre autoridade de resolução.</p>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Dono encontrado</th><th>Comportamento</th><th>Resultado</th></tr></thead>
+              <tbody>
+                <tr><td>Nenhum</td><td>Cria o identifier verificado para a identity atual.</td><td><code>phoneVerified</code></td></tr>
+                <tr><td>A própria identity</td><td>Não existe conflito entre identities.</td><td><code>phoneVerified</code></td></tr>
+                <tr><td>Outra identity</td><td>Persiste <code>PhonePossession</code>, cria um <code>IdentityResolutionCase</code> e devolve o step de conflito.</td><td><code>resolvePhoneConflict</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="notice blue">
+            <strong>Telefone sem verificação segue outro contrato</strong>
+            Se a policy permite coletar telefone sem OTP, um número já usado retorna feedback <code>phone-already-in-use</code>. A resolução descrita nesta página não é aberta nesse caminho.
+          </div>
+        </section>
+
+        <section id="sequencia">
+          <div class="section-head">
+            <p class="kicker">Fluxo executado</p>
+            <h2>Da coleta ao resultado terminal</h2>
+          </div>
+          <div class="flow">
+            <article><h3>Coletar</h3><p>A UI envia <code>requestPhoneVerification</code> com o telefone em E.164.</p></article>
+            <article><h3>Comprovar</h3><p>A pessoa confirma o OTP. O sucesso registra a prova <code>PhonePossession</code>.</p></article>
+            <article><h3>Detectar</h3><p>O Access encontra outra identity como dona verificada do mesmo identifier.</p></article>
+            <article><h3>Apresentar</h3><p>O flow devolve <code>resolvePhoneConflict</code>, dica mascarada e somente as ações permitidas.</p></article>
+            <article><h3>Autorizar</h3><p><code>transferPhoneToCurrentIdentity</code> recebe o e-mail anterior e registra sucesso ou tentativa.</p></article>
+            <article><h3>Executar</h3><p>Prova, grant, transferência, sessão Product e conclusão são gravados em uma transação.</p></article>
+          </div>
+        </section>
+
+        <section id="snapshot">
+          <div class="section-head">
+            <p class="kicker">Entrada da interface</p>
+            <h2>Snapshot de conflito</h2>
+            <p>A interface não deduz possibilidades pelo nome da tela. Ela renderiza o step e oferece apenas os itens presentes em <code>flow.actions</code>.</p>
+          </div>
+          <p class="code-label">Exemplo quando telefone é opcional</p>
+          <div class="code-block"><pre><code>{
+  "protocolVersion": 1,
+  "flowId": "0199…",
+  "revision": 4,
+  "intent": "continueRegistration",
+  "status": "active",
+  "expiresAt": "2026-09-04T15:30:00Z",
+  "step": {
+    "type": "resolvePhoneConflict",
+    "previousEmailHint": "m***@empresa.com"
+  },
+  "actions": [
+    { "id": "0199…", "type": "transferPhoneToCurrentIdentity" },
+    { "id": "0199…", "type": "skipRegistration" }
+  ]
+}</code></pre></div>
+          <div class="schema">
+            <div class="schema-row"><b>previousEmailHint</b><span>Dica mascarada para reconhecimento humano. Nunca use como valor de envio, autocomplete ou prova.</span></div>
+            <div class="schema-row"><b>actions</b><span>Autoridade da revisão atual. Se a policy exige telefone, <code>skipRegistration</code> não aparece.</span></div>
+            <div class="schema-row"><b>revision</b><span>Deve voltar como <code>expectedRevision</code>. Qualquer snapshot mais novo invalida a ação antiga.</span></div>
+            <div class="schema-row"><b>expiresAt</b><span>Expiração absoluta do flow. Não é a duração do grant nem do OTP já consumido.</span></div>
+          </div>
+        </section>
+
+        <section id="acao">
+          <div class="section-head">
+            <p class="kicker">Frontend e BFF</p>
+            <h2>Executar a transferência</h2>
+            <p>Com o SDK React Native, passe o snapshot recebido, o tipo oferecido e apenas o e-mail informado pela pessoa. O SDK mantém IDs e revisão do contrato.</p>
+          </div>
+          <p class="code-label">React Native</p>
+          <div class="code-block"><pre><code>if (flow.step?.type === "resolvePhoneConflict") {
+  const canTransfer = flow.actions.some(
+    action => action.type === "transferPhoneToCurrentIdentity",
+  );
+
+  if (canTransfer) {
+    current = await access.actOnFlow(
+      flow,
+      "transferPhoneToCurrentIdentity",
+      { previousEmail },
+    );
+  }
+}</code></pre></div>
+          <p class="code-label" style="margin-top:1.35rem">HTTP no BFF</p>
+          <div class="code-block"><pre><code>POST /bullgate/access/v1/flows/{flowId}/actions
+
+{
+  "requestId": "0199…",
+  "expectedRevision": 4,
+  "action": {
+    "id": "0199…",
+    "type": "transferPhoneToCurrentIdentity",
+    "input": { "previousEmail": "marco@empresa.com" }
+  }
+}</code></pre></div>
+          <div class="notice">
+            <strong>Não invente o ID da ação</strong>
+            <code>action.id</code> e <code>action.type</code> precisam ser copiados do mesmo item oferecido no snapshot. O e-mail é normalizado pelo Access antes da comparação.
+          </div>
+        </section>
+
+        <section id="resultado">
+          <div class="section-head">
+            <p class="kicker">Saída de sucesso</p>
+            <h2>Telefone transferido, sessão promovida</h2>
+            <p>O envelope terminal traz o resultado do flow e uma sessão autenticada para a identity atual.</p>
+          </div>
+          <div class="code-block"><pre><code>{
+  "flow": {
+    "status": "completed",
+    "step": null,
+    "actions": [],
+    "result": {
+      "type": "completed",
+      "outcome": "phoneTransferred",
+      "previousIdentityId": "0198…",
+      "currentIdentityId": "0199…"
+    }
+  },
+  "session": {
+    "state": "authenticated",
+    "identityId": "0199…",
+    "application": { "id": "…" }
+  }
+}</code></pre></div>
+          <div class="cards">
+            <article class="card current"><h3>O que muda</h3><ul><li>O telefone passa para <code>currentIdentityId</code>.</li><li>O caso termina como <code>Resolved</code>.</li><li>A sessão Registration é revogada.</li><li>Uma sessão Product é emitida para a identity atual.</li></ul></article>
+            <article class="card previous"><h3>O que não muda</h3><ul><li>O e-mail anterior continua na identity anterior.</li><li>Não há cópia de senha ou provider social.</li><li>As identities não são consolidadas.</li><li>O perfil local anterior não é movido.</li></ul></article>
+          </div>
+        </section>
+
+        <section id="feedback">
+          <div class="section-head">
+            <p class="kicker">Resposta recuperável e falha HTTP</p>
+            <h2>Trate feedback e conflito de protocolo de formas diferentes</h2>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Código</th><th>Onde aparece</th><th>Resposta da integração</th></tr></thead>
+              <tbody>
+                <tr><td><code>phone-conflict-email-mismatch</code></td><td><code>flow.feedback</code></td><td>Marque <code>previousEmail</code>, mantenha o flow e permita nova tentativa se a ação continuar presente.</td></tr>
+                <tr><td><code>phone-conflict-too-many-attempts</code></td><td><code>flow.feedback</code></td><td>A transferência desaparece. Se telefone for opcional, ainda pode existir <code>skipRegistration</code>.</td></tr>
+                <tr><td><code>revision-conflict</code></td><td>HTTP 409</td><td>Busque o snapshot atual com <code>getFlow</code> e renderize novamente. Não repita a ação antiga.</td></tr>
+                <tr><td><code>action-not-available</code></td><td>HTTP 409</td><td>A ação não pertence mais ao estado atual. Recarregue o flow.</td></tr>
+                <tr><td><code>request-id-conflict</code></td><td>HTTP 409</td><td>O mesmo <code>requestId</code> foi usado com payload diferente. Gere nova chave somente para uma nova intenção.</td></tr>
+                <tr><td><code>flow-not-found</code></td><td>HTTP 404</td><td>Capability ausente, inválida ou fora do escopo. Não tente reconstruí-la no cliente.</td></tr>
+                <tr><td><code>session-inactive</code></td><td>HTTP 401</td><td>A sessão Registration de origem não está mais ativa; reinicie pela autenticação.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="provas">
+          <div class="section-head">
+            <p class="kicker">Regra implementada</p>
+            <h2>Duas provas autorizam a transferência atual</h2>
+            <p>A fase 1 usa uma regra fixa no fluxo. Ela ainda não expõe um objeto configurável de <code>ResolutionPolicy</code>.</p>
+          </div>
+          <div class="cards">
+            <article class="card current"><h3><code>PhonePossession</code></h3><p>Nasce da confirmação bem-sucedida do OTP enviado ao telefone em conflito e fica vinculada ao mesmo contexto de cadastro.</p></article>
+            <article class="card previous"><h3><code>PreviousEmailKnowledge</code></h3><p>Nasce quando o e-mail normalizado informado coincide com o identifier da identity anterior. Não é um código enviado ao e-mail.</p></article>
+          </div>
+          <div class="schema">
+            <div class="schema-row"><b>MaxAttempts</b><span>Valor padrão atual: <code>5</code>. Tentativas de e-mail anterior são registradas individualmente.</span></div>
+            <div class="schema-row"><b>ResolutionGrantLifetimeMinutes</b><span>Valor padrão atual: <code>15</code>. Neste caminho, o grant é criado e consumido dentro da mesma transação; não é entregue ao aplicativo.</span></div>
+            <div class="schema-row"><b>Escopo</b><span>Caso, provas e identifier precisam pertencer ao mesmo realm, environment, registration context e par de identities.</span></div>
+          </div>
+        </section>
+
+        <section id="estados">
+          <div class="section-head">
+            <p class="kicker">Máquina de estados persistida</p>
+            <h2>Do caso aberto à conclusão</h2>
+            <p>No sucesso atual, as três últimas transições acontecem na mesma transação. Elas continuam explícitas para proteger invariantes e permitir evolução do modelo.</p>
+          </div>
+          <div class="states" aria-label="Estados do caso de resolução">
+            <div class="state"><b>CollectingProofs</b><span>Caso aberto, recebendo escolha e provas.</span></div>
+            <div class="state"><b>Ready</b><span>Outcome escolhido e requisitos satisfeitos.</span></div>
+            <div class="state"><b>Executing</b><span>Grant ativo e mutação em execução.</span></div>
+            <div class="state"><b>Resolved</b><span>Telefone transferido e conclusão persistida.</span></div>
+          </div>
+          <div class="notice blue">
+            <strong>Estados reservados pelo domínio</strong>
+            <code>Rejected</code>, <code>Expired</code> e <code>Cancelled</code> existem no enum, mas o fluxo de transferência da fase 1 não oferece comandos públicos específicos para conduzir o caso a esses estados.
+          </div>
+        </section>
+
+        <section id="atomico">
+          <div class="section-head">
+            <p class="kicker">Consistência</p>
+            <h2>A decisão é revalidada na hora de gravar</h2>
+            <p>O Access não confia apenas no snapshot mostrado na tela. Antes do commit, confere novamente ownership, provas, tentativas, estado do caso e finalidade da sessão.</p>
+          </div>
+          <ul class="checklist">
+            <li>O caso ainda precisa estar em <code>CollectingProofs</code> e sem outcome escolhido.</li>
+            <li>O número de tentativas precisa coincidir com o valor esperado e estar abaixo do limite.</li>
+            <li>O e-mail anterior precisa continuar pertencendo à identity anterior.</li>
+            <li>O telefone precisa continuar verificado e pertencendo à identity anterior.</li>
+            <li>A prova de posse do telefone precisa existir no mesmo contexto.</li>
+            <li>Proof, attempt, grant e sessão precisam apontar para o caso e a identity corretos.</li>
+          </ul>
+          <div class="notice green">
+            <strong>Um único commit</strong>
+            Escolher o outcome, marcar o caso como pronto, consumir o grant, transferir o telefone, resolver o caso, concluir o registration context, emitir a sessão Product, revogar sessões Registration e registrar a revisão acontecem juntos.
+          </div>
+          <div class="notice">
+            <strong>Ownership mudou durante a interação</strong>
+            Se outra operação mover o telefone antes do commit, o Access responde como <code>revision-conflict</code>. A integração deve recarregar o snapshot; nunca forçar o resultado antigo.
+          </div>
+        </section>
+
+        <section id="frontend">
+          <div class="section-head">
+            <p class="kicker">Comportamento da aplicação</p>
+            <h2>O que a UI precisa fazer — e o que não pode prometer</h2>
+          </div>
+          <div class="split">
+            <article><h3>Deve</h3><ul><li>Renderizar pelo discriminante <code>step.type</code>.</li><li>Exibir a dica mascarada sem transformá-la em dado editável.</li><li>Executar somente ações presentes em <code>flow.actions</code>.</li><li>Enviar a revisão exibida e tratar feedback no campo correto.</li><li>Atualizar a sessão local quando o envelope vier autenticado.</li></ul></article>
+            <article><h3>Não deve</h3><ul><li>Dizer que as contas serão unidas ou recuperadas.</li><li>Mostrar “continuar sem telefone” se <code>skipRegistration</code> não foi oferecida.</li><li>Repetir automaticamente uma ação após conflito de revisão.</li><li>Usar e-mail ou telefone como chave do perfil local.</li><li>Apagar sessão por falha operacional transitória.</li></ul></article>
+          </div>
+        </section>
+
+        <section id="limites">
+          <div class="section-head">
+            <p class="kicker">Contrato honesto</p>
+            <h2>Modelado não significa disponível</h2>
+            <p>O SDK e o domínio já reservam nomes para uma resolução mais ampla. Integrações da fase 1 devem ignorá-los até que apareçam no array de ações de um snapshot real.</p>
+          </div>
+          <div class="cards">
+            <article class="card current"><h3>Disponível agora</h3><ul><li>Detectar telefone verificado em outra identity.</li><li>Provar posse por OTP.</li><li>Comprovar conhecimento do e-mail anterior.</li><li>Transferir somente o telefone.</li><li>Continuar sem telefone quando a policy permitir.</li></ul></article>
+            <article class="card previous"><h3>Não disponível na fase 1</h3><ul><li><code>recoverPreviousIdentity</code>.</li><li><code>ConsolidateProvisionalIdentity</code>.</li><li>Prova de posse do e-mail anterior.</li><li>Reset de senha dentro desse flow.</li><li>Merge automático ou e-mail alternativo.</li><li>Decisão manual de operador.</li></ul></article>
+          </div>
+          <div class="notice">
+            <strong>Regra para compatibilidade futura</strong>
+            Tipos reservados não autorizam chamadas. Uma capacidade passa a existir para o cliente somente quando o servidor a oferece em <code>flow.actions</code> naquela revisão.
+          </div>
+        </section>
+
+        <footer>Fonte verificada em <code>AccessFlowService</code>, <code>AccessFlowStore</code>, <code>IdentityResolutionCase</code> e nos contratos dos SDKs. Atualizado em 04/09/2026.</footer>
+      </div>
+    </main>
+  </div>
+
+  <details class="contact-fab">
+    <summary>Chat Bullgate</summary>
+    <div class="contact-panel">
+      <div class="chat-head"><b>Assistente Bullgate</b><span>prévia</span></div>
+      <div class="chat-log" aria-live="polite">
+        <div class="chat-message bot">
+          <p>Olá! O assistente ainda está sendo preparado. Enquanto isso, fale comigo:</p>
+          <div class="contact-card"><strong>Marco · Bullgate</strong><div class="contact-links"><a href="https://wa.me/5511976695464" target="_blank" rel="noopener">WhatsApp</a><a href="mailto:acp.marco@outlook.com">E-mail</a></div></div>
+        </div>
+      </div>
+      <form class="chat-composer">
+        <textarea name="message" required aria-label="Mensagem" placeholder="Escreva uma mensagem…"></textarea>
+        <button type="submit" aria-label="Enviar mensagem">↑</button>
+      </form>
+      <p class="chat-note">Prévia: nenhuma mensagem é enviada por este campo.</p>
+    </div>
+  </details>
+
+  <script>
+    (function(){
+      var mobile=document.getElementById('mobile-index');
+      if(mobile){mobile.querySelectorAll('a[href^="#"]').forEach(function(link){link.addEventListener('click',function(){mobile.removeAttribute('open')})})}
+      document.querySelectorAll('.chat-composer').forEach(function(form){
+        form.addEventListener('submit',function(event){
+          event.preventDefault();
+          var field=form.querySelector('[name="message"]');
+          var log=form.parentElement.querySelector('.chat-log');
+          var message=field?field.value.trim():'';
+          if(!field||!log||!message)return;
+          var userMessage=document.createElement('div');userMessage.className='chat-message user';userMessage.textContent=message;log.appendChild(userMessage);field.value='';
+          var botMessage=document.createElement('div');botMessage.className='chat-message bot';botMessage.textContent='Este chat ainda não está conectado. Para eu receber sua mensagem, use o WhatsApp ou o e-mail na primeira mensagem.';log.appendChild(botMessage);log.scrollTop=log.scrollHeight;field.focus();
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

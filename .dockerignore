@@ -1,0 +1,7 @@
+.git
+.github
+.wrangler
+deploy-dist
+referencia
+*.md
+.cloudflare-*

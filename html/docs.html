@@ -1,0 +1,943 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="only light">
+  <meta name="robots" content="noindex">
+  <title>Bullgate Access — documentação técnica</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&display=swap">
+  <style>
+    :root {
+      --canvas: #f5f7fb;
+      --surface: #ffffff;
+      --surface-2: #eef3fb;
+      --ink: #172033;
+      --ink-2: #3d475b;
+      --muted: #667085;
+      --hair: #d9dfeb;
+      --gate: #1f4b99;
+      --gate-dark: #15366f;
+      --gate-soft: #eaf1fd;
+      --brass: #b4560e;
+      --brass-soft: #fff3e8;
+      --green: #147a54;
+      --green-soft: #e8f7f1;
+      --red: #a33535;
+      --red-soft: #fff0f0;
+      --code: #111a2d;
+      --code-ink: #dbe7ff;
+      --mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      --sans: "Segoe UI Variable Text", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, system-ui, sans-serif;
+      --display: "Archivo", var(--sans);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { width: 100%; max-width: 100%; overflow-x: hidden; overflow-x: clip; }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+    body {
+      margin: 0;
+      background: var(--canvas);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--gate); text-decoration-thickness: 1px; text-underline-offset: 0.18em; }
+    a:hover { color: var(--gate-dark); }
+    code { font-family: var(--mono); font-size: 0.84em; overflow-wrap: anywhere; word-break: break-word; }
+    strong { font-weight: 700; }
+
+    .layout {
+      width: 100%; max-width: 92rem; min-width: 0; margin: 0 auto;
+      display: grid; grid-template-columns: 18rem minmax(0, 1fr);
+    }
+    .sidebar {
+      position: sticky; top: 0; align-self: start; height: 100vh; overflow-y: auto;
+      padding: 1.65rem 1.2rem 2rem 1.5rem; border-right: 1px solid var(--hair);
+      background: #f8faff;
+    }
+    .brand { display: flex; align-items: center; gap: 0.65rem; color: var(--ink); text-decoration: none; }
+    .brand-mark {
+      width: 1.55rem; height: 0.58rem; flex: 0 0 auto;
+      background: repeating-linear-gradient(90deg, var(--gate) 0 4px, transparent 4px 7px, var(--gate) 7px 11px, transparent 11px 14px, var(--brass) 14px 18px, transparent 18px 21px);
+    }
+    .brand b { font-family: var(--display); font-size: 1rem; letter-spacing: 0.02em; text-transform: uppercase; }
+    .brand em { color: var(--brass); font-style: normal; }
+    .edition { margin: 0.85rem 0 1.45rem; color: var(--muted); font-family: var(--mono); font-size: 0.75rem; }
+    .sidebar nav { display: flex; flex-direction: column; gap: 0.12rem; }
+    .sidebar nav p {
+      margin: 1rem 0 0.3rem; padding-left: 0.65rem; color: var(--gate);
+      font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase;
+    }
+    .sidebar nav a {
+      display: block; padding: 0.36rem 0.65rem; border-left: 2px solid transparent; border-radius: 0 4px 4px 0;
+      color: var(--ink-2); font-size: 0.9rem; line-height: 1.35; text-decoration: none;
+    }
+    .sidebar nav a:hover { border-left-color: var(--gate); background: var(--gate-soft); color: var(--gate-dark); }
+    .sidebar nav a[aria-current="page"] { border-left-color: var(--green); background: var(--green-soft); color: var(--gate-dark); font-weight: 700; }
+    .mobilebar nav a[aria-current="page"] { color: var(--green); font-weight: 700; }
+    .sidebar .back { margin-top: 1.4rem; padding-top: 1rem; border-top: 1px solid var(--hair); }
+
+    .mobilebar { display: none; }
+    main { width: 100%; min-width: 0; padding: 0 clamp(1.25rem, 4vw, 4rem) 5rem; }
+    .content { width: 100%; max-width: 68rem; min-width: 0; }
+    section { min-width: 0; scroll-margin-top: 1.3rem; padding: 2.7rem 0; border-top: 1px solid var(--hair); }
+    section:first-child { border-top: 0; }
+    section > * { min-width: 0; }
+
+    .intro { padding-top: clamp(2.2rem, 6vw, 5rem); }
+    .kicker { margin: 0 0 0.65rem; color: var(--gate); font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase; }
+    h1, h2, h3, h4 { margin: 0; font-family: var(--display); letter-spacing: -0.02em; line-height: 1.15; }
+    h1 { max-width: 48rem; font-size: clamp(2.15rem, 5.5vw, 4rem); text-transform: uppercase; }
+    h1 em { color: var(--brass); font-style: normal; }
+    h2 { font-size: clamp(1.55rem, 3.5vw, 2.15rem); }
+    h3 { font-size: 1.15rem; }
+    h4 { font-size: 1rem; }
+    .lead { max-width: 49rem; margin: 1.15rem 0 0; color: var(--ink-2); font-size: 1.08rem; }
+    .section-head { display: flex; flex-direction: column; gap: 0.45rem; margin-bottom: 1.25rem; }
+    .section-head p { max-width: 49rem; margin: 0; color: var(--ink-2); }
+    .subsection { margin-top: 2rem; }
+    .subsection > h3 { margin-bottom: 0.75rem; }
+    p { margin: 0; }
+
+    .statusline { display: flex; flex-wrap: wrap; gap: 0.55rem; margin-top: 1.4rem; }
+    .badge {
+      display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.32rem 0.62rem;
+      border: 1px solid var(--hair); border-radius: 999px; background: var(--surface);
+      color: var(--ink-2); font-family: var(--mono); font-size: 0.75rem;
+    }
+    .badge.live { color: var(--green); border-color: #9ed9c4; background: var(--green-soft); }
+    .badge.phase { color: var(--gate-dark); border-color: #abc2ec; background: var(--gate-soft); }
+
+    .notice {
+      margin-top: 1.35rem; padding: 1rem 1.1rem; border: 1px solid #e8bd95; border-left: 4px solid var(--brass);
+      border-radius: 5px; background: var(--brass-soft); color: #5d3518;
+    }
+    .notice.blue { border-color: #afc6ed; border-left-color: var(--gate); background: var(--gate-soft); color: var(--gate-dark); }
+    .notice.green { border-color: #a7d9c8; border-left-color: var(--green); background: var(--green-soft); color: #0e5d40; }
+    .notice strong { display: block; margin-bottom: 0.15rem; }
+
+    .architecture {
+      display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.7rem; margin-top: 1.35rem;
+    }
+    .architecture article { min-width: 0; padding: 1rem; border: 1px solid var(--hair); border-radius: 6px; background: var(--surface); }
+    .architecture article.primary { border-top: 3px solid var(--gate); background: var(--gate-soft); }
+    .architecture b { display: block; font-family: var(--display); font-size: 0.95rem; }
+    .architecture span { display: block; margin-top: 0.55rem; color: var(--muted); font-size: 0.86rem; line-height: 1.48; }
+
+    .steps { counter-reset: step; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.8rem; margin-top: 1.2rem; }
+    .steps article { min-width: 0; padding: 1rem; border: 1px solid var(--hair); border-radius: 6px; background: var(--surface); }
+    .steps article::before {
+      counter-increment: step; content: counter(step, decimal-leading-zero); display: block; margin-bottom: 0.6rem;
+      color: var(--brass); font-family: var(--mono); font-size: 0.78rem; font-weight: 700;
+    }
+    .steps p { margin-top: 0.35rem; color: var(--ink-2); font-size: 0.9rem; }
+
+    .code-block { position: relative; margin: 1rem 0 0; }
+    pre {
+      width: 100%; max-width: 100%; min-width: 0; margin: 0; padding: 1.05rem 1.15rem; overflow-x: auto;
+      border: 1px solid #263651; border-left: 4px solid var(--gate); border-radius: 6px;
+      background: var(--code); color: var(--code-ink); font-family: var(--mono); font-size: 0.82rem; line-height: 1.65;
+      overscroll-behavior-inline: contain; tab-size: 2;
+    }
+    pre code { white-space: pre; overflow-wrap: normal; word-break: normal; font-size: inherit; }
+    .code-label { margin: 0 0 0.35rem; color: var(--muted); font-family: var(--mono); font-size: 0.75rem; }
+    .hot { color: #ffb473; }
+    .comment { color: #89a0c4; }
+
+    .table-wrap { width: 100%; max-width: 100%; min-width: 0; overflow-x: auto; margin-top: 1rem; border: 1px solid var(--hair); border-radius: 6px; background: var(--surface); overscroll-behavior-inline: contain; }
+    table { width: 100%; min-width: 44rem; border-collapse: collapse; font-size: 0.9rem; }
+    th, td { padding: 0.78rem 0.85rem; border-bottom: 1px solid var(--hair); text-align: left; vertical-align: top; }
+    tr:last-child td { border-bottom: 0; }
+    th { color: var(--gate-dark); background: var(--surface-2); font-family: var(--mono); font-size: 0.73rem; letter-spacing: 0.06em; text-transform: uppercase; }
+    td { color: var(--ink-2); }
+    td:first-child { color: var(--ink); font-weight: 650; }
+    td code { color: var(--gate-dark); }
+    .required { color: var(--red); font-weight: 700; }
+    .optional { color: var(--muted); }
+
+    .endpoint-list { display: flex; flex-direction: column; gap: 0.85rem; }
+    .endpoint {
+      min-width: 0; border: 1px solid var(--hair); border-radius: 7px; background: var(--surface); overflow: hidden;
+    }
+    .endpoint summary { display: flex; align-items: center; gap: 0.65rem; padding: 0.9rem 1rem; cursor: pointer; list-style: none; }
+    .endpoint summary::-webkit-details-marker { display: none; }
+    .endpoint summary::after { content: "+"; margin-left: auto; color: var(--gate); font-family: var(--mono); font-size: 1.15rem; }
+    .endpoint[open] summary::after { content: "−"; }
+    .method { flex: 0 0 auto; min-width: 3.5rem; padding: 0.22rem 0.45rem; border-radius: 4px; text-align: center; font-family: var(--mono); font-size: 0.72rem; font-weight: 700; }
+    .method.post { color: #0e5d40; background: var(--green-soft); }
+    .method.get { color: var(--gate-dark); background: var(--gate-soft); }
+    .route { min-width: 0; color: var(--ink); font-family: var(--mono); font-size: 0.88rem; overflow-wrap: anywhere; }
+    .endpoint .purpose { color: var(--muted); font-size: 0.85rem; }
+    .endpoint-body { padding: 0 1rem 1.1rem; border-top: 1px solid var(--hair); }
+    .endpoint-body > p { margin-top: 0.9rem; color: var(--ink-2); }
+
+    .cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.85rem; margin-top: 1rem; }
+    .card { min-width: 0; padding: 1rem 1.05rem; border: 1px solid var(--hair); border-radius: 6px; background: var(--surface); }
+    .card h3, .card h4 { overflow-wrap: anywhere; }
+    .card p { margin-top: 0.45rem; color: var(--ink-2); font-size: 0.9rem; }
+    .card ul { margin: 0.6rem 0 0; padding-left: 1.1rem; color: var(--ink-2); font-size: 0.9rem; }
+
+    .schema { margin-top: 1rem; border: 1px solid var(--hair); border-radius: 6px; background: var(--surface); overflow: hidden; }
+    .schema-row { display: grid; grid-template-columns: minmax(10rem, 0.72fr) minmax(0, 1.28fr); gap: 1rem; padding: 0.78rem 0.9rem; border-bottom: 1px solid var(--hair); }
+    .schema-row:last-child { border-bottom: 0; }
+    .schema-row b { font-family: var(--mono); font-size: 0.82rem; overflow-wrap: anywhere; }
+    .schema-row span { color: var(--ink-2); font-size: 0.9rem; }
+
+    .roadmap { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.8rem; margin-top: 1rem; }
+    .roadmap article { min-width: 0; padding: 1rem; border: 1px solid var(--hair); border-top: 3px solid var(--brass); border-radius: 6px; background: var(--surface); }
+    .roadmap p { margin-top: 0.4rem; color: var(--ink-2); font-size: 0.88rem; }
+
+    .contact-fab { position: fixed; right: 1.1rem; bottom: 1.1rem; z-index: 90; }
+    .contact-fab summary { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 3rem; padding: 0.7rem 1rem; border: 1px solid var(--gate); border-radius: 999px; background: var(--gate); color: #fff; font-family: var(--display); font-size: 0.9rem; font-weight: 750; cursor: pointer; box-shadow: 0 10px 28px rgba(23,42,75,.22); list-style: none; }
+    .contact-fab summary::-webkit-details-marker { display: none; }
+    .contact-fab summary::before { content: "?"; display: grid; width: 1.35rem; height: 1.35rem; place-items: center; border: 1px solid rgba(255,255,255,.7); border-radius: 50%; font-family: var(--mono); }
+    .contact-panel { position: absolute; right: 0; bottom: calc(100% + .65rem); width: min(20rem, calc(100vw - 2.2rem)); padding: 1rem; border: 1px solid var(--hair); border-top: 3px solid var(--brass); border-radius: 6px; background: var(--surface); box-shadow: 0 16px 40px rgba(23,42,75,.18); }
+    .contact-panel b { display: block; font-family: var(--display); }
+    .contact-panel .soon { display: inline-block; margin: .4rem 0 .65rem; padding: .15rem .45rem; border-radius: 999px; background: var(--brass-soft); color: #6f3508; font-family: var(--mono); font-size: .75rem; }
+    .contact-panel p { color: var(--ink-2); font-size: .87rem; line-height: 1.5; }
+    .contact-actions { display: flex; flex-wrap: wrap; gap: .45rem; margin-top: .8rem; }
+    .contact-actions a { padding: .42rem .62rem; border: 1px solid #afc6ed; border-radius: 4px; background: var(--gate-soft); font-size: .82rem; text-decoration: none; }
+    .contact-panel { width: min(23rem, calc(100vw - 2.2rem)); max-height: min(35rem, calc(100vh - 6rem)); overflow-y: auto; }
+    .chat-head { display: flex; align-items: center; justify-content: space-between; gap: .75rem; padding-bottom: .75rem; border-bottom: 1px solid var(--hair); }
+    .chat-head b { font-family: var(--display); font-size: 1.05rem; }
+    .chat-head span { color: var(--green); font-family: var(--mono); font-size: .75rem; }
+    .chat-log { display: flex; flex-direction: column; gap: .7rem; max-height: 19rem; overflow-y: auto; padding: .9rem .15rem .9rem 0; }
+    .chat-message { max-width: 88%; padding: .75rem .85rem; font-size: .9rem; line-height: 1.5; overflow-wrap: anywhere; }
+    .chat-message.bot { align-self: flex-start; border-radius: 4px 12px 12px 12px; background: var(--gate-soft); color: var(--gate-dark); }
+    .chat-message.user { align-self: flex-end; border-radius: 12px 4px 12px 12px; background: var(--gate); color: #fff; }
+    .chat-message p { margin: 0; }
+    .contact-card { margin-top: .7rem; padding-top: .65rem; border-top: 1px solid #afc6ed; }
+    .contact-card strong { display: block; font-family: var(--display); }
+    .contact-links { display: flex; flex-wrap: wrap; gap: .45rem; margin-top: .55rem; }
+    .contact-links a { padding: .38rem .55rem; border: 1px solid #afc6ed; border-radius: 4px; background: var(--surface); color: var(--gate-dark); font-size: .78rem; text-decoration: none; }
+    .chat-composer { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: .5rem; padding-top: .8rem; border-top: 1px solid var(--hair); }
+    .chat-composer textarea { width: 100%; min-height: 3rem; max-height: 7rem; resize: vertical; border: 1px solid var(--hair); border-radius: 6px; background: var(--canvas); color: var(--ink); font: 400 1rem/1.35 var(--sans); padding: .72rem; }
+    .chat-composer textarea:focus { outline: 2px solid #afc6ed; border-color: var(--gate); }
+    .chat-composer button { width: 3rem; height: 3rem; border: 1px solid var(--green); border-radius: 6px; background: var(--green); color: #fff; font-family: var(--display); font-size: 1.25rem; font-weight: 750; cursor: pointer; }
+    .chat-note { margin: .55rem 0 0; color: var(--muted); font-family: var(--mono); font-size: .68rem; line-height: 1.4; }
+
+    footer { padding: 2rem 0; border-top: 1px solid var(--hair); color: var(--muted); font-size: 0.82rem; }
+
+    @media (max-width: 72rem) {
+      .architecture { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .steps, .roadmap { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 62rem) {
+      .layout { display: block; }
+      .sidebar { display: none; }
+      .mobilebar { display: block; position: sticky; top: 0; z-index: 50; border-bottom: 1px solid var(--hair); background: rgba(248, 250, 255, 0.97); backdrop-filter: blur(10px); }
+      .mobilebar summary { display: flex; align-items: center; gap: 0.65rem; min-width: 0; padding: 0.78rem 1.2rem; cursor: pointer; list-style: none; }
+      .mobilebar summary::-webkit-details-marker { display: none; }
+      .mobilebar summary::after { content: "índice"; margin-left: auto; padding: 0.2rem 0.55rem; border: 1px solid #afc6ed; border-radius: 999px; color: var(--gate-dark); background: var(--gate-soft); font-family: var(--mono); font-size: 0.72rem; }
+      .mobilebar details[open] summary::after { content: "fechar"; }
+      .mobilebar nav { max-height: calc(100vh - 3.6rem); overflow-y: auto; padding: 0.35rem 1.2rem 1rem; border-top: 1px solid var(--hair); }
+      .mobilebar nav a { display: block; padding: 0.42rem 0; color: var(--ink-2); text-decoration: none; }
+      section { scroll-margin-top: 4.2rem; }
+    }
+    @media (max-width: 46rem) {
+      main { padding-inline: 1.1rem; }
+      .architecture, .steps, .cards, .roadmap { grid-template-columns: 1fr; }
+      .schema-row { grid-template-columns: 1fr; gap: 0.2rem; }
+      .endpoint summary { align-items: flex-start; flex-wrap: wrap; }
+      .endpoint .purpose { width: 100%; padding-left: 4.15rem; }
+      table { min-width: 39rem; }
+      pre { font-size: 0.76rem; }
+    }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar" aria-label="Índice da documentação">
+      <a class="brand" href="/"><span class="brand-mark" aria-hidden="true"></span><b>Bull<em>gate</em> Access</b></a>
+      <p class="edition">Referência técnica · v0.1</p>
+      <nav>
+        <p>Guias do Access</p>
+        <a href="/docs/access/" aria-current="page">Integração</a>
+        <a href="/docs/access/politicas/">Políticas</a>
+        <a href="/docs/access/resolucao-de-identidade/">Resolução de identidade</a>
+        <a href="/docs/access/erros/">Erros e mensagens</a>
+        <p>Nesta página</p>
+        <a href="#inicio">Visão geral</a>
+        <a href="#arquitetura">Arquitetura obrigatória</a>
+        <a href="#inicio-rapido">Início rápido</a>
+        <p>Backend</p>
+        <a href="#configuracao-dotnet">Configuração .NET</a>
+        <a href="#contratos-host">Contratos do produto</a>
+        <a href="#sessao-cookies">Sessão e cookies</a>
+        <p>API BFF</p>
+        <a href="#endpoints">Endpoints</a>
+        <a href="#resposta-sessao">Resposta de sessão</a>
+        <p>Frontend</p>
+        <a href="#react-native">React Native</a>
+        <a href="#access-flow">AccessFlow</a>
+        <a href="#acoes-flow">Ações e parâmetros</a>
+        <p>Contrato</p>
+        <a href="#fase-1">Escopo da fase 1</a>
+        <a href="#seguranca">Regras de segurança</a>
+        <a href="#roadmap">Roadmap</a>
+      </nav>
+      <div class="back"><a href="/docs/">← Índice técnico</a><br><a href="/">Visão do produto</a></div>
+    </aside>
+
+    <div class="mobilebar">
+      <details id="mobile-index">
+        <summary><span class="brand"><span class="brand-mark" aria-hidden="true"></span><b>Bull<em>gate</em> Docs</b></span></summary>
+        <nav>
+          <a href="/docs/access/" aria-current="page">Integração</a>
+          <a href="/docs/access/politicas/">Políticas do Access</a>
+          <a href="/docs/access/resolucao-de-identidade/">Resolução de identidade</a>
+          <a href="/docs/access/erros/">Erros e mensagens</a>
+          <a href="#inicio">Visão geral</a>
+          <a href="#arquitetura">Arquitetura</a>
+          <a href="#inicio-rapido">Início rápido</a>
+          <a href="#configuracao-dotnet">Configuração .NET</a>
+          <a href="#contratos-host">Contratos do produto</a>
+          <a href="#sessao-cookies">Sessão e cookies</a>
+          <a href="#endpoints">Endpoints BFF</a>
+          <a href="#react-native">React Native</a>
+          <a href="#access-flow">AccessFlow</a>
+          <a href="#fase-1">Fase 1</a>
+          <a href="#roadmap">Roadmap</a>
+          <a href="/docs/">← Índice técnico</a>
+          <a href="/">Visão do produto</a>
+        </nav>
+      </details>
+    </div>
+
+    <main>
+      <div class="content">
+        <section id="inicio" class="intro">
+          <p class="kicker">Documentação técnica · integração externa</p>
+          <h1>Bullgate <em>Access</em></h1>
+          <p class="lead">Referência para integrar um backend ASP.NET Core e um aplicativo React Native ao contrato de identidade, sessão e continuação de cadastro do Bullgate.</p>
+          <div class="statusline">
+            <span class="badge live">Implementado no código</span>
+            <span class="badge phase">Contrato v0.1</span>
+            <span class="badge">ASP.NET Core · net10.0</span>
+            <span class="badge">React Native SDK · 0.1.0</span>
+          </div>
+          <div class="notice">
+            <strong>Antes de integrar</strong>
+            Os pacotes estão em versão <code>0.1.0</code>, mas ainda não possuem distribuição pública estável. Use o artefato ou feed indicado pelo operador Bullgate. Esta página descreve o código vigente em 04/09/2026.
+          </div>
+          <div class="notice blue">
+            <strong>Configuração por comportamento</strong>
+            Consulte <a href="/docs/access/politicas/">Políticas do Access</a> para entender identifiers, authenticators, providers, limites e permissões antes de montar o environment.
+          </div>
+        </section>
+
+        <section id="arquitetura">
+          <div class="section-head">
+            <p class="kicker">Fronteira obrigatória</p>
+            <h2>O cliente nunca chama o Access diretamente</h2>
+            <p>O aplicativo conversa com o backend do próprio produto. O backend mantém a credencial de integração, chama o Bullgate Access e transforma a identity Bullgate em um perfil local.</p>
+          </div>
+          <div class="architecture" aria-label="Fluxo entre aplicativo, backend do produto, Bullgate Access e banco isolado">
+            <article><b>1. Aplicativo</b><span>Envia credenciais e ações para o BFF do produto. Não recebe token Bullgate.</span></article>
+            <article class="primary"><b>2. Backend + BFF</b><span>Guarda o segredo <code>bgic_…</code>, escreve cookies HttpOnly e resolve o perfil local.</span></article>
+            <article><b>3. Bullgate Access</b><span>É autoridade sobre identity, credenciais, sessão e AccessFlow.</span></article>
+            <article><b>4. Banco isolado</b><span>O Access usa sua própria base. O produto não consulta tabelas Bullgate.</span></article>
+          </div>
+          <div class="notice blue">
+            <strong>Chave de associação</strong>
+            Persista <code>IdentityId</code> como referência externa única no perfil do produto. Nunca associe contas por e-mail, telefone ou nome: esses valores podem mudar e não são autoridade de vínculo.
+          </div>
+        </section>
+
+        <section id="inicio-rapido">
+          <div class="section-head">
+            <p class="kicker">Sequência mínima</p>
+            <h2>Início rápido</h2>
+            <p>Uma integração funcional exige topologia provisionada, adapter no backend, contratos locais e cliente móvel apontando para o BFF.</p>
+          </div>
+          <div class="steps">
+            <article><h3>Declare o environment</h3><p>Use um manifesto v2 para workspace, app, realm, policies, providers, integration clients e application clients. O arquivo local com segredos fica fora do Git.</p></article>
+            <article><h3>Configure o backend</h3><p>Registre o client Bullgate, a autenticação por sessão e os endpoints BFF em <code>/bullgate/access/v1</code>.</p></article>
+            <article><h3>Implemente o vínculo</h3><p>Resolva e provisione o perfil local sempre por <code>session.IdentityId</code>, de modo idempotente.</p></article>
+            <article><h3>Configure o aplicativo</h3><p>Crie o transport com a URL da API do produto e informe a <code>applicationClientKey</code> pública e estável da build. Cookies são enviados com <code>credentials: include</code>.</p></article>
+            <article><h3>Restaure a sessão</h3><p>Na abertura, chame <code>session()</code>. Resposta <code>401</code> vira <code>null</code>; falha <code>503</code> deve permitir nova tentativa.</p></article>
+            <article><h3>Renderize o flow</h3><p>Quando o estado for <code>registration</code>, inicie o AccessFlow e execute somente ações devolvidas no snapshot atual.</p></article>
+          </div>
+          <div class="notice blue">
+            <strong>Um único lugar por environment</strong>
+            Policies, SMTP, Twilio, Google/Apple, bypass de desenvolvimento e configuração pública pertencem ao mesmo manifesto local. No Compose, <code>access-init</code> aplica esse documento e gera ou reutiliza a master key e a credencial de integração em volumes privados; esses valores não precisam ser copiados para o aplicativo nem para o Git.
+          </div>
+        </section>
+
+        <section id="configuracao-dotnet">
+          <div class="section-head">
+            <p class="kicker">Backend · Bullgate.Access.AspNetCore 0.1.0</p>
+            <h2>Configuração do adapter .NET</h2>
+            <p>O adapter registra um <code>HttpClient</code> autenticado, cookies host-only, authentication handler e as rotas BFF da fase atual.</p>
+          </div>
+
+          <p class="code-label">Program.cs</p>
+          <div class="code-block"><pre><code>builder.Services.AddBullgateAccess(options =&gt;
+{
+    options.BaseAddress = new Uri(
+        builder.Configuration["Bullgate:Access:BaseUrl"]!);
+    options.IntegrationCredential =
+        builder.Configuration["Bullgate:Access:IntegrationCredential"]!;
+});
+
+builder.Services
+    .AddAuthentication(BullgateAccessDefaults.AuthenticationScheme)
+    .AddBullgateSession();
+builder.Services.AddAuthorization();
+
+<span class="comment">// Implementações específicas do seu produto.</span>
+builder.Services.AddScoped&lt;IBullgatePrincipalResolver, ProductPrincipalResolver&gt;();
+builder.Services.AddScoped&lt;
+    IBullgateAccessApplication&lt;ProductRegistration, ProductProfile&gt;,
+    ProductAccessApplication&gt;();
+
+<span class="comment">// A ordem é significativa.</span>
+app.UseBullgateAccessFailures();
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapBullgateAccess&lt;ProductRegistration, ProductProfile&gt;();</code></pre></div>
+
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Parâmetro</th><th>Tipo / padrão</th><th>Como usar</th></tr></thead>
+              <tbody>
+                <tr><td><code>BaseAddress</code> <span class="required">obrigatório</span></td><td><code>Uri?</code> · sem padrão</td><td>URL absoluta do serviço Bullgate Access vista pelo backend. Não é a URL pública do BFF e nunca vai para o aplicativo.</td></tr>
+                <tr><td><code>IntegrationCredential</code> <span class="required">obrigatório</span></td><td><code>string</code> · sem padrão</td><td>Credencial server-to-server emitida no bootstrap. Precisa começar com <code>bgic_</code>. Guarde em secret store; o adapter envia como <code>Authorization: Bearer</code>.</td></tr>
+                <tr><td><code>RequestTimeout</code></td><td><code>TimeSpan</code> · 10 segundos</td><td>Limite de cada chamada ao Access. Deve ser positivo. Timeout é falha operacional e o BFF responde <code>503 access-unavailable</code>.</td></tr>
+                <tr><td><code>CookieName</code></td><td><code>string</code> · <code>bullgate.session</code></td><td>Nome do cookie da sessão opaca. Deve ser preenchido e diferente de <code>FlowCookieName</code>.</td></tr>
+                <tr><td><code>FlowCookieName</code></td><td><code>string</code> · <code>bullgate.flow</code></td><td>Nome do cookie da capability temporária de AccessFlow. Ele não é uma sessão de produto.</td></tr>
+                <tr><td><code>CookieSecurePolicy</code></td><td><code>CookieSecurePolicy</code> · <code>Always</code></td><td>Controla o atributo <code>Secure</code>. Mantenha <code>Always</code> fora de desenvolvimento local HTTP.</td></tr>
+                <tr><td><code>CookieSameSite</code></td><td><code>SameSiteMode</code> · <code>Lax</code></td><td>Política SameSite dos dois cookies. Altere apenas quando a topologia de domínios realmente exigir e revise CSRF junto.</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="notice blue">
+            <strong>Validação no startup</strong>
+            URI relativa, credencial sem prefixo <code>bgic_</code>, timeout não positivo, nomes vazios ou cookies com o mesmo nome impedem a aplicação de iniciar.
+          </div>
+        </section>
+
+        <section id="contratos-host">
+          <div class="section-head">
+            <p class="kicker">Backend · responsabilidades do produto</p>
+            <h2>Os dois contratos que você implementa</h2>
+            <p>O adapter não conhece sua tabela de usuários, seu onboarding ou suas regras de negócio. Esses dois contratos conectam uma identity Bullgate ao domínio local.</p>
+          </div>
+
+          <div class="cards">
+            <article class="card">
+              <h3><code>IBullgatePrincipalResolver</code></h3>
+              <p>Executado pelo authentication handler depois de uma introspecção ativa com propósito <code>Product</code>. Converte a sessão em subject e claims locais.</p>
+              <ul><li>Retorne <code>null</code> quando não houver perfil local válido.</li><li><code>Subject</code> não pode ser vazio.</li><li>Claims Bullgate de identity e session são adicionadas pelo adapter.</li></ul>
+            </article>
+            <article class="card">
+              <h3><code>IBullgateAccessApplication&lt;TRegistration,TApplication&gt;</code></h3>
+              <p><code>TRegistration</code> é a entrada específica do cadastro do seu produto. <code>TApplication</code> é o perfil público devolvido ao cliente.</p>
+              <ul><li><code>ProvisionAsync</code> cria ou retoma o perfil.</li><li><code>ResolveAsync</code> busca o perfil já associado.</li><li>Ambos recebem a sessão Bullgate validada.</li></ul>
+            </article>
+          </div>
+
+          <p class="code-label subsection">Implementação de referência</p>
+          <div class="code-block"><pre><code>public sealed record ProductRegistration(string Name);
+public sealed record ProductProfile(Guid Id, string Name);
+
+public sealed class ProductAccessApplication(ProductDb db)
+    : IBullgateAccessApplication&lt;ProductRegistration, ProductProfile&gt;
+{
+    public async ValueTask&lt;BullgateApplicationProvisionResult&lt;ProductProfile&gt;&gt;
+        ProvisionAsync(
+            BullgateSession session,
+            ProductRegistration registration,
+            CancellationToken cancellationToken)
+    {
+        <span class="comment">// UNIQUE(BullgateIdentityId) torna o retry seguro.</span>
+        var profile = await db.GetOrCreateByBullgateIdentityIdAsync(
+            session.IdentityId,
+            registration.Name,
+            cancellationToken);
+
+        return new(profile);
+    }
+
+    public ValueTask&lt;ProductProfile?&gt; ResolveAsync(
+        BullgateSession session,
+        CancellationToken cancellationToken) =&gt;
+        db.FindByBullgateIdentityIdAsync(session.IdentityId, cancellationToken);
+}</code></pre></div>
+
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Membro</th><th>Parâmetro</th><th>Significado</th></tr></thead>
+              <tbody>
+                <tr><td><code>ResolveAsync</code></td><td><code>session</code></td><td>Sessão ativa já introspectada. Use <code>IdentityId</code> para lookup; não use <code>Email</code> como vínculo.</td></tr>
+                <tr><td><code>ResolveAsync</code></td><td><code>cancellationToken</code></td><td>Propague para todas as chamadas de banco e rede.</td></tr>
+                <tr><td><code>ResolveAsync</code></td><td>retorno</td><td>Principal/perfil local ou <code>null</code>. No authentication handler, <code>null</code> invalida o cookie local. No login, gera <code>409 application-not-provisioned</code>.</td></tr>
+                <tr><td><code>ProvisionAsync</code></td><td><code>registration</code></td><td>Objeto enviado em <code>application</code> pelo cliente. Valide aqui nome, aceite de termos e outros campos do produto.</td></tr>
+                <tr><td><code>ProvisionAsync</code></td><td>retorno</td><td><code>BullgateApplicationProvisionResult&lt;TApplication&gt;</code> contendo o perfil público.</td></tr>
+                <tr><td><code>ProvisionAsync</code></td><td>rejeição</td><td>Lance <code>BullgateApplicationRejectedException(statusCode, error, field)</code>. O adapter revoga a sessão recém-emitida e devolve seu erro ao cliente.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="sessao-cookies">
+          <div class="section-head">
+            <p class="kicker">Backend · estado privado</p>
+            <h2>Sessão, autenticação e cookies</h2>
+            <p>O token opaco fica somente no cookie host-only. O aplicativo recebe um envelope tipado, nunca o token ou a capability do flow.</p>
+          </div>
+          <div class="schema">
+            <div class="schema-row"><b>Cookie de sessão</b><span><code>HttpOnly</code>, <code>Secure</code> conforme política, <code>SameSite=Lax</code> por padrão, <code>Path=/</code>, expiração igual à sessão Bullgate e <code>IsEssential=true</code>.</span></div>
+            <div class="schema-row"><b>Cookie de flow</b><span>Mesmos atributos, mas <code>Path=/bullgate/access/v1</code>. Guarda uma capability curta e é apagado quando o flow emite sessão Product.</span></div>
+            <div class="schema-row"><b>Introspecção</b><span>O handler introspecta o token no Access. Nesta versão não há cache positivo: bloqueio, revogação e expiração são observados na request seguinte.</span></div>
+            <div class="schema-row"><b><code>active=false</code></b><span>O adapter apaga o cookie e trata a request como não autenticada.</span></div>
+            <div class="schema-row"><b>Access indisponível</b><span>Rede, timeout, JSON inválido ou status operacional viram <code>503 access-unavailable</code>. O cookie é preservado para retry.</span></div>
+            <div class="schema-row"><b>Sessão Registration</b><span>É válida para continuar o cadastro, mas não cria um <code>ClaimsPrincipal</code> autenticado para o produto.</span></div>
+          </div>
+          <div class="notice">
+            <strong>Ordem do pipeline</strong>
+            <code>UseBullgateAccessFailures()</code> deve envolver o authentication handler; depois vêm <code>UseAuthentication()</code> e <code>UseAuthorization()</code>. Sem essa ordem, falhas operacionais podem não virar o contrato <code>503</code> esperado.
+          </div>
+        </section>
+
+        <section id="endpoints">
+          <div class="section-head">
+            <p class="kicker">API pública do seu BFF</p>
+            <h2>Referência de endpoints</h2>
+            <p><code>MapBullgateAccess&lt;TRegistration,TApplication&gt;()</code> publica estas rotas principais sob <code>/bullgate/access/v1</code>. Os formatos abaixo são JSON em camelCase.</p>
+          </div>
+
+          <div class="endpoint-list">
+            <details class="endpoint" open>
+              <summary><span class="method post">POST</span><span class="route">/bullgate/access/v1/register</span><span class="purpose">Cria identity e provisiona o perfil local</span></summary>
+              <div class="endpoint-body">
+                <p><strong>Body</strong></p>
+                <div class="table-wrap"><table><thead><tr><th>Campo</th><th>Tipo</th><th>Uso</th></tr></thead><tbody>
+                  <tr><td><code>email</code> <span class="required">obrigatório</span></td><td><code>string</code></td><td>É aparado, validado e normalizado para minúsculas pelo Access.</td></tr>
+                  <tr><td><code>password</code> <span class="required">obrigatório</span></td><td><code>string</code></td><td>Mínimo de 8 caracteres na versão atual.</td></tr>
+                  <tr><td><code>application</code> <span class="required">obrigatório</span></td><td><code>TRegistration</code></td><td>Dados necessários para criar o perfil do produto; o Bullgate não interpreta esse objeto.</td></tr>
+                </tbody></table></div>
+                <div class="code-block"><pre><code>{
+  "email": "ana@empresa.com",
+  "password": "uma-senha-segura",
+  "application": { "name": "Ana" }
+}</code></pre></div>
+                <p>Se a identity já existir, o BFF tenta login com a mesma senha e retoma o provisionamento. Com senha diferente, devolve a rejeição do login. Sucesso grava o cookie de sessão e responde <code>200</code>.</p>
+              </div>
+            </details>
+
+            <details class="endpoint">
+              <summary><span class="method post">POST</span><span class="route">/bullgate/access/v1/login</span><span class="purpose">Autentica por e-mail e senha</span></summary>
+              <div class="endpoint-body">
+                <p><strong>Body:</strong> <code>email: string</code> e <code>password: string</code>. Falhas de formato e credencial convergem para <code>401 invalid-credentials</code>.</p>
+                <div class="code-block"><pre><code>{ "email": "ana@empresa.com", "password": "uma-senha-segura" }</code></pre></div>
+                <p>Depois da autenticação Bullgate, o BFF chama <code>ResolveAsync</code>. Perfil ausente revoga a nova sessão e produz <code>409 application-not-provisioned</code>.</p>
+              </div>
+            </details>
+
+            <details class="endpoint">
+              <summary><span class="method post">POST</span><span class="route">/bullgate/access/v1/google</span><span class="purpose">Autentica ou cadastra com Google</span></summary>
+              <div class="endpoint-body">
+                <div class="table-wrap"><table><thead><tr><th>Campo</th><th>Tipo</th><th>Uso</th></tr></thead><tbody>
+                  <tr><td><code>idToken</code></td><td><code>string?</code></td><td>Token de identidade obtido pelo SDK nativo. Quando preenchido, tem precedência sobre <code>accessToken</code>.</td></tr>
+                  <tr><td><code>accessToken</code></td><td><code>string?</code></td><td>Alternativa aceita quando <code>idToken</code> não foi enviado. Pelo menos um dos dois tokens é necessário.</td></tr>
+                  <tr><td><code>application</code></td><td><code>TRegistration?</code></td><td>Opcional para identity já ligada a perfil; obrigatório quando o login social cria uma identity sem perfil local.</td></tr>
+                </tbody></table></div>
+                <p>O provider precisa estar habilitado na policy do environment. E-mail igual ao de outra identity retorna <code>409 email-taken</code>; não existe auto-link por e-mail.</p>
+              </div>
+            </details>
+
+            <details class="endpoint">
+              <summary><span class="method post">POST</span><span class="route">/bullgate/access/v1/apple</span><span class="purpose">Autentica ou cadastra com Apple</span></summary>
+              <div class="endpoint-body">
+                <div class="table-wrap"><table><thead><tr><th>Campo</th><th>Tipo</th><th>Uso</th></tr></thead><tbody>
+                  <tr><td><code>identityToken</code> <span class="required">obrigatório</span></td><td><code>string</code></td><td>JWT emitido pelo Sign in with Apple e obtido pelo SDK nativo.</td></tr>
+                  <tr><td><code>application</code></td><td><code>TRegistration?</code></td><td>Necessário apenas quando ainda não há perfil local para a identity.</td></tr>
+                </tbody></table></div>
+              </div>
+            </details>
+
+            <details class="endpoint">
+              <summary><span class="method get">GET</span><span class="route">/bullgate/access/v1/session</span><span class="purpose">Restaura a sessão atual</span></summary>
+              <div class="endpoint-body">
+                <p>Sem parâmetros e sem body. Usa o cookie <code>bullgate.session</code>. Responde <code>200</code> com o envelope de sessão ou <code>401</code> quando não há sessão/profil válido. Adiciona <code>Cache-Control: no-store</code>.</p>
+              </div>
+            </details>
+
+            <details class="endpoint">
+              <summary><span class="method post">POST</span><span class="route">/bullgate/access/v1/logout</span><span class="purpose">Revoga a sessão corrente</span></summary>
+              <div class="endpoint-body">
+                <p>Sem parâmetros e sem body. Revoga o token no Access quando presente, apaga os cookies de sessão e flow e responde <code>204</code>.</p>
+              </div>
+            </details>
+
+            <details class="endpoint">
+              <summary><span class="method get">GET</span><span class="route">/bullgate/access/v1/config/application-clients/{applicationClientKey}</span><span class="purpose">Obtém a configuração pública da build</span></summary>
+              <div class="endpoint-body">
+                <p><code>applicationClientKey</code> é uma string pública e estável, como <code>android-development</code>, resolvida somente dentro do environment autenticado pela credencial do BFF. Não é UUID, package name nem segredo.</p>
+                <div class="code-block"><pre><code>{
+  "configurationVersion": 1,
+  "common": {},
+  "client": {
+    "key": "android-development",
+    "name": "Android development",
+    "platform": "android",
+    "applicationId": "com.example.app",
+    "signingIdentity": "sha256:…",
+    "smsRetrieverAppHash": "AbCdEfGhIJK",
+    "configuration": {}
+  }
+}</code></pre></div>
+                <p>SMTP, Twilio, master key e credencial de integração nunca aparecem nessa resposta. Metadados que não se aplicam à plataforma são <code>null</code>.</p>
+              </div>
+            </details>
+
+            <details class="endpoint">
+              <summary><span class="method post">POST</span><span class="route">/bullgate/access/v1/flows</span><span class="purpose">Inicia a continuação de cadastro</span></summary>
+              <div class="endpoint-body">
+                <div class="table-wrap"><table><thead><tr><th>Campo</th><th>Tipo</th><th>Uso</th></tr></thead><tbody>
+                  <tr><td><code>requestId</code> <span class="required">obrigatório no HTTP</span></td><td><code>UUID</code></td><td>Chave idempotente da criação. O SDK gera automaticamente quando omitida na API TypeScript.</td></tr>
+                  <tr><td><code>protocolVersions</code></td><td><code>number[]</code></td><td>Versões compreendidas pelo cliente. O SDK envia <code>[1]</code>; a lista precisa conter <code>1</code>.</td></tr>
+                  <tr><td><code>intent</code></td><td><code>string</code></td><td>Na fase atual, somente <code>continueRegistration</code>. O método do SDK preenche esse valor.</td></tr>
+                  <tr><td><code>applicationClientKey</code> <span class="required">obrigatório</span></td><td><code>string</code></td><td>Chave pública e permanente da build Android, iOS, Web ou de outra plataforma. UUIDs do banco não fazem parte do contrato.</td></tr>
+                </tbody></table></div>
+                <p>O BFF lê a sessão Registration do cookie, passa o token ao Access e grava a capability retornada no cookie de flow. Duração atual do flow: 30 minutos.</p>
+              </div>
+            </details>
+
+            <details class="endpoint">
+              <summary><span class="method get">GET</span><span class="route">/bullgate/access/v1/flows/{flowId}</span><span class="purpose">Recupera o snapshot atual</span></summary>
+              <div class="endpoint-body">
+                <p><code>flowId</code> é o UUID devolvido no snapshot. A capability é lida do cookie HttpOnly; o cliente não a envia no body. Flow ausente, de outro escopo ou com capability inválida retorna <code>404 flow-not-found</code>.</p>
+              </div>
+            </details>
+
+            <details class="endpoint">
+              <summary><span class="method post">POST</span><span class="route">/bullgate/access/v1/flows/{flowId}/actions</span><span class="purpose">Executa uma ação oferecida pelo snapshot</span></summary>
+              <div class="endpoint-body">
+                <div class="table-wrap"><table><thead><tr><th>Campo</th><th>Tipo</th><th>Uso</th></tr></thead><tbody>
+                  <tr><td><code>requestId</code> <span class="required">obrigatório no HTTP</span></td><td><code>UUID</code></td><td>Chave idempotente da ação. O SDK usa <code>action.id</code> por padrão.</td></tr>
+                  <tr><td><code>expectedRevision</code> <span class="required">obrigatório</span></td><td><code>number</code></td><td>Revisão do snapshot usado para renderizar a tela. Impede ação sobre estado antigo.</td></tr>
+                  <tr><td><code>action.id</code> <span class="required">obrigatório</span></td><td><code>UUID</code></td><td>ID emitido no array <code>actions</code>. Nunca gere outro ID para substituir este valor.</td></tr>
+                  <tr><td><code>action.type</code> <span class="required">obrigatório</span></td><td><code>string</code></td><td>Tipo da ação oferecida. ID e tipo precisam corresponder ao mesmo item do snapshot.</td></tr>
+                  <tr><td><code>action.input</code></td><td><code>object?</code></td><td>Payload específico da ação, como <code>{ phone }</code>, <code>{ code }</code> ou <code>{ previousEmail }</code>.</td></tr>
+                </tbody></table></div>
+              </div>
+            </details>
+          </div>
+        </section>
+
+        <section id="resposta-sessao">
+          <div class="section-head">
+            <p class="kicker">Contrato de resposta</p>
+            <h2>Envelope de sessão do BFF</h2>
+            <p>Cadastro, login, providers sociais e restauração usam a mesma forma discriminada.</p>
+          </div>
+          <div class="code-block"><pre><code>{
+  "state": "authenticated",
+  "identityId": "0198f1d0-…",
+  "email": "ana@empresa.com",
+  "phone": "+5511999999999",
+  "phoneVerifiedAt": "2026-09-04T12:00:00Z",
+  "sessionExpiresAt": "2026-10-04T12:00:00Z",
+  "hasPassword": true,
+  "hasGoogle": true,
+  "googleEmail": "ana@empresa.com",
+  "hasApple": false,
+  "appleEmail": null,
+  "application": {
+    "id": "8d5e…",
+    "name": "Ana"
+  }
+}</code></pre></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Campo</th><th>Tipo</th><th>Significado</th></tr></thead>
+              <tbody>
+                <tr><td><code>state</code></td><td><code>"authenticated" | "registration"</code></td><td><code>authenticated</code> autoriza acesso ao produto. <code>registration</code> permite apenas continuar o cadastro.</td></tr>
+                <tr><td><code>identityId</code></td><td><code>UUID</code></td><td>Subject público, estável e globalmente único do Bullgate. Não é o ID local do perfil.</td></tr>
+                <tr><td><code>email</code></td><td><code>string</code></td><td>E-mail principal normalizado. É dado de exibição/contato, não chave de associação.</td></tr>
+                <tr><td><code>phone</code> / <code>phoneVerifiedAt</code></td><td><code>string? / ISO 8601?</code></td><td>Telefone atual e momento de verificação quando presentes.</td></tr>
+                <tr><td><code>sessionExpiresAt</code></td><td><code>ISO 8601</code></td><td>Expiração absoluta da sessão atual.</td></tr>
+                <tr><td><code>hasPassword</code>, <code>hasGoogle</code>, <code>hasApple</code></td><td><code>boolean</code></td><td>Authenticators ligados à identity; <code>googleEmail</code> e <code>appleEmail</code> trazem o e-mail do vínculo quando houver.</td></tr>
+                <tr><td><code>application</code></td><td><code>TApplication | null</code></td><td>Perfil devolvido pelo host em sessão Product; <code>null</code> quando o estado é <code>registration</code>.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="react-native">
+          <div class="section-head">
+            <p class="kicker">Frontend · @bullgate/react-native 0.1.0</p>
+            <h2>Cliente React Native headless</h2>
+            <p>O SDK não desenha telas. Ele oferece um transport HTTP, métodos tipados e o protocolo AccessFlow. Sua aplicação controla componentes, navegação, copy, acessibilidade e analytics.</p>
+          </div>
+
+          <div class="code-block"><pre><code>import {
+  createBullgateAccessClient,
+  createBullgateFetchTransport,
+  BullgateAccessError,
+} from "@bullgate/react-native";
+
+const transport = createBullgateFetchTransport({
+  <span class="hot">baseUrl: () =&gt; apiBaseUrl</span>,
+});
+
+const access = createBullgateAccessClient&lt;
+  ProductRegistration,
+  ProductProfile
+&gt;(transport);
+
+const session = await access.login({ email, password });
+if (session.state === "authenticated") {
+  openApplication(session.application);
+} else {
+  openRegistrationJourney();
+}</code></pre></div>
+
+          <h3 class="subsection">Parâmetros do transport</h3>
+          <div class="table-wrap"><table><thead><tr><th>Parâmetro</th><th>Tipo</th><th>Como usar</th></tr></thead><tbody>
+            <tr><td><code>baseUrl</code> <span class="required">obrigatório</span></td><td><code>string | (() =&gt; string)</code></td><td>Origem da API do produto. A função é útil quando ambiente/tenant é resolvido em runtime. Barras finais são removidas.</td></tr>
+            <tr><td><code>fetch</code></td><td><code>typeof globalThis.fetch</code></td><td>Implementação alternativa para testes ou runtime sem <code>fetch</code> global.</td></tr>
+            <tr><td><code>headers</code></td><td><code>Record&lt;string,string&gt;</code></td><td>Headers constantes do BFF, por exemplo versão do app. Não coloque credencial <code>bgic_</code> aqui.</td></tr>
+          </tbody></table></div>
+          <p style="margin-top:0.75rem;color:var(--ink-2);">O transport sempre usa <code>credentials: "include"</code>, envia <code>Accept: application/json</code> e adiciona <code>Content-Type: application/json</code> quando há body.</p>
+
+          <h3 class="subsection">Parâmetros do client</h3>
+          <div class="table-wrap"><table><thead><tr><th>Parâmetro</th><th>Tipo</th><th>Como usar</th></tr></thead><tbody>
+            <tr><td><code>transport</code> <span class="required">obrigatório</span></td><td><code>BullgateAccessTransport</code></td><td>Transport criado acima ou implementação própria que respeite <code>method</code>, <code>path</code>, <code>body</code> e <code>signal</code>.</td></tr>
+            <tr><td><code>options.createRequestId</code></td><td><code>() =&gt; string</code></td><td>Gerador de UUID para idempotência do início de flow. O padrão usa <code>crypto.getRandomValues</code> quando disponível.</td></tr>
+          </tbody></table></div>
+
+          <h3 class="subsection">Métodos</h3>
+          <div class="table-wrap"><table><thead><tr><th>Método</th><th>Entrada</th><th>Resultado</th></tr></thead><tbody>
+            <tr><td><code>register(input, signal?)</code></td><td><code>{ email, password, application }</code></td><td>Sessão <code>authenticated</code> ou <code>registration</code>.</td></tr>
+            <tr><td><code>login(input, signal?)</code></td><td><code>{ email, password }</code></td><td>Sessão discriminada. Não trate <code>registration</code> como acesso ao produto.</td></tr>
+            <tr><td><code>google(input, signal?)</code></td><td><code>{ idToken?, accessToken?, application? }</code></td><td>Sessão social ou <code>BullgateAccessError</code>.</td></tr>
+            <tr><td><code>apple(input, signal?)</code></td><td><code>{ identityToken, application? }</code></td><td>Sessão social ou <code>BullgateAccessError</code>.</td></tr>
+            <tr><td><code>session(signal?)</code></td><td>sem body</td><td>Sessão atual ou <code>null</code> somente para HTTP <code>401</code>.</td></tr>
+            <tr><td><code>logout(signal?)</code></td><td>sem body</td><td><code>Promise&lt;void&gt;</code> após resposta <code>204</code>.</td></tr>
+            <tr><td><code>getApplicationClientConfiguration(key, signal?)</code></td><td><code>applicationClientKey: string</code></td><td>Configuração pública comum e específica da build, sem providers ou segredos.</td></tr>
+            <tr><td><code>startRegistrationFlow(input, signal?)</code></td><td><code>{ applicationClientKey, requestId?, protocolVersions? }</code></td><td>Envelope com snapshot inicial.</td></tr>
+            <tr><td><code>getFlow(flowId, signal?)</code></td><td><code>flowId: string</code></td><td>Snapshot mais recente do flow.</td></tr>
+            <tr><td><code>actOnFlow(flow, type, input?, options?)</code></td><td>Snapshot, tipo, payload e opções</td><td>Próximo snapshot; pode conter sessão Product quando o flow concluir.</td></tr>
+          </tbody></table></div>
+        </section>
+
+        <section id="access-flow">
+          <div class="section-head">
+            <p class="kicker">Protocolo state-driven · versão 1</p>
+            <h2>Como conduzir um AccessFlow</h2>
+            <p>A tela não decide a máquina de estados. Ela renderiza <code>step</code>, apresenta as <code>actions</code> disponíveis e envia uma ação com a mesma revisão recebida.</p>
+          </div>
+
+          <div class="code-block"><pre><code>let current = await access.startRegistrationFlow({
+  applicationClientKey: "android-development",
+});
+
+while (current.flow.status === "active") {
+  const flow = current.flow;
+
+  if (flow.step?.type === "collectPhone") {
+    current = await access.actOnFlow(
+      flow,
+      "requestPhoneVerification",
+      { phone: "+5511999999999" },
+    );
+    continue;
+  }
+
+  if (flow.step?.type === "verifyPhone") {
+    current = await access.actOnFlow(
+      flow,
+      "confirmPhoneVerification",
+      { code: "123456" },
+    );
+    continue;
+  }
+
+  <span class="comment">// Nunca invente uma ação que não está em flow.actions.</span>
+  renderStep(flow);
+  break;
+}
+
+if (current.session?.state === "authenticated") {
+  openApplication(current.session.application);
+}</code></pre></div>
+
+          <h3 class="subsection">Campos do snapshot</h3>
+          <div class="table-wrap"><table><thead><tr><th>Campo</th><th>Tipo</th><th>Significado</th></tr></thead><tbody>
+            <tr><td><code>protocolVersion</code></td><td><code>number</code></td><td>Versão negociada. Atualmente <code>1</code>.</td></tr>
+            <tr><td><code>flowId</code></td><td><code>UUID</code></td><td>Identificador da jornada; usado em <code>getFlow</code> e nas ações.</td></tr>
+            <tr><td><code>revision</code></td><td><code>number</code></td><td>Versão monotônica do estado. Deve voltar como <code>expectedRevision</code>.</td></tr>
+            <tr><td><code>intent</code></td><td><code>string</code></td><td>Objetivo da jornada. Fase atual: <code>continueRegistration</code>.</td></tr>
+            <tr><td><code>status</code></td><td><code>active | completed | expired</code></td><td>Controla se ainda há interação possível.</td></tr>
+            <tr><td><code>expiresAt</code></td><td><code>ISO 8601</code></td><td>Expiração absoluta do flow, não do código OTP.</td></tr>
+            <tr><td><code>step</code></td><td><code>object | null</code></td><td>Estado que a UI deve renderizar. É <code>null</code> em resultado terminal.</td></tr>
+            <tr><td><code>actions</code></td><td><code>{ id, type }[]</code></td><td>Únicas ações válidas naquela revisão.</td></tr>
+            <tr><td><code>feedback</code></td><td><code>{ code, field?, retryAt? }</code></td><td>Erro recuperável ou orientação da última interação. Não é falha HTTP.</td></tr>
+            <tr><td><code>result</code></td><td><code>{ type, outcome?, … }</code></td><td>Resultado terminal da jornada.</td></tr>
+          </tbody></table></div>
+
+          <h3 class="subsection">Campos de <code>step</code></h3>
+          <div class="table-wrap"><table><thead><tr><th>Campo</th><th>Quando existe</th><th>Uso na UI</th></tr></thead><tbody>
+            <tr><td><code>type</code></td><td>sempre em step ativo</td><td>Selecione o componente pela união tipada: <code>collectPhone</code>, <code>verifyPhone</code> ou <code>resolvePhoneConflict</code> no comportamento implementado atual.</td></tr>
+            <tr><td><code>destination</code></td><td><code>verifyPhone</code></td><td>Telefone mascarado para confirmação visual. Nunca use como valor completo.</td></tr>
+            <tr><td><code>expiresAt</code></td><td><code>verifyPhone</code></td><td>Expiração do challenge OTP atual.</td></tr>
+            <tr><td><code>resendAvailableAt</code></td><td><code>verifyPhone</code></td><td>Instante a partir do qual a UI pode oferecer reenvio.</td></tr>
+            <tr><td><code>previousEmailHint</code></td><td><code>resolvePhoneConflict</code></td><td>Dica mascarada do e-mail anterior. Não é um endereço alternativo nem um valor para preenchimento automático.</td></tr>
+          </tbody></table></div>
+        </section>
+
+        <section id="acoes-flow">
+          <div class="section-head">
+            <p class="kicker">AccessFlow · ações implementadas</p>
+            <h2>Ações e payloads</h2>
+            <p>O SDK procura o tipo dentro de <code>flow.actions</code>. Se não estiver disponível, lança <code>BullgateAccessProtocolError</code> antes da chamada HTTP.</p>
+          </div>
+          <div class="table-wrap"><table><thead><tr><th>Ação</th><th><code>input</code></th><th>Comportamento</th></tr></thead><tbody>
+            <tr><td><code>requestPhoneVerification</code></td><td><code>{ phone: string }</code></td><td>Normaliza o telefone para E.164, cria challenge e envia SMS. Telefone inválido volta como feedback <code>invalid-phone</code>.</td></tr>
+            <tr><td><code>submitPhone</code></td><td><code>{ phone: string }</code></td><td>Usada somente quando a policy habilita telefone sem verificação. Telefone já usado por outra identity volta como feedback.</td></tr>
+            <tr><td><code>confirmPhoneVerification</code></td><td><code>{ code: string }</code></td><td>Confere o OTP do challenge ativo. Código ausente, inválido ou tentativas esgotadas aparecem em <code>feedback</code>.</td></tr>
+            <tr><td><code>resendPhoneVerification</code></td><td>sem input</td><td>Reenvia para o mesmo destino depois do cooldown. Antes disso, devolve <code>retryAt</code>.</td></tr>
+            <tr><td><code>transferPhoneToCurrentIdentity</code></td><td><code>{ previousEmail: string }</code></td><td>Quando o telefone verificado pertence a outra identity, comprova conhecimento do e-mail anterior e move somente o telefone para a identity atual.</td></tr>
+            <tr><td><code>skipRegistration</code></td><td>sem input</td><td>Conclui quando o campo é opcional. Não é oferecida se a policy exige telefone.</td></tr>
+          </tbody></table></div>
+          <div class="notice">
+            <strong>Tipos reservados não são ações disponíveis</strong>
+            O pacote TypeScript já exporta nomes para recovery da identity anterior, verificação de e-mail anterior e nova senha. O <code>AccessFlowService</code> v1 atual ainda não os executa. Integrações devem sempre confiar no array <code>actions</code>, nunca apenas na união de tipos do SDK.
+          </div>
+          <div class="notice blue">
+            <strong>Guia dedicado ao conflito de telefone</strong>
+            Veja detecção, provas, snapshots, transferência atômica e limites da fase 1 em <a href="/docs/access/resolucao-de-identidade/">Resolução de identidade</a>.
+          </div>
+        </section>
+
+        <section id="fase-1">
+          <div class="section-head">
+            <p class="kicker">Contrato vigente</p>
+            <h2>Escopo da fase 1</h2>
+            <p>Documentar o que não existe é parte do contrato: consumidores não devem inferir comportamento futuro a partir de tipos, telas ou dados disponíveis.</p>
+          </div>
+          <div class="cards">
+            <article class="card">
+              <h3>Implementado</h3>
+              <ul><li>Cadastro e login por e-mail/senha.</li><li>Google e Apple quando habilitados.</li><li>Sessão Registration e Product.</li><li>Introspecção e revogação da sessão corrente.</li><li>Recovery por e-mail e telefone.</li><li>Gestão de senha, e-mail e vínculos sociais.</li><li>Continuação de cadastro por telefone.</li><li>OTP, reenvio, conflito e transferência de telefone.</li><li>Configuração pública por <code>applicationClientKey</code>.</li><li>Provisionamento do perfil local pelo host.</li></ul>
+            </article>
+            <article class="card">
+              <h3>Não implementado nesta fase</h3>
+              <ul><li><strong>E-mails alternativos.</strong></li><li>Merge automático de identities.</li><li>Auto-link por e-mail entre providers.</li><li>Verificação de e-mail por challenge ou link.</li><li>Login sem senha por magic link ou código de uso único.</li><li>Passkeys e 2FA/TOTP.</li><li>OCR, documento, selfie e prova de idade.</li><li>Billing, entitlements ou regras do produto.</li></ul>
+            </article>
+          </div>
+          <div class="notice">
+            <strong>E-mail principal único</strong>
+            A fase 1 não cria e-mails alternativos. Mesmo que uma integração futura permita troca de e-mail, o endereço antigo não deve continuar como login ou alias por efeito colateral.
+          </div>
+        </section>
+
+        <section id="seguranca">
+          <div class="section-head">
+            <p class="kicker">Invariantes de integração</p>
+            <h2>Regras de segurança que não são opcionais</h2>
+          </div>
+          <div class="schema">
+            <div class="schema-row"><b>Segredo só no servidor</b><span>A credencial <code>bgic_…</code> nunca entra no bundle web, aplicativo, variável <code>EXPO_PUBLIC_*</code>, log ou analytics.</span></div>
+            <div class="schema-row"><b>Cookies HttpOnly</b><span>Não leia nem replique o token Bullgate no JavaScript. O SDK opera por sessão do BFF.</span></div>
+            <div class="schema-row"><b>IdentityId é o subject</b><span>Associe perfil por UUID Bullgate. E-mail e telefone são identifiers mutáveis.</span></div>
+            <div class="schema-row"><b>Idempotência por payload</b><span>Repetir o mesmo <code>requestId</code> com o mesmo payload reproduz o resultado. Reutilizá-lo com payload diferente é conflito.</span></div>
+            <div class="schema-row"><b>Revisão otimista</b><span>Envie a revisão exibida. Em conflito, recarregue o snapshot; não force a ação antiga.</span></div>
+            <div class="schema-row"><b>Ação oferecida</b><span>Não derive autoridade do nome da tela. Execute apenas IDs e tipos presentes em <code>flow.actions</code>.</span></div>
+            <div class="schema-row"><b>Falha operacional ≠ logout</b><span><code>503</code> não prova sessão inválida. Preserve o cookie e permita retry.</span></div>
+            <div class="schema-row"><b>Sem auto-link</b><span>E-mail igual não prova que duas identities são da mesma pessoa.</span></div>
+          </div>
+        </section>
+
+        <section id="roadmap">
+          <div class="section-head">
+            <p class="kicker">Roadmap · não é contrato</p>
+            <h2>Próximas capacidades candidatas</h2>
+            <p>Esta seção orienta evolução de produto. Nada abaixo pode ser chamado ou prometido por uma integração da fase 1.</p>
+          </div>
+          <div class="roadmap">
+            <article><h3>Verificação de e-mail</h3><p>Challenge por código ou link, com expiração, tentativas, cooldown e provider configurado por policy.</p></article>
+            <article><h3>Login sem senha</h3><p>Magic link ou código de uso único para e-mail já verificado, com resposta neutra e proteção contra replay.</p></article>
+            <article><h3>Auto-link social por policy</h3><p>Vínculo de uma credencial Google ou Apple à identity que já possui o mesmo e-mail, somente quando uma policy explícita permitir e houver provas suficientes de titularidade. Ainda não existe na fase 1; hoje a colisão retorna <code>409 email-taken</code>.</p></article>
+            <article><h3>Passkeys</h3><p>WebAuthn, múltiplas credenciais por identity, nomeação e revogação.</p></article>
+            <article><h3>2FA e step-up</h3><p>TOTP, códigos de recuperação e prova adicional por ação sensível.</p></article>
+            <article><h3>Sessões visíveis</h3><p>Listagem por dispositivo, revogação seletiva e alerta de mudança crítica.</p></article>
+            <article><h3>Recovery forte</h3><p>Combinação explícita de provas, grant curto e execução idempotente.</p></article>
+            <article><h3>Prova civil</h3><p>Idade, CPF, OCR, autenticidade documental e selfie/liveness via adapters substituíveis.</p></article>
+            <article><h3>Enterprise</h3><p>OIDC, organizações, domínios verificados, SAML e SCIM conforme demanda real.</p></article>
+          </div>
+        </section>
+
+        <footer>
+          <p>Fonte verificada no código de <code>bullgate-access</code>, <code>bullgate-sdk-dotnet</code> e <code>bullgate-sdk-react-native</code>. Atualizado em 04/09/2026.</p>
+        </footer>
+      </div>
+    </main>
+  </div>
+
+  <details class="contact-fab">
+    <summary>Chat Bullgate</summary>
+    <div class="contact-panel">
+      <div class="chat-head"><b>Assistente Bullgate</b><span>prévia</span></div>
+      <div class="chat-log" aria-live="polite">
+        <div class="chat-message bot">
+          <p>Olá! O assistente ainda está sendo preparado. Enquanto isso, fale comigo:</p>
+          <div class="contact-card">
+            <strong>Marco · Bullgate</strong>
+            <div class="contact-links">
+              <a href="https://wa.me/5511976695464" target="_blank" rel="noopener">WhatsApp</a>
+              <a href="mailto:acp.marco@outlook.com">E-mail</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <form class="chat-composer">
+        <textarea name="message" required aria-label="Mensagem" placeholder="Escreva uma mensagem…"></textarea>
+        <button type="submit" aria-label="Enviar mensagem">↑</button>
+      </form>
+      <p class="chat-note">Prévia: nenhuma mensagem é enviada por este campo.</p>
+    </div>
+  </details>
+
+  <script>
+    (function () {
+      var mobile = document.getElementById("mobile-index");
+      if (!mobile) return;
+      mobile.querySelectorAll("a[href^='#']").forEach(function (link) {
+        link.addEventListener("click", function () { mobile.removeAttribute("open"); });
+      });
+    })();
+    (function () {
+      document.querySelectorAll('.chat-composer').forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+          event.preventDefault();
+          var field = form.querySelector('[name="message"]');
+          var log = form.parentElement.querySelector('.chat-log');
+          var message = field ? field.value.trim() : '';
+          if (!field || !log || !message) return;
+          var userMessage = document.createElement('div');
+          userMessage.className = 'chat-message user';
+          userMessage.textContent = message;
+          log.appendChild(userMessage);
+          field.value = '';
+          var botMessage = document.createElement('div');
+          botMessage.className = 'chat-message bot';
+          botMessage.textContent = 'Este chat ainda não está conectado. Para eu receber sua mensagem, use o WhatsApp ou o e-mail na primeira mensagem.';
+          log.appendChild(botMessage);
+          log.scrollTop = log.scrollHeight;
+          field.focus();
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

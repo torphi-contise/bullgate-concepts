@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="only light">
+  <meta name="robots" content="noindex">
+  <title>Políticas — Bullgate Access</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&display=swap">
+  <style>
+    :root{--canvas:#f5f7fb;--surface:#fff;--surface-2:#eef3fb;--ink:#172033;--ink-2:#3d475b;--muted:#667085;--hair:#d9dfeb;--gate:#1f4b99;--gate-dark:#15366f;--gate-soft:#eaf1fd;--brass:#b4560e;--brass-soft:#fff3e8;--green:#147a54;--green-soft:#e8f7f1;--red:#a33535;--red-soft:#fff0f0;--code:#111a2d;--code-ink:#dbe7ff;--mono:"SFMono-Regular",Consolas,"Liberation Mono",monospace;--sans:"Segoe UI Variable Text",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,system-ui,sans-serif;--display:"Archivo",var(--sans)}
+    *{box-sizing:border-box}html,body{width:100%;max-width:100%;overflow-x:hidden;overflow-x:clip}html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;text-size-adjust:100%}body{margin:0;background:var(--canvas);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased}a{color:var(--gate);text-decoration-thickness:1px;text-underline-offset:.18em}a:hover{color:var(--gate-dark)}code{font-family:var(--mono);font-size:.84em;overflow-wrap:anywhere;word-break:break-word}strong{font-weight:700}p{margin:0}h1,h2,h3,h4{margin:0;font-family:var(--display);letter-spacing:-.02em;line-height:1.15}h1{max-width:52rem;font-size:clamp(2.1rem,5.5vw,4rem);text-transform:uppercase}h1 em{color:var(--brass);font-style:normal}h2{font-size:clamp(1.55rem,3.5vw,2.15rem)}h3{font-size:1.12rem}
+    .layout{width:100%;max-width:92rem;min-width:0;margin:0 auto;display:grid;grid-template-columns:18rem minmax(0,1fr)}.sidebar{position:sticky;top:0;align-self:start;height:100vh;overflow-y:auto;padding:1.65rem 1.2rem 2rem 1.5rem;border-right:1px solid var(--hair);background:#f8faff}.brand{display:flex;align-items:center;gap:.65rem;color:var(--ink);text-decoration:none}.brand-mark{width:1.55rem;height:.58rem;flex:0 0 auto;background:repeating-linear-gradient(90deg,var(--gate) 0 4px,transparent 4px 7px,var(--gate) 7px 11px,transparent 11px 14px,var(--brass) 14px 18px,transparent 18px 21px)}.brand b{font-family:var(--display);font-size:1rem;letter-spacing:.02em;text-transform:uppercase}.brand em{color:var(--brass);font-style:normal}.edition{margin:.85rem 0 1.45rem;color:var(--muted);font-family:var(--mono);font-size:.75rem}.sidebar nav{display:flex;flex-direction:column;gap:.12rem}.sidebar nav p{margin:1rem 0 .3rem;padding-left:.65rem;color:var(--gate);font-family:var(--mono);font-size:.75rem;letter-spacing:.1em;text-transform:uppercase}.sidebar nav a{display:block;padding:.36rem .65rem;border-left:2px solid transparent;border-radius:0 4px 4px 0;color:var(--ink-2);font-size:.9rem;line-height:1.35;text-decoration:none}.sidebar nav a:hover{border-left-color:var(--gate);background:var(--gate-soft);color:var(--gate-dark)}.sidebar .back{margin-top:1.4rem;padding-top:1rem;border-top:1px solid var(--hair);font-size:.9rem}.mobilebar{display:none}main{width:100%;min-width:0;padding:0 clamp(1.25rem,4vw,4rem) 5rem}.content{width:100%;max-width:68rem;min-width:0}section{min-width:0;scroll-margin-top:1.3rem;padding:2.7rem 0;border-top:1px solid var(--hair)}section:first-child{border-top:0}section>*{min-width:0}.intro{padding-top:clamp(2.2rem,6vw,5rem)}.kicker{margin:0 0 .65rem;color:var(--gate);font-family:var(--mono);font-size:.78rem;letter-spacing:.1em;text-transform:uppercase}.lead{max-width:52rem;margin:1.15rem 0 0;color:var(--ink-2);font-size:1.08rem}.section-head{display:flex;flex-direction:column;gap:.45rem;margin-bottom:1.25rem}.section-head p{max-width:51rem;color:var(--ink-2)}.statusline{display:flex;flex-wrap:wrap;gap:.55rem;margin-top:1.4rem}.badge{display:inline-flex;align-items:center;gap:.35rem;padding:.32rem .62rem;border:1px solid var(--hair);border-radius:999px;background:var(--surface);color:var(--ink-2);font-family:var(--mono);font-size:.75rem}.badge.live{color:var(--green);border-color:#9ed9c4;background:var(--green-soft)}.badge.phase{color:var(--gate-dark);border-color:#abc2ec;background:var(--gate-soft)}
+    .notice{margin-top:1.35rem;padding:1rem 1.1rem;border:1px solid #e8bd95;border-left:4px solid var(--brass);border-radius:5px;background:var(--brass-soft);color:#5d3518}.notice.blue{border-color:#afc6ed;border-left-color:var(--gate);background:var(--gate-soft);color:var(--gate-dark)}.notice.green{border-color:#a7d9c8;border-left-color:var(--green);background:var(--green-soft);color:#0e5d40}.notice.red{border-color:#e6b5b5;border-left-color:var(--red);background:var(--red-soft);color:#742727}.notice strong{display:block;margin-bottom:.15rem}
+    .levels{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.7rem;margin-top:1.15rem}.level{min-width:0;padding:1rem;border:1px solid var(--hair);border-radius:6px;background:var(--surface)}.level.formal{border-top:3px solid var(--gate);background:var(--gate-soft)}.level.operational{border-top:3px solid var(--green);background:var(--green-soft)}.level.permission{border-top:3px solid var(--brass)}.level.fixed{border-top:3px solid var(--ink-2)}.level b{display:block;font-family:var(--display);font-size:.95rem}.level span{display:block;margin-top:.5rem;color:var(--ink-2);font-size:.86rem;line-height:1.48}.level code{color:var(--gate-dark)}
+    .cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.85rem;margin-top:1rem}.card{min-width:0;padding:1rem 1.05rem;border:1px solid var(--hair);border-radius:6px;background:var(--surface)}.card.blue{border-top:3px solid var(--gate)}.card.green{border-top:3px solid var(--green)}.card.brass{border-top:3px solid var(--brass)}.card p{margin-top:.45rem;color:var(--ink-2);font-size:.9rem}.card ul{margin:.6rem 0 0;padding-left:1.1rem;color:var(--ink-2);font-size:.9rem}.card li{margin:.3rem 0}
+    .schema{margin-top:1rem;border:1px solid var(--hair);border-radius:6px;background:var(--surface);overflow:hidden}.schema-row{display:grid;grid-template-columns:minmax(13rem,.8fr) minmax(0,1.2fr);gap:1rem;padding:.78rem .9rem;border-bottom:1px solid var(--hair)}.schema-row:last-child{border-bottom:0}.schema-row b{font-family:var(--mono);font-size:.82rem;overflow-wrap:anywhere}.schema-row span{color:var(--ink-2);font-size:.9rem}.table-wrap{width:100%;max-width:100%;min-width:0;overflow-x:auto;margin-top:1rem;border:1px solid var(--hair);border-radius:6px;background:var(--surface);overscroll-behavior-inline:contain}table{width:100%;min-width:46rem;border-collapse:collapse;font-size:.9rem}th,td{padding:.78rem .85rem;border-bottom:1px solid var(--hair);text-align:left;vertical-align:top}tr:last-child td{border-bottom:0}th{color:var(--gate-dark);background:var(--surface-2);font-family:var(--mono);font-size:.73rem;letter-spacing:.06em;text-transform:uppercase}td{color:var(--ink-2)}td:first-child{color:var(--ink);font-weight:650}td code{color:var(--gate-dark)}
+    .code-block{position:relative;margin:1rem 0 0}.code-label{margin:0 0 .35rem;color:var(--muted);font-family:var(--mono);font-size:.75rem}pre{width:100%;max-width:100%;min-width:0;margin:0;padding:1.05rem 1.15rem;overflow-x:auto;border:1px solid #263651;border-left:4px solid var(--gate);border-radius:6px;background:var(--code);color:var(--code-ink);font-family:var(--mono);font-size:.82rem;line-height:1.65;overscroll-behavior-inline:contain;tab-size:2}pre code{white-space:pre;overflow-wrap:normal;word-break:normal;font-size:inherit}.comment{color:#89a0c4}.matrix{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.8rem;margin-top:1rem}.matrix article{padding:1rem;border:1px solid var(--hair);border-radius:6px;background:var(--surface)}.matrix article:nth-child(1){border-top:3px solid var(--green)}.matrix article:nth-child(2){border-top:3px solid var(--gate)}.matrix article:nth-child(3){border-top:3px solid var(--brass)}.matrix p{margin-top:.4rem;color:var(--ink-2);font-size:.88rem}.checklist{margin:.8rem 0 0;padding-left:1.25rem;color:var(--ink-2)}.checklist li{margin:.45rem 0}
+    .contact-fab{position:fixed;right:1.1rem;bottom:1.1rem;z-index:90}.contact-fab summary{display:inline-flex;align-items:center;gap:.5rem;min-height:3rem;padding:.7rem 1rem;border:1px solid var(--gate);border-radius:999px;background:var(--gate);color:#fff;font-family:var(--display);font-size:.9rem;font-weight:750;cursor:pointer;box-shadow:0 10px 28px rgba(23,42,75,.22);list-style:none}.contact-fab summary::-webkit-details-marker{display:none}.contact-fab summary::before{content:"?";display:grid;width:1.35rem;height:1.35rem;place-items:center;border:1px solid rgba(255,255,255,.7);border-radius:50%;font-family:var(--mono)}.contact-panel{position:absolute;right:0;bottom:calc(100% + .65rem);width:min(23rem,calc(100vw - 2.2rem));max-height:min(35rem,calc(100vh - 6rem));overflow-y:auto;padding:1rem;border:1px solid var(--hair);border-top:3px solid var(--brass);border-radius:6px;background:var(--surface);box-shadow:0 16px 40px rgba(23,42,75,.18)}.chat-head{display:flex;align-items:center;justify-content:space-between;gap:.75rem;padding-bottom:.75rem;border-bottom:1px solid var(--hair)}.chat-head b{font-family:var(--display);font-size:1.05rem}.chat-head span{color:var(--green);font-family:var(--mono);font-size:.75rem}.chat-log{display:flex;flex-direction:column;gap:.7rem;max-height:19rem;overflow-y:auto;padding:.9rem .15rem .9rem 0}.chat-message{max-width:88%;padding:.75rem .85rem;font-size:.9rem;line-height:1.5;overflow-wrap:anywhere}.chat-message.bot{align-self:flex-start;border-radius:4px 12px 12px 12px;background:var(--gate-soft);color:var(--gate-dark)}.chat-message.user{align-self:flex-end;border-radius:12px 4px 12px 12px;background:var(--gate);color:#fff}.contact-card{margin-top:.7rem;padding-top:.65rem;border-top:1px solid #afc6ed}.contact-card strong{display:block;font-family:var(--display)}.contact-links{display:flex;flex-wrap:wrap;gap:.45rem;margin-top:.55rem}.contact-links a{padding:.38rem .55rem;border:1px solid #afc6ed;border-radius:4px;background:var(--surface);color:var(--gate-dark);font-size:.78rem;text-decoration:none}.chat-composer{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:.5rem;padding-top:.8rem;border-top:1px solid var(--hair)}.chat-composer textarea{width:100%;min-height:3rem;max-height:7rem;resize:vertical;border:1px solid var(--hair);border-radius:6px;background:var(--canvas);color:var(--ink);font:400 1rem/1.35 var(--sans);padding:.72rem}.chat-composer textarea:focus{outline:2px solid #afc6ed;border-color:var(--gate)}.chat-composer button{width:3rem;height:3rem;border:1px solid var(--green);border-radius:6px;background:var(--green);color:#fff;font-family:var(--display);font-size:1.25rem;font-weight:750;cursor:pointer}.chat-note{margin:.55rem 0 0;color:var(--muted);font-family:var(--mono);font-size:.68rem;line-height:1.4}footer{padding:2rem 0;border-top:1px solid var(--hair);color:var(--muted);font-size:.82rem}
+    .sidebar nav a[aria-current="page"]{border-left-color:var(--green);background:var(--green-soft);color:var(--gate-dark);font-weight:700}.mobilebar nav a[aria-current="page"]{color:var(--green);font-weight:700}
+    @media(max-width:72rem){.levels{grid-template-columns:repeat(2,minmax(0,1fr))}.matrix{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:62rem){.layout{display:block}.sidebar{display:none}.mobilebar{display:block;position:sticky;top:0;z-index:50;border-bottom:1px solid var(--hair);background:rgba(248,250,255,.97);backdrop-filter:blur(10px)}.mobilebar summary{display:flex;align-items:center;gap:.65rem;min-width:0;padding:.78rem 1.2rem;cursor:pointer;list-style:none}.mobilebar summary::-webkit-details-marker{display:none}.mobilebar summary::after{content:"índice";margin-left:auto;padding:.2rem .55rem;border:1px solid #afc6ed;border-radius:999px;color:var(--gate-dark);background:var(--gate-soft);font-family:var(--mono);font-size:.72rem}.mobilebar details[open] summary::after{content:"fechar"}.mobilebar nav{max-height:calc(100vh - 3.6rem);overflow-y:auto;padding:.35rem 1.2rem 1rem;border-top:1px solid var(--hair)}.mobilebar nav a{display:block;padding:.42rem 0;color:var(--ink-2);text-decoration:none}section{scroll-margin-top:4.2rem}}@media(max-width:46rem){main{padding-inline:1.1rem}.levels,.cards,.matrix{grid-template-columns:1fr}.schema-row{grid-template-columns:1fr;gap:.2rem}table{min-width:40rem}pre{font-size:.76rem}}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar" aria-label="Índice das políticas">
+      <a class="brand" href="/"><span class="brand-mark" aria-hidden="true"></span><b>Bull<em>gate</em> Access</b></a>
+      <p class="edition">Políticas · contrato atual</p>
+      <nav>
+        <p>Guias do Access</p>
+        <a href="/docs/access/">Integração</a>
+        <a href="/docs/access/politicas/" aria-current="page">Políticas</a>
+        <a href="/docs/access/resolucao-de-identidade/">Resolução de identidade</a>
+        <a href="/docs/access/erros/">Erros e mensagens</a>
+        <p>Nesta página</p>
+        <a href="#inicio">Visão geral</a><a href="#escopos">Escopos</a><a href="#access-policy">AppAccessPolicy</a>
+        <p>Configurar</p>
+        <a href="#manifesto">Manifesto</a><a href="#identifiers">Identifiers</a><a href="#authenticators">Authenticators</a><a href="#combinacoes">Combinações</a>
+        <a href="#verification-policy">Policies do environment</a><a href="#efeitos">Efeito no fluxo</a>
+        <p>Autoridade</p>
+        <a href="#permissions">Permissões</a><a href="#invariantes">Regras fixas</a><a href="#mudancas">Alterar com segurança</a><a href="#fase-1">Fase 1 e futuro</a>
+      </nav>
+      <div class="back"><a href="/docs/">← Índice técnico</a><br><a href="/">Visão do produto</a></div>
+    </aside>
+
+    <div class="mobilebar"><details id="mobile-index"><summary><span class="brand"><span class="brand-mark" aria-hidden="true"></span><b>Bull<em>gate</em> Docs</b></span></summary><nav>
+      <a href="/docs/access/">Integração</a><a href="/docs/access/politicas/" aria-current="page">Políticas</a><a href="/docs/access/resolucao-de-identidade/">Resolução de identidade</a><a href="/docs/access/erros/">Erros e mensagens</a><a href="#inicio">Visão geral</a><a href="#escopos">Escopos</a><a href="#access-policy">AppAccessPolicy</a><a href="#manifesto">Manifesto</a><a href="#identifiers">Identifiers</a><a href="#authenticators">Authenticators</a><a href="#combinacoes">Combinações</a><a href="#verification-policy">Verificação</a><a href="#efeitos">Efeito no fluxo</a><a href="#permissions">Permissões</a><a href="#invariantes">Regras fixas</a><a href="#mudancas">Alterações</a><a href="#fase-1">Fase 1</a><a href="/docs/">← Índice técnico</a>
+    </nav></details></div>
+
+    <main><div class="content">
+      <section id="inicio" class="intro">
+        <p class="kicker">Bullgate Access · documentação técnica</p>
+        <h1>Políticas do <em>Access</em></h1>
+        <p class="lead">Onde cada decisão é configurada, quais combinações são aceitas e como a policy altera cadastro, login, telefone, verificação e ações oferecidas ao aplicativo.</p>
+        <div class="statusline"><span class="badge live">Verificado no código</span><span class="badge phase">Manifesto v2</span><span class="badge">Por environment</span><span class="badge">Atualizado em 04/09/2026</span></div>
+        <div class="notice"><strong>“Policy” não significa qualquer regra do sistema</strong>O environment reúne três policies formais: <code>AppAccessPolicy</code>, <code>AppVerificationPolicy</code> e <code>AppRecoveryPolicy</code>. Providers, permissões, configuração pública e invariantes possuem contratos próprios no mesmo limite de tenancy.</div>
+      </section>
+
+      <section id="escopos">
+        <div class="section-head"><p class="kicker">Mapa de autoridade</p><h2>Quatro níveis que não devem ser misturados</h2><p>Escolher o nível errado pode misturar configuração entre tenants, expor segredo ao aplicativo ou dar autoridade administrativa ao backend do produto.</p></div>
+        <div class="levels">
+          <article class="level formal"><b>Environment</b><span>Policies de acesso, verificação e recovery; providers; bypass; e configuração pública. Não existem defaults globais de SMTP ou Twilio entre tenants.</span></article>
+          <article class="level permission"><b>Integration client</b><span>Conjunto explícito de permissões server-to-server. Não recebe autoridade por default.</span></article>
+          <article class="level operational"><b>Application client</b><span>Key pública estável e metadados/configuração de cada cliente Android, iOS, Web ou de outra plataforma.</span></article>
+          <article class="level fixed"><b>Protocolo e domínio</b><span>Invariantes como unicidade, idempotência, revisão e separação entre Registration e Product.</span></article>
+        </div>
+      </section>
+
+      <section id="access-policy">
+        <div class="section-head"><p class="kicker">Policy persistida</p><h2><code>AppAccessPolicy</code></h2><p>Pertence a um <code>AppEnvironment</code>. Development, staging e production podem oferecer métodos diferentes mesmo quando usam o mesmo app ou realm.</p></div>
+        <div class="cards">
+          <article class="card blue"><h3><code>IdentifierAccessPolicy</code></h3><p>Existe separadamente para e-mail e telefone.</p><ul><li><code>enabled</code>: o identifier participa do ambiente.</li><li><code>required</code>: o cadastro não pode concluir sem ele.</li><li><code>verification</code>: define se a posse precisa ser comprovada e por qual provider.</li></ul></article>
+          <article class="card green"><h3><code>AuthenticatorAccessPolicy</code></h3><p>Habilita de forma independente os authenticators da fase atual.</p><ul><li><code>password</code></li><li><code>google</code></li><li><code>apple</code></li></ul></article>
+        </div>
+        <div class="notice blue"><strong>Realm e environment cumprem papéis diferentes</strong>O realm é o namespace de identities e de unicidade dos identifiers. O environment escolhe a policy e os clientes autorizados que operam sobre esse realm.</div>
+      </section>
+
+      <section id="manifesto">
+        <div class="section-head"><p class="kicker">Bootstrap</p><h2>Configuração completa da fase atual</h2><p>O manifesto v2 é a configuração inicial única de cada environment: reúne policies, providers e segredos, bypass, configuração pública e os clientes autorizados.</p></div>
+        <p class="code-label">Estrutura resumida do manifesto v2</p>
+        <div class="code-block"><pre><code>{
+  "manifestVersion": 2,
+  "workspace": {
+    "apps": [{
+      "environments": [{
+        "key": "development",
+        "accessPolicy": { "identifiers": { … }, "authenticators": { … } },
+        "verificationPolicy": { … },
+        "recoveryPolicy": { … },
+        "providers": {
+          "smtp": { … },
+          "twilioVerify": { … },
+          "google": { … }
+        },
+        "developmentBypass": { "enabled": false },
+        "publicConfiguration": { "version": 1, "values": { … } },
+        "integrationClients": [{ "key": "api", "permissions": [ … ] }],
+        "applicationClients": [{
+          "key": "android-development",
+          "platform": "android",
+          "applicationId": "com.example.app",
+          "smsRetrieverAppHash": "AbCdEfGhIJK",
+          "publicConfiguration": { … }
+        }]
+      }]
+    }]
+  }
+}</code></pre></div>
+        <div class="notice green"><strong>Modelo público, valores locais</strong>O exemplo versionado usa placeholders. A instalação preenche uma cópia local ignorada pelo Git com SMTP, Twilio e demais valores reais. O bootstrap criptografa o documento do environment com AES-256-GCM antes de persistir no PostgreSQL.</div>
+        <div class="notice blue"><strong>Bootstrap idempotente</strong>Reexecutar o manifesto reaplica a configuração pelas keys naturais. No Compose, <code>access-init</code> também gera ou reutiliza a master key e a credencial <code>bgic_…</code> em volumes privados separados.</div>
+      </section>
+
+      <section id="identifiers">
+        <div class="section-head"><p class="kicker">Parâmetro por parâmetro</p><h2>Policy de e-mail e telefone</h2></div>
+        <div class="table-wrap"><table><thead><tr><th>Campo</th><th>Tipo</th><th>Efeito</th><th>Regra atual</th></tr></thead><tbody>
+          <tr><td><code>email.enabled</code></td><td><code>boolean</code></td><td>Habilita e-mail como identifier no environment.</td><td>Senha, Google e Apple dependem também deste campo.</td></tr>
+          <tr><td><code>email.required</code></td><td><code>boolean</code></td><td>Declara e-mail obrigatório na policy.</td><td>As rotas diretas de e-mail/senha já exigem o campo no payload.</td></tr>
+          <tr><td><code>email.verification.enabled</code></td><td><code>boolean</code></td><td>Exigirá prova de posse do e-mail.</td><td><strong>Não implementado:</strong> o bootstrap rejeita <code>true</code>.</td></tr>
+          <tr><td><code>email.verification.provider</code></td><td><code>string?</code></td><td>Seleciona adapter de entrega/verificação.</td><td>Nenhum provider de e-mail é aceito na fase 1.</td></tr>
+          <tr><td><code>phone.enabled</code></td><td><code>boolean</code></td><td>Inclui telefone na continuação do cadastro.</td><td><code>false</code> evita o step de telefone.</td></tr>
+          <tr><td><code>phone.required</code></td><td><code>boolean</code></td><td>Controla se o flow oferece <code>skipRegistration</code>.</td><td>Só pode ser <code>true</code> quando telefone está habilitado.</td></tr>
+          <tr><td><code>phone.verification.enabled</code></td><td><code>boolean</code></td><td>Escolhe OTP ou coleta sem verificação.</td><td><code>true</code> usa challenge; <code>false</code> usa <code>submitPhone</code>.</td></tr>
+          <tr><td><code>phone.verification.provider</code></td><td><code>string?</code></td><td>Provider do challenge de telefone.</td><td>Quando habilitado, somente <code>twilio-verify</code>.</td></tr>
+        </tbody></table></div>
+      </section>
+
+      <section id="authenticators">
+        <div class="section-head"><p class="kicker">Entrada na identity</p><h2>Authenticators e suas dependências</h2><p>Habilitar o authenticator é necessário, mas não suficiente: as rotas atuais também dependem de e-mail habilitado.</p></div>
+        <div class="table-wrap"><table><thead><tr><th>Campo</th><th>Rota disponível quando</th><th>Comportamento desabilitado</th></tr></thead><tbody>
+          <tr><td><code>authenticators.password</code></td><td><code>email.enabled &amp;&amp; password</code></td><td>Cadastro e login por e-mail/senha retornam <code>authenticator-disabled</code>.</td></tr>
+          <tr><td><code>authenticators.google</code></td><td><code>email.enabled &amp;&amp; google</code></td><td>Login Google é recusado mesmo que o token do provider seja válido.</td></tr>
+          <tr><td><code>authenticators.apple</code></td><td><code>email.enabled &amp;&amp; apple</code></td><td>Login Apple é recusado mesmo que o token do provider seja válido.</td></tr>
+        </tbody></table></div>
+        <div class="notice"><strong>Authenticator social não faz auto-link</strong>Um e-mail coincidente não prova que duas identities são a mesma pessoa. Conflito de unicidade retorna <code>email-taken</code>; vínculo entre providers exige fluxo explícito.</div>
+      </section>
+
+      <section id="combinacoes">
+        <div class="section-head"><p class="kicker">Validação</p><h2>Combinações aceitas e rejeitadas</h2></div>
+        <div class="table-wrap"><table><thead><tr><th>Configuração</th><th>Status</th><th>Motivo</th></tr></thead><tbody>
+          <tr><td>Identifier desabilitado, não obrigatório e sem verificação</td><td>Aceita</td><td>Remove aquele identifier do environment.</td></tr>
+          <tr><td>Identifier desabilitado e <code>required: true</code></td><td>Rejeitada</td><td>Algo ausente não pode ser obrigatório.</td></tr>
+          <tr><td>Identifier desabilitado e verificação habilitada</td><td>Rejeitada</td><td>Não existe identifier para verificar.</td></tr>
+          <tr><td>Verificação desabilitada com <code>provider</code></td><td>Rejeitada</td><td>Provider só pode existir quando a verificação está ligada.</td></tr>
+          <tr><td>Verificação habilitada sem <code>provider</code></td><td>Rejeitada</td><td>Uma verificação ativa precisa selecionar adapter.</td></tr>
+          <tr><td>Telefone verificado por provider diferente de <code>twilio-verify</code></td><td>Rejeitada</td><td>Provider ainda não implementado.</td></tr>
+          <tr><td>Verificação de e-mail habilitada</td><td>Rejeitada</td><td>Contrato futuro; ainda não há execução.</td></tr>
+          <tr><td>Todos os authenticators desabilitados</td><td>Representável</td><td>O domínio aceita, mas o environment fica sem método de entrada da fase atual.</td></tr>
+        </tbody></table></div>
+      </section>
+
+      <section id="verification-policy">
+        <div class="section-head"><p class="kicker">Limites por environment</p><h2><code>AppVerificationPolicy</code> e <code>AppRecoveryPolicy</code></h2><p>Os limites não são mais configuração global da instância. Cada environment declara seus próprios valores no manifesto v2, sem herdar SMTP, Twilio ou defaults de outro tenant.</p></div>
+        <h3><code>verificationPolicy</code></h3>
+        <div class="table-wrap"><table><thead><tr><th>Chave</th><th>Exemplo</th><th>Uso</th><th>Validação</th></tr></thead><tbody>
+          <tr><td><code>codeLifetimeMinutes</code></td><td><code>10</code></td><td>Validade do código de verificação.</td><td>Maior que zero.</td></tr>
+          <tr><td><code>maxAttempts</code></td><td><code>5</code></td><td>Tentativas do OTP.</td><td>Maior que zero.</td></tr>
+          <tr><td><code>maxRequestsPerHourPerIdentity</code></td><td><code>5</code></td><td>Solicitações recentes por identity.</td><td>Maior que zero.</td></tr>
+          <tr><td><code>resendCooldownSeconds</code></td><td><code>120</code></td><td>Espera mínima antes de reenviar.</td><td>Zero ou maior.</td></tr>
+          <tr><td><code>phoneConflictLifetimeMinutes</code></td><td><code>15</code></td><td>Validade do conflito de telefone.</td><td>Maior que zero.</td></tr>
+          <tr><td><code>phoneConflictEmailMaxAttempts</code></td><td><code>5</code></td><td>Tentativas de provar conhecimento do e-mail anterior.</td><td>Maior que zero.</td></tr>
+        </tbody></table></div>
+        <h3 style="margin-top:1.35rem"><code>recoveryPolicy</code></h3>
+        <div class="table-wrap"><table><thead><tr><th>Chave</th><th>Uso</th></tr></thead><tbody>
+          <tr><td><code>passwordRecoveryUrl</code></td><td>URL usada no recovery por e-mail; pode ser <code>null</code> quando esse canal não está configurado.</td></tr>
+          <tr><td><code>tokenLifetimeMinutes</code> / <code>maxRequestsPerHourPerIdentity</code></td><td>Validade e limite do recovery por e-mail.</td></tr>
+          <tr><td><code>phoneCodeLifetimeMinutes</code> / <code>phoneCodeMaxAttempts</code></td><td>Validade e tentativas do código no recovery por telefone.</td></tr>
+          <tr><td><code>phoneMaxRequestsPerHourPerIdentity</code> / <code>phoneResendCooldownSeconds</code></td><td>Rate limit e cooldown do canal de telefone.</td></tr>
+        </tbody></table></div>
+        <p class="code-label" style="margin-top:1.35rem">Bypass local do environment</p>
+        <div class="code-block"><pre><code>"developmentBypass": {
+  "enabled": false
+}</code></pre></div>
+        <div class="notice red"><strong>Bypass é configuração local de desenvolvimento</strong>Quando habilitado, <code>phone</code> e <code>code</code> precisam estar no manifesto local ignorado pelo Git. Eles não pertencem à configuração pública e nunca são enviados ao aplicativo.</div>
+        <div class="notice blue"><strong>Policy e provider são validados juntos</strong>Telefone verificado exige <code>providers.twilioVerify</code>; recovery por e-mail exige URL e <code>providers.smtp</code> no mesmo environment.</div>
+      </section>
+
+      <section id="efeitos">
+        <div class="section-head"><p class="kicker">Policy → comportamento</p><h2>Como a configuração muda o AccessFlow</h2></div>
+        <div class="matrix">
+          <article><h3>Telefone desligado</h3><p>O cadastro pode concluir sem abrir <code>collectPhone</code>. Não existe ação de telefone.</p></article>
+          <article><h3>Telefone sem verificação</h3><p>O flow oferece <code>submitPhone</code>. Número já usado retorna <code>phone-already-in-use</code>; não abre resolução.</p></article>
+          <article><h3>Telefone com verificação</h3><p>O flow oferece request, confirmação e reenvio. Conflito após OTP pode abrir <code>resolvePhoneConflict</code>.</p></article>
+          <article><h3>Telefone opcional</h3><p><code>skipRegistration</code> acompanha coleta, OTP e conflito enquanto a policy permitir.</p></article>
+          <article><h3>Telefone obrigatório</h3><p>O flow omite <code>skipRegistration</code>. A UI não deve inventar uma saída.</p></article>
+          <article><h3>Authenticator desligado</h3><p>A rota correspondente falha de forma explícita; o frontend não deve oferecer aquele método.</p></article>
+        </div>
+        <div class="notice blue"><strong>A ação oferecida é a autoridade final</strong>Mesmo conhecendo a policy, o aplicativo executa somente IDs e tipos presentes em <code>flow.actions</code>. A policy explica o comportamento; o snapshot autoriza a ação.</div>
+      </section>
+
+      <section id="permissions">
+        <div class="section-head"><p class="kicker">Integration client</p><h2>Permissões não são <code>AppAccessPolicy</code></h2><p>Cada backend recebe somente as capacidades server-to-server declaradas. Valores desconhecidos são rejeitados e nada é acrescentado automaticamente.</p></div>
+        <div class="table-wrap"><table><thead><tr><th>Permissão definida</th><th>Autoridade</th><th>Disponibilidade atual</th></tr></thead><tbody>
+          <tr><td><code>access:flows:execute</code></td><td>Cadastro, login social/direto e AccessFlow.</td><td>Usada pela API do produto.</td></tr>
+          <tr><td><code>access:sessions:introspect</code></td><td>Introspecção de sessão opaca.</td><td>Usada pela API do produto.</td></tr>
+          <tr><td><code>access:sessions:revoke-current</code></td><td>Revogação da sessão apresentada.</td><td>Usada pelo logout do produto.</td></tr>
+          <tr><td><code>access:identities:read</code></td><td>Leitura administrativa de identities.</td><td>Definida no catálogo; não pertence ao client <code>api</code> do exemplo.</td></tr>
+          <tr><td><code>access:identities:block</code></td><td>Bloqueio administrativo.</td><td>Definida no catálogo; sem endpoint público atual no Access API.</td></tr>
+          <tr><td><code>access:identities:unblock</code></td><td>Desbloqueio administrativo.</td><td>Definida no catálogo; sem endpoint público atual no Access API.</td></tr>
+          <tr><td><code>access:sessions:revoke-all</code></td><td>Revogação global das sessões da identity.</td><td>Definida no catálogo; sem endpoint público atual no Access API.</td></tr>
+        </tbody></table></div>
+        <div class="notice"><strong>Separe operação de produto e administração</strong>O integration client do BFF não deve receber permissões administrativas “para o futuro”. Um backoffice terá identidade de máquina própria e escopo explícito.</div>
+      </section>
+
+      <section id="invariantes">
+        <div class="section-head"><p class="kicker">Não configurável</p><h2>Regras que nenhuma policy pode enfraquecer</h2><p>Estas são garantias do domínio ou do protocolo. Não devem aparecer como checkbox de environment.</p></div>
+        <div class="cards">
+          <article class="card blue"><h3>Identidade e vínculo</h3><ul><li><code>IdentityId</code> é o subject estável.</li><li>E-mail e telefone são identifiers mutáveis.</li><li>Identifiers são únicos por scheme dentro do realm.</li><li>Coincidência de e-mail não faz auto-link.</li><li>A fase 1 não cria e-mail alternativo.</li></ul></article>
+          <article class="card green"><h3>Sessão e cliente</h3><ul><li>Registration não autoriza o produto.</li><li>Product só nasce após conclusão válida.</li><li>Credencial de integração nunca entra no aplicativo.</li><li>A <code>applicationClientKey</code> precisa existir no environment autenticado.</li><li>UUID interno de <code>ApplicationClient</code> nunca entra no contrato público.</li><li>Falha operacional não prova logout.</li></ul></article>
+          <article class="card brass"><h3>Flow e concorrência</h3><ul><li><code>requestId</code> é idempotente por payload.</li><li><code>revision</code> impede ação sobre estado antigo.</li><li>Somente <code>flow.actions</code> autoriza execução.</li><li>Ownership é revalidado dentro da transação.</li></ul></article>
+          <article class="card"><h3>Resolução</h3><ul><li>A regra da fase 1 ainda é fixa no código.</li><li>Telefone + conhecimento do e-mail anterior autoriza somente a transferência do telefone.</li><li>Não há merge ou recuperação silenciosa.</li></ul><p><a href="/docs/access/resolucao-de-identidade/">Ler resolução de identidade →</a></p></article>
+        </div>
+      </section>
+
+      <section id="mudancas">
+        <div class="section-head"><p class="kicker">Operação</p><h2>Alterar policy sem criar comportamento ambíguo</h2></div>
+        <ol class="checklist">
+          <li>Altere a cópia local do manifesto do environment correto; mantenha no Git somente o modelo com placeholders.</li>
+          <li>Valide policies, providers e application clients contra a versão instalada do Access.</li>
+          <li>Reexecute o bootstrap: a configuração completa é reaplicada ao environment existente pelas keys naturais.</li>
+          <li>Confirme que o BFF possui apenas as permissões necessárias; isso é configuração separada.</li>
+          <li>Consulte a configuração pública pela <code>applicationClientKey</code> e continue obedecendo ao snapshot do flow.</li>
+          <li>Teste cadastro novo, sessão Registration pendente, login existente e conflito de telefone no ambiente alterado.</li>
+        </ol>
+        <div class="notice blue"><strong>Versão do manifesto não é histórico da policy</strong><code>manifestVersion: 2</code> versiona o formato do documento. <code>publicConfiguration.version</code> versiona o contrato público consumido pelos clientes; nenhum dos dois cria histórico automático das policies.</div>
+      </section>
+
+      <section id="fase-1">
+        <div class="section-head"><p class="kicker">Contrato vigente e roadmap</p><h2>O que pode ser configurado hoje</h2></div>
+        <div class="cards">
+          <article class="card green"><h3>Implementado</h3><ul><li>E-mail como identifier.</li><li>Senha, Google e Apple por environment.</li><li>Telefone desligado, opcional ou obrigatório.</li><li>Telefone sem verificação ou com Twilio Verify.</li><li>Limites de verificação e recovery por environment.</li><li>Providers e segredos no documento criptografado do environment.</li><li>Permissões explícitas do integration client.</li><li>Application clients com key pública estável e configuração pública versionada.</li></ul></article>
+          <article class="card brass"><h3>Futuro</h3><ul><li>Verificação de e-mail e seus adapters.</li><li>Login sem senha por magic link ou código único.</li><li>Providers adicionais de telefone.</li><li>Passkeys, 2FA e step-up por ação.</li><li><code>ResolutionPolicy</code> versionada e configurável.</li></ul></article>
+        </div>
+        <div class="notice"><strong>Ativar contrato futuro não antecipa implementação</strong>Na versão atual, o bootstrap rejeita verificação de e-mail e provider de telefone desconhecido. Não existe fallback silencioso nem simulação de sucesso.</div>
+      </section>
+
+      <footer>Fonte verificada em <code>AppAccessPolicy</code>, <code>AppVerificationPolicy</code>, <code>AppRecoveryPolicy</code>, <code>ApplicationClient</code>, permissões, bootstrap e serviços de acesso. Atualizado em 04/09/2026.</footer>
+    </div></main>
+  </div>
+
+  <details class="contact-fab"><summary>Chat Bullgate</summary><div class="contact-panel"><div class="chat-head"><b>Assistente Bullgate</b><span>prévia</span></div><div class="chat-log" aria-live="polite"><div class="chat-message bot"><p>Olá! O assistente ainda está sendo preparado. Enquanto isso, fale comigo:</p><div class="contact-card"><strong>Marco · Bullgate</strong><div class="contact-links"><a href="https://wa.me/5511976695464" target="_blank" rel="noopener">WhatsApp</a><a href="mailto:acp.marco@outlook.com">E-mail</a></div></div></div></div><form class="chat-composer"><textarea name="message" required aria-label="Mensagem" placeholder="Escreva uma mensagem…"></textarea><button type="submit" aria-label="Enviar mensagem">↑</button></form><p class="chat-note">Prévia: nenhuma mensagem é enviada por este campo.</p></div></details>
+  <script>(function(){var mobile=document.getElementById('mobile-index');if(mobile){mobile.querySelectorAll('a[href^="#"]').forEach(function(link){link.addEventListener('click',function(){mobile.removeAttribute('open')})})}document.querySelectorAll('.chat-composer').forEach(function(form){form.addEventListener('submit',function(event){event.preventDefault();var field=form.querySelector('[name="message"]');var log=form.parentElement.querySelector('.chat-log');var message=field?field.value.trim():'';if(!field||!log||!message)return;var userMessage=document.createElement('div');userMessage.className='chat-message user';userMessage.textContent=message;log.appendChild(userMessage);field.value='';var botMessage=document.createElement('div');botMessage.className='chat-message bot';botMessage.textContent='Este chat ainda não está conectado. Para eu receber sua mensagem, use o WhatsApp ou o e-mail na primeira mensagem.';log.appendChild(botMessage);log.scrollTop=log.scrollHeight;field.focus()})})})();</script>
+</body>
+</html>

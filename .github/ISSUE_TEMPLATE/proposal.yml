@@ -1,0 +1,80 @@
+name: Proposta de melhoria
+description: Proponha uma nova página, exemplo ou evolução da organização da documentação.
+title: "[Proposta] "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Descreva primeiro o problema de quem lê ou integra. Mudanças de comportamento, arquitetura, escopo ou identidade visual precisam ser discutidas antes de uma implementação extensa.
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Área principal
+      options:
+        - Site e visão geral do produto
+        - Índice da documentação técnica
+        - Integração do Bullgate Access
+        - Políticas
+        - Resolução de identidade
+        - Erros e mensagens
+        - Processo do repositório
+        - Nova área
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Qual problema precisa ser resolvido?
+      description: Explique quem é afetado, em qual momento e por que o conteúdo atual não resolve.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposta
+      description: Descreva a mudança e o resultado que ela produziria para quem usa a documentação.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: product-status
+    attributes:
+      label: Estado da capacidade descrita
+      description: Se a proposta tratar de uma funcionalidade, classifique-a honestamente.
+      options:
+        - Não se aplica; é uma mudança editorial ou de processo
+        - Implementada na versão atual
+        - Decidida, mas ainda não implementada
+        - Possibilidade futura ainda em desenho
+        - Não sei; precisa ser investigado
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidências ou referências
+      description: Para comportamento implementado, informe código, contrato ou outra fonte verificável.
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternativas consideradas
+      description: Opcional. Registre outras soluções e os efeitos relevantes de cada uma.
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Confirmações
+      options:
+        - label: Pesquisei as issues existentes e não encontrei uma proposta equivalente.
+          required: true
+        - label: A proposta não contém credenciais, dados pessoais ou detalhes de vulnerabilidades.
+          required: true
+        - label: Li e concordo em seguir o CODE_OF_CONDUCT.md.
+          required: true

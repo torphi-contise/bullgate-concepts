@@ -1,0 +1,2317 @@
+<title>Bullgate — plataforma e documentação técnica</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;650;800&display=swap">
+<style>
+  :root {
+    color-scheme: only light;
+
+    /* azul-marinho: a cor estrutural da marca e dos paineis */
+    --gate: #1F4B99;
+    --gate-ink: #163A78;
+    --gate-soft: #EAF1FB;
+    --gate-border: #C2D5EE;
+
+    /* acento quente, usado com parcimonia (palavra-chave, wordmark, realce) */
+    --brass: #B4560E;
+    --brass-ink: #92440A;
+    --brass-soft: #FCEEE4;
+    --brass-border: #EFCBB0;
+
+    /* semanticas de estado */
+    --live: #157A4E;
+    --live-ink: #0F5F3C;
+    --live-soft: #E8F6EF;
+    --live-border: #B5DEC8;
+
+    --pend: #9A6300;
+    --pend-ink: #7C4F00;
+    --pend-soft: #FCF3E1;
+    --pend-border: #E9D4A4;
+
+    --future: #5A6675;
+    --future-soft: #F0F2F5;
+    --future-border: #D4DAE2;
+
+    /* neutros levemente frios, para casar com o azul */
+    --ink: #141920;
+    --ink-2: #39424F;
+    --muted: #697382;
+    --hair: #DFE4EA;
+    --surface: #FFFFFF;
+    --canvas: #F5F7FA;
+    --raise: #FAFBFD;
+
+    /* paineis de destaque (antes escuros, agora claros) */
+    --codebg: #EEF2F8;
+    --code-ink: #2C3646;
+
+    /* telas desenhadas: app do usuario */
+    --app: #1F4B99;
+    --app-ink: #163A78;
+    --app-soft: #EAF1FB;
+
+    --mono: ui-monospace, "Cascadia Code", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+    --sans: "Segoe UI Variable Text", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, system-ui, sans-serif;
+    --display: "Archivo", "Segoe UI Variable Display", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, system-ui, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+  /* Sem isto o Chromium do Android infla o texto por conta propria (font
+     boosting) e ignora os tamanhos definidos aqui. */
+  html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+  body { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+  html, body { width: 100%; max-width: 100%; overflow-x: hidden; overflow-x: clip; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+  body {
+    margin: 0;
+    background: var(--canvas);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 17px;
+    line-height: 1.68;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ============ shell: menu lateral + conteudo ============ */
+  .shell { display: grid; grid-template-columns: 18rem minmax(0, 1fr); width: 100%; max-width: 92rem; min-width: 0; margin: 0 auto; }
+
+  .side {
+    position: sticky; top: 0; align-self: start;
+    height: 100vh; overflow-y: auto;
+    padding: 1.65rem 1.2rem 2rem 1.5rem;
+    border-right: 1px solid var(--hair);
+    background: #f8faff;
+  }
+  .brand { display: flex; align-items: center; gap: 0.6rem; text-decoration: none; }
+  .brand .bars {
+    width: 1.5rem; height: 0.55rem; border-radius: 1px; flex-shrink: 0;
+    background: repeating-linear-gradient(90deg, var(--gate) 0 4px, transparent 4px 7px, var(--gate) 7px 11px, transparent 11px 14px, var(--brass) 14px 18px, transparent 18px 21px);
+  }
+  .brand b { font-family: var(--display); font-weight: 800; font-size: 1rem; letter-spacing: 0.02em; text-transform: uppercase; color: var(--ink); }
+  .brand b .gate { color: var(--brass); }
+
+  .side nav { display: flex; flex-direction: column; gap: 0.12rem; }
+  .navpart {
+    font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--gate); margin: 1rem 0 0.3rem; padding-left: 0.65rem;
+  }
+  .side nav a, .mobilebar nav a {
+    display: block; padding: 0.36rem 0.65rem;
+    font-size: 0.9rem; line-height: 1.35;
+    color: var(--ink-2); text-decoration: none;
+    border-left: 2px solid transparent; border-radius: 0 4px 4px 0;
+  }
+  .side nav a:hover { color: var(--gate-ink); background: var(--gate-soft); border-left-color: var(--gate); }
+  .side nav a.on { color: var(--gate-ink); background: var(--live-soft); border-left-color: var(--live); font-weight: 700; }
+  .side .note { margin-top: 1.4rem; padding-top: 1rem; border-top: 1px solid var(--hair); font-size: 0.8rem; }
+
+  /* barra mobile */
+  .mobilebar { display: none; }
+
+  main { width: 100%; min-width: 0; padding: 0 clamp(1.25rem, 4vw, 3rem) 5rem; }
+  .measure { width: 100%; max-width: 50rem; min-width: 0; }
+
+  img, svg, video { max-width: 100%; }
+
+  section { scroll-margin-top: 1.2rem; }
+
+  @media (max-width: 62rem) {
+    .shell { display: block; }
+    .side { display: none; }
+    .mobilebar {
+      display: block; position: sticky; top: 0; z-index: 60;
+      background: rgba(248, 250, 255, 0.97); border-bottom: 1px solid var(--hair); backdrop-filter: blur(10px);
+    }
+    .mobilebar details { max-width: 50rem; margin: 0 auto; }
+    .mobilebar summary {
+      display: flex; align-items: center; gap: 0.6rem; cursor: pointer;
+      min-width: 0; padding: 0.78rem 1.2rem; list-style: none;
+    }
+    .mobilebar summary::-webkit-details-marker { display: none; }
+    .mobilebar summary::after { content: "menu"; margin-left: auto; font-family: var(--mono); font-size: 0.72rem; color: var(--gate-ink); border: 1px solid #afc6ed; background: var(--gate-soft); border-radius: 999px; padding: 0.2rem 0.55rem; }
+    .mobilebar details[open] summary::after { content: "fechar"; }
+    .mobilebar nav { max-height: calc(100vh - 3.6rem); overflow-y: auto; padding: 0.35rem 1.2rem 1rem; display: flex; flex-direction: column; gap: 0.1rem; border-top: 1px solid var(--hair); }
+    .mobilebar nav a.on { color: var(--live); font-weight: 700; }
+    section { scroll-margin-top: 4.2rem; }
+  }
+
+  /* ============ tipografia ============ */
+  h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; }
+  h1 { font-size: clamp(2.5rem, 6.5vw, 3.9rem); line-height: 0.98; letter-spacing: -0.03em; font-weight: 800; text-transform: uppercase; }
+  h1 .gate { color: var(--brass); }
+  h2 { font-size: clamp(1.4rem, 3vw, 1.85rem); line-height: 1.14; letter-spacing: -0.022em; font-weight: 800; }
+  h3 { font-size: 1.03rem; line-height: 1.32; letter-spacing: -0.01em; font-weight: 650; }
+  h3 .chip { vertical-align: 0.12em; margin-left: 0.5rem; }
+
+  p { margin: 0; }
+  strong { font-weight: 650; color: var(--ink); }
+
+  .eyebrow {
+    font-family: var(--mono); font-size: 0.76rem; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--muted); margin: 0;
+  }
+  .eyebrow b { color: var(--gate); font-weight: 400; }
+
+  .deck { font-size: 1.12rem; line-height: 1.55; color: var(--ink-2); max-width: 42rem; }
+  .note { font-size: 0.87rem; line-height: 1.55; color: var(--muted); max-width: 40rem; }
+
+  a { color: var(--gate-ink); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+  a:focus-visible { outline: 2px solid var(--gate); outline-offset: 3px; border-radius: 2px; }
+
+  /* ============ aviso preliminar ============ */
+  .prelim {
+    display: flex; flex-wrap: wrap; gap: 0.4rem 0.8rem; align-items: baseline;
+    margin-top: 1rem; padding: 0.65rem 0.95rem;
+    background: var(--pend-soft); border: 1px solid var(--pend-border); border-radius: 4px;
+  }
+  .prelim .tag {
+    font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--pend-ink); border: 1px solid var(--pend-border); border-radius: 999px;
+    padding: 0.25em 0.65em; white-space: nowrap; background: var(--surface);
+  }
+  .prelim time { font-family: var(--mono); font-size: 0.72rem; color: var(--pend-ink); }
+
+  /* ============ manifesto de abertura ============ */
+  .manifesto {
+    display: flex; flex-direction: column; gap: 1.3rem;
+    margin-top: clamp(1.4rem, 4vw, 2.6rem);
+    padding: clamp(1.8rem, 5vw, 3rem);
+    background: var(--surface); border: 1px solid var(--hair);
+    border-top: 4px solid var(--gate); border-radius: 6px;
+  }
+  .manifesto .eyebrow { color: var(--gate); }
+  .manifesto h2 {
+    font-size: clamp(1.9rem, 5.2vw, 3rem); line-height: 1.02; letter-spacing: -0.028em;
+    font-weight: 800; text-transform: uppercase; color: var(--ink);
+  }
+  .manifesto h2 em { font-style: normal; color: var(--brass); }
+  .manifesto p { font-size: 0.98rem; line-height: 1.66; color: var(--ink-2); max-width: 42rem; }
+  .manifesto .claim {
+    font-family: var(--display); font-weight: 650;
+    font-size: clamp(1.08rem, 2.6vw, 1.32rem); line-height: 1.4; letter-spacing: -0.012em;
+    color: var(--gate-ink); max-width: 36rem;
+    padding-left: 0.9rem; border-left: 3px solid var(--brass);
+  }
+  .manifesto .claim b { color: var(--ink); font-weight: 800; }
+  .claim .ast { color: var(--brass-ink); text-decoration: none; font-weight: 800; }
+  /* .manifesto p vence .fineprint por especificidade — o seletor precisa
+     carregar as duas classes, senao o tamanho aqui nao vale nada. */
+  .manifesto p.fineprint {
+    font-size: 0.72rem; line-height: 1.5; letter-spacing: 0.005em;
+    color: var(--muted); padding-left: 0.9rem; max-width: 34rem;
+    margin-top: -0.7rem;
+  }
+  .manifesto p strong { color: var(--ink); font-weight: 650; }
+  .manifesto .kicker { font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gate); }
+
+  .doors { display: flex; flex-wrap: wrap; gap: 0.8rem; }
+  .doors a {
+    flex: 1 1 15rem; display: flex; flex-direction: column; gap: 0.25rem;
+    padding: 1rem 1.2rem; border-radius: 4px; text-decoration: none; border: 1px solid;
+  }
+  .doors a b { font-family: var(--display); font-weight: 800; font-size: 1.05rem; letter-spacing: -0.012em; }
+  .doors a span { font-size: 0.82rem; line-height: 1.4; }
+  .doors a.d1 { background: var(--gate-soft); border-color: var(--gate-border); }
+  .doors a.d1 b { color: var(--gate-ink); }
+  .doors a.d1 span { color: var(--gate-ink); opacity: 0.85; }
+  .doors a.d2 { background: var(--brass-soft); border-color: var(--brass-border); }
+  .doors a.d2 b { color: var(--brass-ink); }
+  .doors a.d2 span { color: var(--brass-ink); opacity: 0.85; }
+  .doors a:hover b { text-decoration: underline; text-underline-offset: 3px; }
+
+  .integrate-cta {
+    align-self: flex-start; display: inline-flex; align-items: center; gap: 0.75rem;
+    padding: 0.78rem 1.05rem; border: 1px solid var(--live-border); border-radius: 4px;
+    background: var(--live); color: #fff; font-family: var(--display); font-size: 0.98rem;
+    font-weight: 750; text-decoration: none; box-shadow: 0 6px 18px rgba(20, 122, 84, 0.16);
+  }
+  .integrate-cta:hover { background: var(--live-ink); color: #fff; }
+  .integrate-cta span { font-family: var(--mono); }
+
+  .contact-fab { position: fixed; right: 1.1rem; bottom: 1.1rem; z-index: 90; }
+  .contact-fab summary {
+    display: inline-flex; align-items: center; gap: 0.5rem; min-height: 3rem; padding: 0.7rem 1rem;
+    border: 1px solid var(--gate); border-radius: 999px; background: var(--gate); color: #fff;
+    font-family: var(--display); font-size: 0.9rem; font-weight: 750; cursor: pointer;
+    box-shadow: 0 10px 28px rgba(23, 42, 75, 0.22); list-style: none;
+  }
+  .contact-fab summary::-webkit-details-marker { display: none; }
+  .contact-fab summary::before { content: "?"; display: grid; width: 1.35rem; height: 1.35rem; place-items: center; border: 1px solid rgba(255,255,255,.7); border-radius: 50%; font-family: var(--mono); }
+  .contact-fab[open] summary { background: var(--gate-ink); }
+  .contact-panel {
+    position: absolute; right: 0; bottom: calc(100% + 0.65rem); width: min(23rem, calc(100vw - 2.2rem));
+    max-height: min(35rem, calc(100vh - 6rem)); overflow-y: auto; padding: 1rem;
+    border: 1px solid var(--hair); border-top: 3px solid var(--brass);
+    border-radius: 6px; background: var(--surface); box-shadow: 0 16px 40px rgba(23, 42, 75, 0.18);
+  }
+  .chat-head { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--hair); }
+  .chat-head b { font-family: var(--display); font-size: 1.05rem; }
+  .chat-head span { color: var(--live-ink); font-family: var(--mono); font-size: 0.72rem; }
+  .chat-log { display: flex; flex-direction: column; gap: 0.7rem; max-height: 19rem; overflow-y: auto; padding: 0.9rem 0.15rem 0.9rem 0; }
+  .chat-message { max-width: 88%; padding: 0.75rem 0.85rem; font-size: 0.9rem; line-height: 1.5; overflow-wrap: anywhere; }
+  .chat-message.bot { align-self: flex-start; border-radius: 4px 12px 12px 12px; background: var(--gate-soft); color: var(--gate-ink); }
+  .chat-message.user { align-self: flex-end; border-radius: 12px 4px 12px 12px; background: var(--gate); color: #fff; }
+  .chat-message p { margin: 0; }
+  .contact-card { margin-top: 0.7rem; padding-top: 0.65rem; border-top: 1px solid var(--gate-border); }
+  .contact-card strong { display: block; font-family: var(--display); }
+  .contact-links { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-top: 0.55rem; }
+  .contact-links a { padding: 0.38rem 0.55rem; border: 1px solid var(--gate-border); border-radius: 4px; background: var(--surface); color: var(--gate-ink); font-size: 0.78rem; text-decoration: none; }
+  .chat-composer { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 0.5rem; padding-top: 0.8rem; border-top: 1px solid var(--hair); }
+  .chat-composer textarea { width: 100%; min-height: 3rem; max-height: 7rem; resize: vertical; border: 1px solid var(--hair); border-radius: 6px; background: var(--canvas); color: var(--ink); font: 400 1rem/1.35 var(--sans); padding: 0.72rem; }
+  .chat-composer textarea:focus { outline: 2px solid var(--gate-border); border-color: var(--gate); }
+  .chat-composer button { width: 3rem; height: 3rem; border: 1px solid var(--live); border-radius: 6px; background: var(--live); color: #fff; font-family: var(--display); font-size: 1.25rem; font-weight: 750; cursor: pointer; }
+  .chat-composer button:hover { background: var(--live-ink); }
+  .chat-note { margin: 0.55rem 0 0; color: var(--muted); font-family: var(--mono); font-size: 0.68rem; line-height: 1.4; }
+
+  /* ---------- telas desenhadas ---------- */
+  .shots { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 250px)); gap: 1.6rem 1.4rem; justify-content: center; }
+  figure.shot { margin: 0; display: flex; flex-direction: column; gap: 0.65rem; }
+  figure.shot svg { width: 100%; height: auto; display: block; font-family: var(--sans); }
+  figure.shot figcaption { font-size: 0.8rem; line-height: 1.45; color: var(--muted); }
+  figure.shot figcaption b { display: block; font-size: 0.87rem; font-weight: 650; color: var(--ink); margin-bottom: 0.15rem; }
+  .shots.desk { grid-template-columns: 1fr; justify-items: center; }
+  .shots.desk figure.shot { max-width: 34rem; width: 100%; }
+
+  header.hero { display: flex; flex-direction: column; gap: 1.5rem; padding: clamp(2.6rem, 7vw, 4.8rem) 0 clamp(2rem, 4vw, 2.8rem); }
+  .gatebars {
+    height: 10px; width: 9.5rem; border-radius: 2px;
+    background: repeating-linear-gradient(90deg,
+      var(--gate) 0 10px, transparent 10px 18px,
+      var(--gate) 18px 28px, transparent 28px 36px);
+    position: relative; opacity: 0.9;
+  }
+  .gatebars::after {
+    content: ""; position: absolute; inset: 0 0 0 auto; width: 28px;
+    background: repeating-linear-gradient(90deg, var(--brass) 0 10px, transparent 10px 18px);
+    border-radius: 2px;
+  }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 0.8rem 1.4rem; }
+  .legend div { display: flex; align-items: baseline; gap: 0.55rem; font-size: 0.85rem; color: var(--muted); }
+
+  .chip {
+    display: inline-flex; align-items: center; gap: 0.42em;
+    font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 0.3em 0.66em; border-radius: 999px; border: 1px solid; white-space: nowrap;
+  }
+  .chip::before { content: ""; width: 0.42em; height: 0.42em; border-radius: 50%; background: currentColor; }
+  .chip.live   { color: var(--live-ink); border-color: var(--live-border); background: var(--live-soft); }
+  .chip.pend   { color: var(--pend-ink); border-color: var(--pend-border); background: var(--pend-soft); }
+  .chip.future { color: var(--future); border-color: var(--future-border); background: var(--future-soft); }
+  .chip.plat   { color: var(--gate-ink); border-color: var(--gate-border); background: var(--gate-soft); }
+
+  section { display: flex; flex-direction: column; min-width: 0; gap: 1.35rem; padding: clamp(2.6rem, 5vw, 3.6rem) 0; border-top: 1px solid var(--hair); }
+  section > * { min-width: 0; }
+  section.part { border-top: 3px solid var(--gate); }
+  .head { display: flex; flex-direction: column; gap: 0.55rem; }
+  .prose { display: flex; flex-direction: column; gap: 0.95rem; }
+  .prose p { max-width: 41rem; }
+
+  .symptoms { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+  .symptom {
+    display: flex; flex-direction: column; gap: 0.5rem; padding: 1.15rem 1.2rem;
+    border: 1px solid var(--hair); border-left: 3px solid var(--gate);
+    border-radius: 4px; background: var(--surface);
+  }
+  .symptom b { font-size: 0.93rem; font-weight: 650; letter-spacing: -0.01em; }
+  .symptom p { font-size: 0.875rem; line-height: 1.5; color: var(--ink-2); }
+
+  /* ---------- mitos ---------- */
+  .myths { display: flex; flex-direction: column; gap: 1rem; }
+  .myth { display: flex; flex-direction: column; gap: 0.65rem; padding: 1.15rem 1.25rem; background: var(--surface); border: 1px solid var(--hair); border-radius: 4px; }
+  .myth .said, .myth .truth { display: flex; gap: 0.75rem; align-items: baseline; }
+  .myth .tag {
+    flex-shrink: 0; font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.1em;
+    text-transform: uppercase; padding: 0.3em 0.62em; border-radius: 999px; border: 1px solid;
+  }
+  .myth .said .tag { color: var(--future); border-color: var(--future-border); background: var(--future-soft); }
+  .myth .truth .tag { color: var(--live-ink); border-color: var(--live-border); background: var(--live-soft); }
+  .myth .said p { font-size: 0.97rem; font-style: italic; color: var(--muted); }
+  .myth .truth p { font-size: 0.92rem; line-height: 1.55; color: var(--ink-2); }
+  .myth p { max-width: 39rem; }
+  @media (max-width: 33rem) {
+    .myth .said, .myth .truth { flex-direction: column; gap: 0.35rem; }
+  }
+
+  .recipe {
+    display: flex; flex-direction: column; min-width: 0; gap: 0.7rem; padding: 1.15rem 1.3rem;
+    background: var(--gate-soft); border: 1px solid var(--gate-border); border-radius: 4px;
+  }
+  .recipe .eyebrow { color: var(--gate-ink); }
+  .recipe ul { margin: 0; padding: 0 0 0 1.05rem; display: flex; flex-direction: column; gap: 0.5rem; }
+  .recipe li { font-size: 0.89rem; line-height: 1.54; color: var(--ink-2); max-width: 40rem; overflow-wrap: anywhere; }
+  .recipe li::marker { color: var(--gate); }
+  .recipe li strong { color: var(--ink); }
+
+  .fromcode {
+    display: flex; flex-direction: column; gap: 0.75rem; padding: 1.15rem 1.3rem;
+    background: var(--codebg); border-radius: 4px;
+    border: 1px solid var(--gate-border); border-left: 3px solid var(--gate);
+  }
+  .fromcode .eyebrow { color: var(--gate-ink); }
+  .fromcode p { font-size: 0.89rem; line-height: 1.6; color: var(--code-ink); max-width: 42rem; }
+  .fromcode strong { color: var(--ink); font-weight: 650; }
+  .fromcode code, .mono { font-family: var(--mono); font-size: 0.82em; }
+  .fromcode code { color: var(--brass-ink); background: transparent; }
+  code, .mono { white-space: normal; overflow-wrap: anywhere; word-break: break-word; }
+
+  pre.flow {
+    width: 100%; max-width: 100%; min-width: 0; margin: 0; padding: 0.9rem 1.1rem; overflow-x: auto;
+    font-family: var(--mono); font-size: 0.78rem; line-height: 1.7;
+    color: var(--code-ink); background: var(--codebg);
+    border-radius: 4px; border: 1px solid var(--gate-border);
+  }
+  pre.flow b { color: var(--brass-ink); font-weight: 600; }
+  pre.flow code, .tech-code code { white-space: pre; overflow-wrap: normal; word-break: normal; }
+
+  .journey {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.6rem;
+    padding: 1.1rem 1.2rem; background: var(--surface); border: 1px solid var(--hair);
+    border-radius: 4px; font-size: 0.86rem;
+  }
+  .journey i { font-style: normal; color: var(--muted); }
+  .journey b {
+    font-weight: 550; padding: 0.3em 0.7em; border-radius: 999px;
+    background: var(--gate-soft); color: var(--gate-ink); border: 1px solid var(--gate-border);
+    font-family: var(--mono); font-size: 0.78rem;
+  }
+  .journey b.hit { background: var(--live-soft); color: var(--live-ink); border-color: var(--live-border); }
+
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(215px, 1fr)); gap: 1rem; }
+  .card { display: flex; flex-direction: column; gap: 0.5rem; padding: 1.1rem 1.2rem; background: var(--surface); border: 1px solid var(--hair); border-radius: 4px; }
+  .card .eyebrow { font-size: 0.72rem; }
+  .card p { font-size: 0.88rem; line-height: 1.55; color: var(--ink-2); }
+  .card .rule { font-family: var(--mono); font-size: 0.72rem; line-height: 1.6; color: var(--gate-ink); background: var(--gate-soft); border: 1px solid var(--gate-border); border-radius: 3px; padding: 0.5rem 0.65rem; }
+
+  .board { display: flex; flex-direction: column; border: 1px solid var(--hair); border-radius: 4px; overflow: hidden; background: var(--surface); }
+  .row { display: grid; grid-template-columns: 10rem 1fr; gap: 0.4rem 1.2rem; padding: 0.9rem 1.2rem; border-bottom: 1px solid var(--hair); align-items: start; }
+  .row:last-child { border-bottom: none; }
+  .row div p { font-size: 0.88rem; line-height: 1.5; color: var(--ink-2); }
+  .row div b { display: block; font-size: 0.92rem; font-weight: 650; margin-bottom: 0.12rem; }
+
+  .callout { display: flex; flex-direction: column; gap: 0.5rem; padding: 1.05rem 1.2rem; border-radius: 4px; border: 1px solid; }
+  .callout p { font-size: 0.9rem; line-height: 1.58; max-width: 41rem; }
+  .callout.good { background: var(--live-soft); border-color: var(--live-border); }
+  .callout.good strong { color: var(--live-ink); }
+  .callout.brass { background: var(--brass-soft); border-color: var(--brass-border); }
+  .callout.brass strong { color: var(--brass-ink); }
+  .callout.neutral { background: var(--future-soft); border-color: var(--future-border); }
+  .callout.neutral strong { color: var(--future); }
+
+  .needs {
+    margin: 0; padding: 0; list-style: none;
+    background: var(--surface); border: 1px solid var(--hair);
+    border-top: 3px solid var(--gate); border-radius: 6px; overflow: hidden;
+  }
+  .needs li {
+    display: grid; grid-template-columns: 2rem 1fr; gap: 0.2rem 0.85rem;
+    padding: 1rem 1.2rem; border-bottom: 1px solid var(--hair);
+  }
+  .needs li:last-child { border-bottom: none; }
+  .needs .n {
+    grid-row: 1 / span 2; align-self: start;
+    width: 2rem; height: 2rem; display: grid; place-items: center;
+    font-family: var(--mono); font-size: 0.72rem; font-weight: 600;
+    color: var(--gate-ink); background: var(--gate-soft);
+    border: 1px solid var(--gate-border); border-radius: 6px;
+  }
+  .needs b { font-size: 0.98rem; font-weight: 650; letter-spacing: -0.012em; color: var(--ink); }
+  .needs span.d { font-size: 0.875rem; line-height: 1.55; color: var(--ink-2); max-width: 36rem; }
+
+  .contact {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 0.45rem 1.1rem;
+    margin-top: -1px; padding: 1rem 1.2rem;
+    border: 1px solid var(--gate-border); background: var(--gate-soft);
+    border-radius: 0 0 6px 6px;
+  }
+  .contact .eyebrow { color: var(--gate-ink); width: 100%; }
+  .contact a {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    font-family: var(--display); font-weight: 650; font-size: 0.98rem;
+    letter-spacing: -0.01em; color: var(--gate-ink); text-decoration: none;
+    padding: 0.42rem 0.8rem; background: var(--surface);
+    border: 1px solid var(--gate-border); border-radius: 999px;
+  }
+  .contact a:hover { border-color: var(--gate); }
+  .needs + .contact { border-top-color: var(--hair); }
+
+  ul.plain { margin: 0; padding: 0 0 0 1.1rem; display: flex; flex-direction: column; gap: 0.5rem; }
+  ul.plain li { font-size: 0.92rem; line-height: 1.55; color: var(--ink-2); max-width: 40rem; }
+  ul.plain li::marker { color: var(--gate); }
+
+  /* ============ documentação técnica do Access ============ */
+  .tech-intro {
+    display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(13rem, 0.6fr); min-width: 0;
+    gap: 1rem; align-items: stretch;
+  }
+  .tech-intro > div {
+    padding: 1.3rem; border: 1px solid var(--hair); border-radius: 6px; background: var(--surface);
+  }
+  .tech-intro .tech-status {
+    border-color: var(--gate-border); border-top: 3px solid var(--gate); background: var(--gate-soft);
+  }
+  .tech-intro h3 { margin-bottom: 0.55rem; }
+  .tech-intro p { color: var(--ink-2); font-size: 0.96rem; line-height: 1.65; }
+  .tech-facts { display: flex; flex-direction: column; gap: 0; }
+  .tech-facts div { padding: 0.75rem 0; border-bottom: 1px solid var(--gate-border); }
+  .tech-facts div:last-child { border-bottom: 0; }
+  .tech-facts b, .tech-facts span { display: block; }
+  .tech-facts b { color: var(--gate-ink); font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; }
+  .tech-facts span { margin-top: 0.18rem; color: var(--ink-2); font-size: 0.92rem; }
+
+  .architecture-line {
+    display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.55rem; align-items: stretch;
+  }
+  .architecture-line > div {
+    position: relative; min-height: 7.5rem; padding: 1rem;
+    border: 1px solid var(--hair); border-radius: 5px; background: var(--surface);
+  }
+  .architecture-line > div:not(:last-child)::after {
+    content: "→"; position: absolute; right: -0.52rem; top: 50%; z-index: 2;
+    width: 1rem; height: 1rem; display: grid; place-items: center;
+    color: var(--brass-ink); background: var(--canvas); font-weight: 800;
+  }
+  .architecture-line b, .architecture-line span { display: block; }
+  .architecture-line b { font-family: var(--display); font-size: 0.94rem; }
+  .architecture-line span { margin-top: 1.6rem; color: var(--muted); font-size: 0.82rem; line-height: 1.45; }
+  .architecture-line .focus { border-color: var(--gate); background: var(--gate-soft); }
+
+  .scope-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); min-width: 0; gap: 1rem; }
+  .scope-box { padding: 1.2rem; border: 1px solid var(--hair); border-radius: 5px; background: var(--surface); }
+  .scope-box.yes { border-top: 3px solid var(--live); }
+  .scope-box.no { border-top: 3px solid var(--future); }
+  .scope-box h3 { margin-bottom: 0.8rem; }
+  .scope-box ul { margin: 0; padding-left: 1.1rem; display: flex; flex-direction: column; gap: 0.42rem; }
+  .scope-box li { color: var(--ink-2); font-size: 0.92rem; line-height: 1.52; }
+
+  .tech-code {
+    width: 100%; max-width: 100%; min-width: 0; margin: 0; padding: 1rem 1.1rem; overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    color: var(--code-ink); background: var(--codebg); border: 1px solid var(--gate-border);
+    border-left: 3px solid var(--gate); border-radius: 4px;
+    font-family: var(--mono); font-size: 0.78rem; line-height: 1.72;
+  }
+  .tech-code .hot { color: var(--brass-ink); font-weight: 700; }
+  .tech-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); min-width: 0; gap: 1rem; }
+  .tech-card {
+    display: flex; flex-direction: column; min-width: 0; gap: 0.65rem; padding: 1.2rem;
+    border: 1px solid var(--hair); border-radius: 5px; background: var(--surface);
+  }
+  .tech-card p { color: var(--ink-2); font-size: 0.94rem; line-height: 1.62; overflow-wrap: anywhere; }
+  .tech-card code, .endpoint-board code { font-family: var(--mono); color: var(--gate-ink); font-size: 0.82em; }
+  .tech-card .boundary { margin-top: auto; padding-top: 0.65rem; border-top: 1px solid var(--hair); color: var(--muted); font-size: 0.84rem; }
+
+  .endpoint-board { display: flex; flex-direction: column; min-width: 0; border: 1px solid var(--hair); border-radius: 5px; overflow: hidden; background: var(--surface); }
+  .endpoint-board > div { display: grid; grid-template-columns: 7rem minmax(0, 1fr); min-width: 0; gap: 1rem; padding: 0.85rem 1rem; border-bottom: 1px solid var(--hair); }
+  .endpoint-board > div:last-child { border-bottom: 0; }
+  .endpoint-board b { font-size: 0.9rem; }
+  .endpoint-board span { min-width: 0; color: var(--ink-2); font-size: 0.87rem; line-height: 1.55; overflow-wrap: anywhere; }
+
+  .future-stack { display: flex; flex-direction: column; min-width: 0; gap: 1rem; }
+  .future-item {
+    min-width: 0; padding: 1.2rem; border: 1px solid var(--hair); border-left: 3px solid var(--future);
+    border-radius: 4px; background: var(--surface);
+  }
+  .future-item.priority { border-left-color: var(--gate); }
+  .future-item.adapter { border-left-color: var(--brass); }
+  .future-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.55rem; }
+  .future-top code { color: var(--muted); font-family: var(--mono); font-size: 0.72rem; }
+  .future-item > p { margin-top: 0.55rem; color: var(--ink-2); font-size: 0.95rem; line-height: 1.62; max-width: 42rem; overflow-wrap: anywhere; }
+  .future-item ul { margin: 0.75rem 0 0; padding-left: 1.1rem; display: flex; flex-direction: column; gap: 0.35rem; }
+  .future-item li { color: var(--ink-2); font-size: 0.9rem; line-height: 1.5; overflow-wrap: anywhere; }
+  .future-boundary { margin-top: 0.8rem; padding: 0.7rem 0.8rem; color: var(--gate-ink); background: var(--gate-soft); border-radius: 3px; font-size: 0.86rem; line-height: 1.55; }
+  .source-links { display: flex; flex-wrap: wrap; gap: 0.55rem; }
+  .source-links a { padding: 0.48rem 0.7rem; border: 1px solid var(--hair); border-radius: 4px; background: var(--surface); font-size: 0.84rem; text-decoration: none; }
+  .source-links a:hover { border-color: var(--gate); }
+
+  @media (max-width: 46rem) {
+    .tech-intro, .scope-pair, .tech-grid, .architecture-line { grid-template-columns: 1fr; }
+    .architecture-line > div:not(:last-child)::after { content: "↓"; right: auto; left: 1rem; top: auto; bottom: -0.55rem; }
+    .endpoint-board > div { grid-template-columns: 1fr; gap: 0.25rem; }
+  }
+
+  footer { padding: 2.4rem 0 0; border-top: 1px solid var(--hair); display: flex; flex-direction: column; gap: 0.7rem; }
+  footer ul { margin: 0; padding: 0 0 0 1.1rem; display: flex; flex-direction: column; gap: 0.3rem; }
+  footer li { font-size: 0.8rem; line-height: 1.5; color: var(--muted); max-width: 40rem; }
+
+  @media (max-width: 33rem) {
+    .row { grid-template-columns: 1fr; }
+  }
+</style>
+
+<div class="shell">
+
+  <!-- ============================================================ MENU LATERAL -->
+  <aside class="side" aria-label="Navegação">
+    <a class="brand" href="/"><span class="bars" aria-hidden="true"></span><b>Bull<span class="gate">gate</span></b></a>
+    <nav>
+      <p class="navpart">Início</p>
+      <a href="#topo" data-nav>Manifesto</a>
+      <a href="#tese" data-nav>A tese</a>
+      <a href="#lab" data-nav>O laboratório</a>
+
+      <p class="navpart">Acesso</p>
+      <a href="#acesso" data-nav>A porta que emperra</a>
+      <a href="#acesso-cadastro" data-nav>Cadastro que não espanta</a>
+      <a href="#acesso-canais" data-nav>«O código não chega»</a>
+      <a href="#acesso-telefone" data-nav>Telefone de outra conta</a>
+      <a href="#acesso-sessao" data-nav>Sessão e bloqueio</a>
+      <a href="#acesso-recuperacao" data-nav>Recuperação por prova</a>
+
+      <p class="navpart">Billing</p>
+      <a href="#billing" data-nav>Problemas e mitos</a>
+      <a href="#billing-sync" data-nav>Cancelou pela store</a>
+      <a href="#billing-troca" data-nav>Trocar sem cancelar</a>
+      <a href="#billing-dinheiro" data-nav>A regra do dinheiro</a>
+
+      <p class="navpart">Admin centralizado</p>
+      <a href="#admin" data-nav>Uma operação, um lugar</a>
+      <a href="#admin-ficha" data-nav>A ficha da pessoa</a>
+      <a href="#admin-acoes" data-nav>Ações com trilha</a>
+      <a href="#admin-suporte" data-nav>Suporte no mesmo balcão</a>
+
+      <p class="navpart">Oferta via admin</p>
+      <a href="#oferta" data-nav>Sem cupom, com alvo</a>
+      <a href="#oferta-catalogo" data-nav>O catálogo</a>
+      <a href="#oferta-envio" data-nav>O envio pela ficha</a>
+      <a href="#oferta-aceite" data-nav>O aceite na store</a>
+
+      <p class="navpart">Integração técnica</p>
+      <a href="/docs/?v=20260904">Documentação técnica ↗</a>
+
+      <p class="navpart">Fim</p>
+      <a href="#proximos" data-nav>Próximas edições</a>
+      <a href="#participar" data-nav>Jeitos de entrar</a>
+    </nav>
+    <p class="note">Placar honesto: nada aqui é apresentado acima do estado real.</p>
+  </aside>
+
+  <!-- ============================================================ MENU MOBILE -->
+  <div class="mobilebar">
+    <details id="mmenu">
+      <summary><span class="brand"><span class="bars" aria-hidden="true"></span><b>Bull<span class="gate">gate</span></b></span></summary>
+      <nav>
+        <a href="#topo" data-nav>Manifesto</a>
+        <a href="#tese" data-nav>A tese</a>
+        <a href="#lab" data-nav>O laboratório</a>
+        <a href="#acesso" data-nav>Acesso · A porta que emperra</a>
+        <a href="#acesso-cadastro" data-nav>Acesso · Cadastro que não espanta</a>
+        <a href="#acesso-canais" data-nav>Acesso · «O código não chega»</a>
+        <a href="#acesso-telefone" data-nav>Acesso · Telefone de outra conta</a>
+        <a href="#acesso-sessao" data-nav>Acesso · Sessão e bloqueio</a>
+        <a href="#acesso-recuperacao" data-nav>Acesso · Recuperação por prova</a>
+        <a href="#billing" data-nav>Billing · Problemas e mitos</a>
+        <a href="#billing-sync" data-nav>Billing · Cancelou pela store</a>
+        <a href="#billing-troca" data-nav>Billing · Trocar sem cancelar</a>
+        <a href="#billing-dinheiro" data-nav>Billing · A regra do dinheiro</a>
+        <a href="#admin" data-nav>Admin · Uma operação, um lugar</a>
+        <a href="#admin-ficha" data-nav>Admin · A ficha da pessoa</a>
+        <a href="#admin-acoes" data-nav>Admin · Ações com trilha</a>
+        <a href="#admin-suporte" data-nav>Admin · Suporte no mesmo balcão</a>
+        <a href="#oferta" data-nav>Oferta · Sem cupom, com alvo</a>
+        <a href="#oferta-catalogo" data-nav>Oferta · O catálogo</a>
+        <a href="#oferta-envio" data-nav>Oferta · O envio pela ficha</a>
+        <a href="#oferta-aceite" data-nav>Oferta · O aceite na store</a>
+        <a href="/docs/?v=20260904">Documentação técnica ↗</a>
+        <a href="#proximos" data-nav>Próximas edições</a>
+        <a href="#participar" data-nav>Jeitos de entrar</a>
+      </nav>
+    </details>
+  </div>
+
+  <!-- ============================================================ CONTEUDO -->
+  <main>
+  <div class="measure">
+
+  <div class="prelim" role="note">
+    <span class="tag">versão 1 · preliminar</span>
+    <time datetime="2026-09-04">atualizado em 04/09/2026</time>
+  </div>
+
+  <!-- ============================================================ MANIFESTO -->
+  <section class="manifesto" id="topo" style="border-top:none;">
+    <div class="gatebars" aria-hidden="true"></div>
+    <p class="eyebrow">manifesto · recorrência total · open source · self-hosted</p>
+    <h2>Você paga a plataforma,<br>mas o trabalho continua <em>seu</em>?</h2>
+    <p class="claim">
+      <b>Bullgate:</b> billing e acesso inteiros, open source<a class="ast" href="#licenca">*</a>,
+      rodando no seu servidor.
+    </p>
+    <p class="fineprint" id="licenca">
+      * AGPL-3.0 nos serviços, Apache-2.0 nos SDKs. Self-hosted sem custo de licença.
+    </p>
+    <a class="integrate-cta" href="/docs/?v=20260904">Veja como integrar <span aria-hidden="true">→</span></a>
+    <p>
+      Integrar uma plataforma de recorrência é tão complicado quanto fazer sozinho — às vezes
+      mais. Aviso de pagamento, conciliação, estado de assinatura, os casos-limite das stores:
+      <strong>nada disso sai da sua mesa</strong>. E ainda vai uma mensalidade e uma porcentagem
+      por cima, todo mês, para sempre.
+    </p>
+    <p>
+      Pior: o que mais dói num aplicativo essas plataformas nem cobrem — assinatura dentro da App
+      Store e da Google Play, oferta dirigida a uma pessoa, conflito de conta, o balcão de
+      suporte.
+    </p>
+    <p>
+      O Bullgate é o contrário. Não é mais uma API para você colar: é <strong>o fluxo inteiro
+      pronto</strong> — SDK nativo, backend, painel e as jornadas que levaram meses para acertar —
+      <strong>open source, rodando no seu servidor</strong>. Os serviços são AGPL e os SDKs,
+      Apache-2.0: no self-hosted, não há cobrança de licença agora nem quando seu aplicativo
+      crescer. Você continua pagando apenas quem processa o pagamento e as taxas das stores —
+      custos que já existiam. Pedágio de plataforma, não.
+    </p>
+    <div class="doors">
+      <a class="d1" href="#acesso"><b>Meu problema é acesso →</b><span>conta duplicada, código que não chega, recuperação sem ticket de suporte</span></a>
+      <a class="d2" href="#billing"><b>Meu problema é assinatura →</b><span>sincronizar com a store, reter quem ia cancelar, trazer de volta quem saiu</span></a>
+    </div>
+    <p class="kicker">ou role: o placar do que já roda com dinheiro real está logo abaixo</p>
+  </section>
+
+  <header class="hero" id="tese">
+    <div class="gatebars" aria-hidden="true"></div>
+    <div class="head">
+      <p class="eyebrow">plataforma open source · mobile-first · self-hosted grátis</p>
+      <h1>Bull<span class="gate">gate</span></h1>
+    </div>
+    <p class="deck">
+      Acesso, assinatura, oferta e operação — a fundação que todo aplicativo com receita
+      refaz, e que aqui foi construída, quebrada e corrigida primeiro num produto real,
+      com assinante pagando. Quatro partes, cada uma apresentada <strong>pelo problema</strong>:
+      a dor que você reconhece, como ela morde, e o que já existe de verdade para resolvê-la.
+    </p>
+    <div class="legend">
+      <div><span class="chip live">No ar</span> construído e rodando em produção no laboratório</div>
+      <div><span class="chip pend">Prova pendente</span> construído inteiro, falta validação em aparelho/store</div>
+      <div><span class="chip plat">Plataforma</span> já reexpresso como Bullgate, validado no 1º consumidor</div>
+      <div><span class="chip future">Decidido</span> contrato registrado, não construído</div>
+    </div>
+  </header>
+
+  <!-- ============================================================ LABORATORIO -->
+  <section id="lab">
+    <div class="head">
+      <p class="eyebrow">de onde vem</p>
+      <h2>O laboratório</h2>
+    </div>
+    <div class="prose">
+      <p>
+        Nada aqui é slide de captação. Tudo que este documento chama de <strong>no ar</strong> roda
+        num produto real — publicado na Google Play e na App Store, com cinco planos de assinatura
+        mensal e <strong>assinante pagando</strong>. Renovação, troca de plano, cancelamento,
+        reembolso, aviso em tempo real e oferta dirigida operam lá desde agosto de 2026.
+      </p>
+      <p>
+        O Bullgate é a plataforma que empacota essa fundação para qualquer app — <strong>sem
+        conhecer o domínio de ninguém</strong>: onde o laboratório entrega o benefício dele, o seu
+        produto entrega o seu — plano Pro, minutos, telas, armazenamento. O primeiro serviço da
+        plataforma, o <strong>Bullgate Access</strong>, já é código próprio, com servidor e banco
+        separados, e foi validado em aparelho real com o laboratório como primeiro consumidor.
+      </p>
+      <p class="note">
+        Cada afirmação daqui foi conferida no código, não no folheto das stores. Os blocos «história
+        real de produção» contam o incidente que originou cada regra — sem jargão; o detalhe
+        técnico fino terá seções próprias, em edições futuras.
+      </p>
+    </div>
+  </section>
+
+  <!-- ############################################################ PARTE: ACESSO -->
+  <section id="acesso" class="part">
+    <div class="head">
+      <p class="eyebrow"><b>parte 1</b> · acesso</p>
+      <h2>A porta — e o dia em que ela emperra</h2>
+    </div>
+    <div class="prose">
+      <p>
+        Cadastro e login todo app tem. O que separa um produto amador de um profissional é
+        <strong>o dia em que a porta emperra</strong> — e ele sempre chega. Você reconhece estas
+        cenas:
+      </p>
+    </div>
+    <div class="symptoms">
+      <div class="symptom"><b>«Criei outra conta sem querer»</b><p>Perdeu o acesso, cadastrou de novo — e agora o histórico está na conta velha e o uso na nova. Duas contas, uma pessoa.</p></div>
+      <div class="symptom"><b>«Troquei de número»</b><p>O código de confirmação vai para um chip que não existe mais — e ninguém no suporte sabe dizer o que fazer.</p></div>
+      <div class="symptom"><b>«Aquele e-mail não existe mais»</b><p>A conta foi criada com o e-mail do trabalho antigo. A pessoa é a mesma; o jeito de provar isso é que sumiu.</p></div>
+    </div>
+    <div class="prose">
+      <p>
+        O Bullgate Access cuida da porta — cadastro, login, sessão — e, principalmente, desses
+        dias: cada cena vira um caminho claro <strong>dentro do seu app</strong>, com prova e regra
+        definida, em vez de virar um ticket de suporte decidido no achismo.
+      </p>
+      <p>
+        E tudo acontece <strong>nas suas telas</strong>: nada de abrir navegador, nada de página de
+        login de terceiro. O código chega por SMS e se preenche sozinho no Android; o iPhone sugere
+        o código em cima do teclado. Seu app entrega o visual; o Bullgate entrega o caminho.
+      </p>
+    </div>
+    <div class="board">
+      <div class="row"><span class="chip plat">Plataforma</span><div><b>Cadastro, login e sessão</b><p>Serviço próprio, com banco próprio, validado em aparelho real com o primeiro consumidor.</p></div></div>
+      <div class="row"><span class="chip plat">Plataforma</span><div><b>Jornadas de vários passos sem gambiarra</b><p>O servidor decide a próxima etapa; o app só desenha. Toque duplo e queda de rede não bagunçam o fluxo.</p></div></div>
+      <div class="row"><span class="chip plat">Plataforma</span><div><b>Login social Google/Apple com vínculo explícito</b><p>Implementado no Access e habilitado por environment. E-mail coincidente não faz auto-link entre identities.</p></div></div>
+      <div class="row"><span class="chip future">Decidido</span><div><b>CPF como login e como prova de titularidade</b><p>Entrar com CPF, e — com fonte confiável — provar que a pessoa é a dona de verdade da conta.</p></div></div>
+    </div>
+  </section>
+
+  <!-- ============================================================ ACESSO: CADASTRO -->
+  <section id="acesso-cadastro">
+    <div class="head">
+      <p class="eyebrow">acesso · o funil</p>
+      <h2>Cadastro que não espanta</h2>
+    </div>
+    <div class="prose">
+      <p>
+        Fricção é o que você cobra de alguém antes de essa pessoa ter qualquer motivo para confiar
+        em você. Cada passo do cadastro é uma escolha entre pedir e não pedir — e a conta do excesso
+        não chega como erro no painel: chega como gente que fechou o aplicativo e não voltou.
+      </p>
+    </div>
+    <ul class="plain">
+      <li><strong>Deixe entrar sem conta nenhuma.</strong> Modo visitante com dados de demonstração: quem decide criar conta já sabe o que está comprando.</li>
+      <li><strong>A porta de menos atrito primeiro</strong> — é a tela abaixo: Google e Apple na frente (o provedor prova o e-mail); o formulário fica atrás de um toque.</li>
+      <li><strong>Token social prova a credencial, não que duas contas são a mesma pessoa.</strong> Google e Apple podem criar ou autenticar a identity; e-mail já usado por outra identity abre conflito explícito. O vínculo de outro provider acontece a partir de uma sessão autenticada.</li>
+      <li><strong>Não verifique e-mail para deixar entrar.</strong> A conta nasce sem essa prova — o custo é adiado para o dia da recuperação, e é por isso que a parte de recuperação existe.</li>
+      <li><strong>O que não é essencial sai do formulário.</strong> Telefone vira passo próprio, depois da conta, com «Agora não» de verdade — e a etapa inteira liga e desliga por configuração de servidor, sem publicar versão.</li>
+    </ul>
+    <div class="shots">
+      <figure class="shot">
+        <svg viewBox="0 0 280 470" role="img" aria-label="Tela de entrada com as portas de login social na frente, o e-mail atrás de um toque e a opção de entrar sem conta">
+          <rect x="4" y="4" width="272" height="462" rx="30" fill="var(--raise)" stroke="var(--hair)"/>
+          <rect x="14" y="14" width="252" height="442" rx="22" fill="var(--canvas)"/>
+          <rect x="118" y="26" width="44" height="7" rx="3.5" fill="var(--hair)"/>
+          <rect x="122" y="70" width="36" height="36" rx="10" fill="var(--app)"/>
+          <circle cx="140" cy="88" r="6" fill="var(--surface)"/>
+          <text x="140" y="146" text-anchor="middle" font-size="16" font-weight="700" fill="var(--ink)">Entre ou crie sua conta</text>
+          <text x="140" y="165" text-anchor="middle" font-size="10" fill="var(--muted)">Leva menos de um minuto</text>
+          <g>
+            <rect x="30" y="192" width="220" height="42" rx="12" fill="var(--surface)" stroke="var(--hair)"/>
+            <circle cx="56" cy="213" r="9" fill="var(--app-soft)"/>
+            <text x="56" y="217.5" text-anchor="middle" font-size="11" font-weight="800" fill="var(--app-ink)">G</text>
+            <text x="146" y="217.5" text-anchor="middle" font-size="11.5" font-weight="600" fill="var(--ink)">Continuar com o Google</text>
+          </g>
+          <g>
+            <rect x="30" y="242" width="220" height="42" rx="12" fill="var(--ink)"/>
+            <circle cx="56" cy="263" r="7" fill="var(--canvas)"/>
+            <circle cx="61.5" cy="260" r="3.4" fill="var(--ink)"/>
+            <ellipse cx="57.5" cy="253.5" rx="2.6" ry="1.5" fill="var(--canvas)" transform="rotate(-35 57.5 253.5)"/>
+            <text x="146" y="267.5" text-anchor="middle" font-size="11.5" font-weight="600" fill="var(--canvas)">Continuar com a Apple</text>
+          </g>
+          <text x="140" y="316" text-anchor="middle" font-size="11" font-weight="600" fill="var(--app-ink)">Usar e-mail e senha</text>
+          <line x1="30" y1="352" x2="250" y2="352" stroke="var(--hair)"/>
+          <text x="140" y="388" text-anchor="middle" font-size="11" fill="var(--muted)">Só olhar primeiro?</text>
+          <rect x="70" y="402" width="140" height="34" rx="10" fill="none" stroke="var(--hair)"/>
+          <text x="140" y="424" text-anchor="middle" font-size="11" font-weight="600" fill="var(--ink-2)">Entrar sem conta</text>
+        </svg>
+        <figcaption><b>A porta de menos atrito primeiro</b>Quem entra pelo social termina sem escolher senha nem confirmar e-mail. E dá para ver o produto antes de qualquer cadastro.</figcaption>
+      </figure>
+    </div>
+    <div class="callout brass">
+      <p>
+        <strong>O único ponto em que o sistema não decide sozinho</strong> é o telefone que já
+        pertence a outra conta — e ele ganhou uma seção inteira mais abaixo, porque é onde quase
+        todo produto erra para um dos dois lados.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================================================ ACESSO: CANAIS -->
+  <section id="acesso-canais">
+    <div class="head">
+      <p class="eyebrow">acesso · códigos e links</p>
+      <h2>«O código não chega» — e outros mitos</h2>
+    </div>
+    <div class="prose">
+      <p>
+        A parte mais odiada de qualquer cadastro é o código de confirmação. E quase tudo que se
+        fala dele é mito:
+      </p>
+    </div>
+    <div class="myths">
+      <div class="myth">
+        <div class="said"><span class="tag">dizem que</span><p>«SMS não chega — e ninguém aguenta digitar código de seis números.»</p></div>
+        <div class="truth"><span class="tag">na prática</span><p>O código chega e <strong>se digita sozinho</strong>: no Android o app identifica a mensagem e preenche o campo; no iPhone o código aparece em cima do teclado antes mesmo de a pessoa abrir o SMS. Ela não decora, não copia, não digita.</p></div>
+      </div>
+      <div class="myth">
+        <div class="said"><span class="tag">dizem que</span><p>«Link de redefinir senha por e-mail não funciona — cai no spam.»</p></div>
+        <div class="truth"><span class="tag">na prática</span><p>Cai mesmo — e é exatamente por isso que o SMS é tão importante: entrega imediata, preenchimento automático, e ninguém caçando pasta de spam. O e-mail continua existindo como canal; o erro é deixá-lo como porta única.</p></div>
+      </div>
+      <div class="myth">
+        <div class="said"><span class="tag">dizem que</span><p>«WhatsApp não manda link.»</p></div>
+        <div class="truth"><span class="tag">na prática</span><p>Manda — e, devidamente integrado, vai além: a pessoa toca na mensagem, o app abre direto no lugar certo e <strong>a leitura já libera o acesso</strong>, sem digitar nada.</p></div>
+      </div>
+      <div class="myth">
+        <div class="said"><span class="tag">dizem que</span><p>«Para entrar, sempre vai ter senha ou código para digitar.»</p></div>
+        <div class="truth"><span class="tag">na prática</span><p>O <strong>magic link</strong> por e-mail abre o app e libera o acesso sem nenhum código digitado — o mesmo desenho da liberação pelo WhatsApp, por outro canal.</p></div>
+      </div>
+    </div>
+    <div class="shots">
+      <figure class="shot">
+        <svg viewBox="0 0 280 470" role="img" aria-label="Tela de confirmação com os seis dígitos do código preenchidos sozinhos a partir do SMS">
+          <rect x="4" y="4" width="272" height="462" rx="30" fill="var(--raise)" stroke="var(--hair)"/>
+          <rect x="14" y="14" width="252" height="442" rx="22" fill="var(--canvas)"/>
+          <rect x="118" y="26" width="44" height="7" rx="3.5" fill="var(--hair)"/>
+          <rect x="30" y="52" width="18" height="18" rx="5" fill="var(--app)"/>
+          <circle cx="39" cy="61" r="3" fill="var(--surface)"/>
+          <text x="140" y="106" text-anchor="middle" font-size="16" font-weight="700" fill="var(--ink)">Digite o código</text>
+          <text x="140" y="126" text-anchor="middle" font-size="10" fill="var(--muted)">Enviamos um SMS para +55 11 9•••• ••99</text>
+          <g font-size="17" font-weight="700" fill="var(--ink)" text-anchor="middle">
+            <rect x="30" y="150" width="32" height="42" rx="8" fill="var(--surface)" stroke="var(--app)"/>
+            <rect x="67.6" y="150" width="32" height="42" rx="8" fill="var(--surface)" stroke="var(--app)"/>
+            <rect x="105.2" y="150" width="32" height="42" rx="8" fill="var(--surface)" stroke="var(--app)"/>
+            <rect x="142.8" y="150" width="32" height="42" rx="8" fill="var(--surface)" stroke="var(--app)"/>
+            <rect x="180.4" y="150" width="32" height="42" rx="8" fill="var(--surface)" stroke="var(--app)"/>
+            <rect x="218" y="150" width="32" height="42" rx="8" fill="var(--surface)" stroke="var(--app)"/>
+            <text x="46" y="178">4</text><text x="83.6" y="178">8</text><text x="121.2" y="178">1</text>
+            <text x="158.8" y="178">2</text><text x="196.4" y="178">6</text><text x="234" y="178">3</text>
+          </g>
+          <rect x="60" y="212" width="160" height="28" rx="14" fill="var(--live-soft)" stroke="var(--live-border)"/>
+          <circle cx="78" cy="226" r="6" fill="var(--live)"/>
+          <path d="M75 226 l2.4 2.6 l4.2 -5" stroke="var(--surface)" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <text x="92" y="230" font-size="10.5" font-weight="600" fill="var(--live-ink)">Código detectado</text>
+          <rect x="22" y="330" width="236" height="30" rx="8" fill="var(--surface)" stroke="var(--hair)"/>
+          <rect x="30" y="338" width="14" height="14" rx="4" fill="var(--app-soft)"/>
+          <text x="52" y="349" font-size="10" fill="var(--app-ink)" font-weight="600">Do SMS: 481 263</text>
+          <g fill="var(--surface)" stroke="var(--hair)">
+            <rect x="22" y="368" width="236" height="24" rx="6"/>
+            <rect x="22" y="398" width="236" height="24" rx="6"/>
+            <rect x="52" y="428" width="176" height="20" rx="6"/>
+          </g>
+        </svg>
+        <figcaption><b>O código se digita sozinho</b>No Android o app lê o SMS e preenche na hora; no iPhone ele aparece em cima do teclado. Ninguém decora, copia nem digita.</figcaption>
+      </figure>
+    </div>
+    <p class="note">
+      Placar honesto deste bloco: o código por SMS com preenchimento automático está <strong>no ar,
+      em produção</strong>; o magic link por e-mail e a liberação pelo WhatsApp estão no desenho da
+      plataforma — decididos, ainda não construídos.
+    </p>
+  </section>
+
+  <!-- ============================================================ ACESSO: TELEFONE -->
+  <section id="acesso-telefone">
+    <div class="head">
+      <p class="eyebrow">acesso · duplicidade</p>
+      <h2>O telefone já é de outra conta</h2>
+    </div>
+    <div class="prose">
+      <p>
+        A pessoa acabou de digitar o código certo — provou que o número é dela. E o número já está
+        confirmado em outra conta, quase sempre <strong>a conta antiga dela mesma</strong>, criada
+        de novo porque ela perdeu o acesso. Posse do aparelho não diz de quem é a conta.
+      </p>
+    </div>
+    <div class="symptoms">
+      <div class="symptom"><b>«Telefone já cadastrado»</b><p>O erro genérico joga fora a prova que ela acabou de dar e manda o caso ao suporte — justamente quem não sabe quem é o dono.</p></div>
+      <div class="symptom"><b>Duas contas para sempre</b><p>Sem caminho de volta, a duplicidade vira permanente: histórico numa conta, uso na outra.</p></div>
+      <div class="symptom"><b>Ou pior: entrega sem prova</b><p>O atalho oposto — «deve ser a mesma pessoa, move tudo» — entrega uma conta com anos de histórico a quem só provou ter um chip.</p></div>
+    </div>
+    <div class="recipe">
+      <p class="eyebrow">o que o bullgate empacota</p>
+      <ul>
+        <li><strong>O número não vira cadastro antes da prova.</strong> Ele mora no desafio, com vencimento e contador — quem desiste no meio não deixa telefone pendurado na conta.</li>
+        <li><strong>No código certo, procurar outro dono ANTES de gravar.</strong> É a consulta que quase todo produto pula. Sem dono: grava verificado. A própria conta: termina em paz. <strong>Um</strong> dono anterior: nasce o caso de conflito. Mais de um: anomalia em quarentena — sem dono claro, não se escolhe um.</li>
+        <li><strong>Conflito é escolha, não erro</strong> — é a tela logo abaixo: o identificador da conta antiga <em>mascarado</em> (para reconhecer, não para descobrir) e três saídas claras.</li>
+        <li><strong>Mover move só a chave, nunca o histórico.</strong> Ter o telefone + saber o e-mail antigo por inteiro autoriza transferir o número. A conta antiga fica sem ele; nada mais atravessa.</li>
+        <li><strong>Limites no servidor, não na tela.</strong> Código de 6 dígitos, 10 minutos, poucas tentativas, teto por hora — e nada disso segura só na interface, porque contador de tela não para quem chama a API direto.</li>
+      </ul>
+    </div>
+<div class="shots">
+      <figure class="shot">
+        <svg viewBox="0 0 280 500" role="img" aria-label="Tela de conflito de telefone com três saídas: recuperar a conta antiga, criar conta nova movendo só o número, ou continuar sem telefone">
+          <rect x="4" y="4" width="272" height="492" rx="30" fill="var(--raise)" stroke="var(--hair)"/>
+          <rect x="14" y="14" width="252" height="472" rx="22" fill="var(--canvas)"/>
+          <rect x="118" y="26" width="44" height="7" rx="3.5" fill="var(--hair)"/>
+          <text x="140" y="66" text-anchor="middle" font-size="14.5" font-weight="700" fill="var(--ink)">Este número já está</text>
+          <text x="140" y="84" text-anchor="middle" font-size="14.5" font-weight="700" fill="var(--ink)">em uma conta</text>
+          <text x="140" y="104" text-anchor="middle" font-size="9.5" fill="var(--muted)">+55 11 9•••• ••99 já está em uso.</text>
+          <text x="140" y="117" text-anchor="middle" font-size="9.5" fill="var(--muted)">O que você quer fazer?</text>
+          <g>
+            <rect x="26" y="134" width="228" height="92" rx="10" fill="var(--surface)" stroke="var(--hair)"/>
+            <circle cx="48" cy="180" r="11" fill="var(--app-soft)"/>
+            <path d="M44 180 a5 5 0 1 1 2 4" stroke="var(--app)" stroke-width="1.6" fill="none"/>
+            <path d="M44 184 l-2 -3 l3.4 -0.4 z" fill="var(--app)"/>
+            <text x="68" y="156" font-size="11.5" font-weight="700" fill="var(--ink)">Recuperar minha conta antiga</text>
+            <text x="68" y="172" font-size="9.3" fill="var(--muted)">Você volta com todo o histórico.</text>
+            <text x="68" y="185" font-size="9.3" fill="var(--muted)">Confirmamos pelo e-mail dela:</text>
+            <text x="68" y="198" font-size="9.3" font-weight="600" fill="var(--ink-2)">m•••••@g••••.com</text>
+            <path d="M240 174 l6 6 l-6 6" stroke="var(--muted)" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+          </g>
+          <g>
+            <rect x="26" y="236" width="228" height="76" rx="10" fill="var(--surface)" stroke="var(--hair)"/>
+            <circle cx="48" cy="274" r="11" fill="var(--app-soft)"/>
+            <circle cx="46.5" cy="271" r="3.4" stroke="var(--app)" stroke-width="1.6" fill="none"/>
+            <path d="M41 281 a6 6 0 0 1 11 0" stroke="var(--app)" stroke-width="1.6" fill="none"/>
+            <path d="M53 268 h6 M56 265 v6" stroke="var(--app)" stroke-width="1.6" stroke-linecap="round"/>
+            <text x="68" y="258" font-size="11.5" font-weight="700" fill="var(--ink)">Criar uma conta nova</text>
+            <text x="68" y="274" font-size="9.3" fill="var(--muted)">Confirmamos o e-mail antigo e</text>
+            <text x="68" y="287" font-size="9.3" fill="var(--muted)">movemos só o número para cá.</text>
+            <path d="M240 268 l6 6 l-6 6" stroke="var(--muted)" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+          </g>
+          <g>
+            <rect x="26" y="322" width="228" height="64" rx="10" fill="var(--surface)" stroke="var(--hair)"/>
+            <circle cx="48" cy="354" r="11" fill="var(--app-soft)"/>
+            <path d="M42 354 h11 M49 350 l4 4 l-4 4" stroke="var(--app)" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            <text x="68" y="346" font-size="11.5" font-weight="700" fill="var(--ink)">Continuar sem telefone</text>
+            <text x="68" y="362" font-size="9.3" fill="var(--muted)">Nada muda em lugar nenhum.</text>
+            <path d="M240 348 l6 6 l-6 6" stroke="var(--muted)" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+          </g>
+          <text x="140" y="428" text-anchor="middle" font-size="11" font-weight="600" fill="var(--app-ink)">Corrigir o número</text>
+        </svg>
+        <figcaption><b>Escolha, não erro</b>O e-mail aparece mascarado — dá para reconhecer a conta, não para descobri-la. E cada saída diz o que acontece.</figcaption>
+      </figure>
+    </div>
+    <div class="fromcode">
+      <p class="eyebrow">história real de produção</p>
+      <p>
+        <strong>A autorização do conflito é de uso único e morre sozinha.</strong> Vence em minutos,
+        pedir outra invalida a anterior, e errar o e-mail antigo repetidas vezes <strong>queima a
+        autorização</strong> — o caso encerra em vez de virar jogo de adivinhação.
+      </p>
+      <p>
+        <strong>E a guarda que não aparece na tela:</strong> a saída que recupera a conta antiga
+        apaga a conta recém-criada — e só a sessão que acabou de criá-la carrega essa permissão.
+        Provar um telefone não autoriza descartar uma conta com anos de histórico.
+      </p>
+    </div>
+    
+    <div class="board">
+      <div class="row"><span class="chip live">No ar</span><div><b>Fluxo completo no laboratório</b><p>Desafio, deteção de dono, três saídas e a guarda da conta estabelecida — em produção.</p></div></div>
+      <div class="row"><span class="chip plat">Plataforma</span><div><b>Reexpresso como política declarada</b><p>«Tem o telefone E sabe o e-mail anterior → pode mover só o número» — desafio, prova, caso e transferência já implementados na jornada da plataforma.</p></div></div>
+      <div class="row"><span class="chip future">Decidido</span><div><b>Recuperar e consolidar a conta anterior</b><p>A saída que devolve a conta antiga inteira, com a provisória absorvida — entra quando estiver indivisível de ponta a ponta.</p></div></div>
+    </div>
+  </section>
+
+  <!-- ============================================================ ACESSO: SESSAO -->
+  <section id="acesso-sessao">
+    <div class="head">
+      <p class="eyebrow">acesso · o dia ruim</p>
+      <h2>Sessão e bloqueio — desenhados para o incidente</h2>
+    </div>
+    <div class="prose">
+      <p>
+        Sessão só é assunto interessante no dia em que uma conta é invadida ou o serviço cai. É
+        para esse dia que o desenho existe.
+      </p>
+    </div>
+    <ul class="plain">
+      <li><strong>A sessão não carrega nada dentro.</strong> O que o app guarda é um bilhete aleatório, sem e-mail, sem permissão, sem nada interpretável — e o servidor guarda só a impressão digital dele. Roubar o bilhete não conta nenhum segredo.</li>
+      <li><strong>Encerrar tudo é virar uma chave.</strong> Uma troca de senha, um bloqueio, um «desconecta tudo» — e nenhuma sessão antiga revive, nem por fuso horário, nem por repetição de chamada.</li>
+      <li><strong>Bloquear é um ato só.</strong> Barra a entrada <em>e</em> derruba quem já está dentro, juntos — porque um sem o outro não resolve invasão. E desbloquear devolve o acesso, nunca a sessão antiga: senão o cookie do invasor voltaria junto com o da dona.</li>
+      <li><strong>Queda do serviço não desloga ninguém.</strong> Se o serviço de identidade cair por minutos, o acesso fecha durante a falha e reabre sozinho — indisponibilidade curta não vira logout da base inteira.</li>
+      <li><strong>Bloqueio vale na requisição seguinte.</strong> Sem cache escondido: cortar o acesso de alguém corta agora, não «em até 15 minutos».</li>
+    </ul>
+    <div class="fromcode">
+      <p class="eyebrow">história real de produção</p>
+      <p>
+        <strong>A lacuna que o laboratório pagou e a plataforma fecha:</strong> o bloqueio original
+        gravava «bloqueada» e «derruba as sessões» em dois passos separados. Se o segundo falhasse,
+        a conta ficava bloqueada sem o corte — e, ao desbloquear, uma sessão antiga voltava a
+        valer. No Bullgate, bloquear-e-derrubar é uma operação indivisível, e repetir o comando não
+        bagunça o registro do incidente.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================================================ ACESSO: RECUPERACAO -->
+  <section id="acesso-recuperacao">
+    <div class="head">
+      <p class="eyebrow">acesso · identity resolution</p>
+      <h2>Recuperação por prova, não por opinião</h2>
+    </div>
+    <div class="prose">
+      <p>
+        Quando alguém perde o acesso, quase todo produto cai num dos dois erros: o suporte que
+        decide «no feeling» (e entrega a conta a quem contou uma boa história), ou o beco sem saída
+        («não temos como te ajudar»). O Bullgate substitui os dois por política declarada.
+      </p>
+    </div>
+    <ul class="plain">
+      <li><strong>Provas, não histórias:</strong> saber algo (o CPF, o e-mail antigo), ter algo (o código chegou no telefone ou no e-mail), já ser alguém (uma senha ou um login social que ainda funcionam) ou uma atestação externa de titularidade. Tentativa errada nunca vira prova.</li>
+      <li><strong>A regra é declarada, nunca pontuação oculta:</strong> <span class="mono">sabe o CPF E (tem o telefone OU tem o e-mail)</span>. E mudar a regra não muda o jogo no meio da jornada de ninguém.</li>
+      <li><strong>Provou → destrava exatamente o que a regra diz.</strong> Trocar credenciais, derrubar sessões, absorver a conta duplicada — uma autorização de uso único, que morre ao ser usada. Sem as provas, nenhum operador libera; com as provas, opinião subjetiva não bloqueia.</li>
+      <li><strong>Revisão manual não é válvula de escape.</strong> Ela só existe quando a regra nomeia a evidência extra que um operador pode validar. Falha técnica vira nova tentativa, nunca decisão sobre quem é o dono.</li>
+      <li><strong>CPF comprovado vence e-mail e senha.</strong> Quando uma fonte confiável atesta que a pessoa é a titular, ela recupera <em>a conta que tem o CPF</em> — e-mail, senha e telefone cadastrados por terceiro não têm poder de veto. Depois, ela mesma consulta a trilha do que aconteceu, sem depender do suporte.</li>
+    </ul>
+    <div class="board">
+      <div class="row"><span class="chip plat">Plataforma</span><div><b>Caso, prova, regra e autorização no núcleo</b><p>Tudo registrado e indivisível: satisfazer a regra e destravar o caso acontecem juntos, ou não acontecem.</p></div></div>
+      <div class="row"><span class="chip future">Decidido</span><div><b>Fontes de titularidade plugáveis</b><p>Certificado digital, biometria de fonte oficial e afins. Sem fonte ativa, a capacidade fica indisponível — a regra nunca é rebaixada para uma prova mais fraca.</p></div></div>
+    </div>
+  </section>
+
+  <!-- ############################################################ PARTE: BILLING -->
+  <section id="billing" class="part">
+    <div class="head">
+      <p class="eyebrow"><b>parte 2</b> · billing</p>
+      <h2>Assinatura no app: problemas e mitos</h2>
+    </div>
+    <div class="prose">
+      <p>
+        Quem nunca vendeu assinatura dentro de app ouve muita lenda — e quase toda lenda existe
+        porque alguém tentou, tropeçou numa regra pouco óbvia da store e desistiu. Vamos por
+        partes:
+      </p>
+    </div>
+    <div class="myths">
+      <div class="myth">
+        <div class="said"><span class="tag">dizem que</span><p>«Assinatura na Apple e na Play Store não dá para gerenciar — o app fica refém da store.»</p></div>
+        <div class="truth"><span class="tag">na prática</span><p>Dá para fazer quase tudo de dentro do seu produto: trocar de plano, desistir da troca, adiar uma cobrança para compensar alguém, cancelar, reembolsar, dar desconto para uma pessoa específica. E o pouco que a store reserva para ela mesma, o painel diz com todas as letras — em vez de fingir que o botão não existe.</p></div>
+      </div>
+      <div class="myth">
+        <div class="said"><span class="tag">dizem que</span><p>«É difícil sincronizar o usuário com a store — nunca se sabe quem pagou, quem cancelou, quem voltou.»</p></div>
+        <div class="truth"><span class="tag">na prática</span><p>As duas stores avisam o servidor <strong>em segundos</strong> quando algo muda. O difícil nunca foi receber o aviso — é conhecer as regras do jogo: conferir antes de agir, não entregar duas vezes, não confundir estados. Essas regras já vêm prontas.</p></div>
+      </div>
+      <div class="myth">
+        <div class="said"><span class="tag">dizem que</span><p>«Não renovou é a mesma coisa que cancelou.»</p></div>
+        <div class="truth"><span class="tag">na prática</span><p>Boa parte dos «cancelamentos» é cartão recusado em retentativa — a pessoa nem sabe. Tratar como cancelado derruba um cliente que ia voltar a pagar. Distinguir os dois é exatamente o tipo de detalhe que vem pronto.</p></div>
+      </div>
+      <div class="myth">
+        <div class="said"><span class="tag">dizem que</span><p>«Quem assina no iPhone vira outro cliente no Android.»</p></div>
+        <div class="truth"><span class="tag">na prática</span><p>O plano é da pessoa, não do aparelho. Ela troca de celular e o plano vai junto — e a tela impede a segunda cobrança na store errada, que é reembolso, ticket e nota ruim.</p></div>
+      </div>
+      <div class="myth">
+        <div class="said"><span class="tag">dizem que</span><p>«Não dá para fazer promoção dentro das stores.»</p></div>
+        <div class="truth"><span class="tag">na prática</span><p>Dá — e melhor que cupom: oferta para <strong>uma pessoa específica</strong>, sem código e sem link que se repassa, validada de ponta a ponta nas duas stores. A parte «Oferta via admin», mais abaixo, mostra o caminho inteiro.</p></div>
+      </div>
+    </div>
+    <div class="prose">
+      <p class="note">
+        E o que o Bullgate deliberadamente <strong>não faz</strong>: não processa pagamento, não
+        guarda cartão, não faz custódia de dinheiro. Quem cobra é a store ou o provedor; o Bullgate
+        cuida de todo o resto — e o benefício, cada app define (plano Pro, minutos, créditos,
+        armazenamento).
+      </p>
+    </div>
+    <div class="board">
+      <div class="row"><span class="chip live">No ar</span><div><b>Assinatura nas 2 stores, ponta a ponta</b><p>Assinar, renovar, trocar, desistir da troca, cancelar, reembolsar, restaurar — com assinante real desde agosto/2026.</p></div></div>
+      <div class="row"><span class="chip live">No ar</span><div><b>Compra avulsa nas 2 stores</b><p>Validada no servidor, entregue uma vez só, e liberada para recomprar o mesmo pacote.</p></div></div>
+      <div class="row"><span class="chip future">Decidido</span><div><b>Como serviço da plataforma</b><p>O mesmo motor, genérico, para qualquer app — e cobrança web (PIX e cartão via provedor) na sequência.</p></div></div>
+    </div>
+  </section>
+
+  <!-- ============================================================ BILLING: SYNC -->
+  <section id="billing-sync">
+    <div class="head">
+      <p class="eyebrow">billing · sincronizar</p>
+      <h2>Cancelou pela store. O app ainda não sabe.</h2>
+    </div>
+    <div class="prose">
+      <p>
+        Assinatura é uma coisa que vive fora do app. A pessoa cancela pela Play Store, reativa pela
+        App Store, tem o cartão recusado, pede reembolso — e o app segue mostrando outra coisa até
+        alguém descobrir. A pergunta que decide a qualidade do serviço é <strong>quanto tempo você
+        leva para saber</strong>. E o erro mais caro nem é a demora:
+      </p>
+    </div>
+    <div class="symptoms">
+      <div class="symptom"><b>Corta acesso de quem paga</b><p>Cartão em retentativa não é cancelamento — a store segue tratando a pessoa como assinante por dias. Quem não escuta isso derruba um cliente que ia voltar a pagar.</p></div>
+      <div class="symptom"><b>Mantém acesso de quem saiu</b><p>Sem o aviso, o cancelamento só aparece quando alguém abre o app — ou nunca.</p></div>
+      <div class="symptom"><b>Beneficia sem cobrança</b><p>Pausa, carência e espera de cartão não cobram — e não podem liberar período novo.</p></div>
+      <div class="symptom"><b>Estorna duas vezes</b><p>Reembolso processado pelo painel <em>e</em> pelo aviso da store, sem trava comum, devolve o benefício em dobro.</p></div>
+    </div>
+    <div class="recipe">
+      <p class="eyebrow">o que o bullgate empacota</p>
+      <ul>
+        <li><strong>O aviso em tempo real das duas stores</strong>, autenticado e verificado. Mudança feita na store aparece no app em segundos, sem ninguém atualizar nada.</li>
+        <li><strong>Aviso é gatilho, nunca verdade.</strong> Antes de mexer no acesso de alguém, o sistema volta e pergunta à store qual é a situação de fato.</li>
+        <li><strong>Um vocabulário só para as duas stores.</strong> Ativa, em carência, aguardando cartão, pausada, cancelada, expirada, reembolsada — e «cancelou» vira <em>ativa que não renova</em>: a pessoa fica com o que pagou até o fim.</li>
+        <li><strong>Redes por baixo do aviso:</strong> uma varredura periódica, a confirmação defensiva que evita o reembolso automático da Play, e a recuperação de compra ao abrir a tela. Aviso perdido não pode virar acesso perdido.</li>
+      </ul>
+    </div>
+    <div class="fromcode">
+      <p class="eyebrow">história real de produção</p>
+      <p>
+        <strong>O aviso da store chega antes de o app terminar a compra.</strong> Num aparelho que
+        trocou de dono, o aviso ressuscitava a assinatura encerrada na conta antiga — e o benefício
+        da compra nova ia para a pessoa errada. A regra que ficou: só a conclusão feita dentro do
+        app, com a conta logada, pode dizer de quem é a assinatura nova. O aviso espera por ela.
+      </p>
+      <p>
+        <strong>Reembolso estorna uma vez, e nunca deixa saldo negativo.</strong> A devolução fica
+        registrada mesmo quando não há o que devolver — é esse registro que impede o aviso da store
+        de estornar de novo o que o painel já processou.
+      </p>
+    </div>
+    <div class="journey">
+      <i>a pessoa cancela na store, longe do app</i>
+      <b>aviso da store</b><i>→</i>
+      <b>reconsulta oficial</b><i>→</i>
+      <b class="hit">estado aplicado</b><i>→</i>
+      <i>o app diz «não renova mais, válida até dia 30» — e não corta o que foi pago</i>
+    </div>
+    <div class="shots">
+      <figure class="shot">
+        <svg viewBox="0 0 280 440" role="img" aria-label="Cartão da assinatura no app mostrando, segundos após o cancelamento na store, que ela não renova mais e continua válida até o fim do período pago">
+          <rect x="4" y="4" width="272" height="432" rx="30" fill="var(--raise)" stroke="var(--hair)"/>
+          <rect x="14" y="14" width="252" height="412" rx="22" fill="var(--canvas)"/>
+          <rect x="118" y="26" width="44" height="7" rx="3.5" fill="var(--hair)"/>
+          <g>
+            <rect x="40" y="44" width="200" height="26" rx="13" fill="var(--live-soft)" stroke="var(--live-border)"/>
+            <circle cx="56" cy="57" r="5" fill="var(--live)"/>
+            <text x="68" y="61" font-size="9.5" font-weight="600" fill="var(--live-ink)">atualizado agora, pela própria store</text>
+          </g>
+          <text x="30" y="106" font-size="14" font-weight="700" fill="var(--ink)">Seu plano</text>
+          <g>
+            <rect x="22" y="120" width="236" height="150" rx="12" fill="var(--surface)" stroke="var(--hair)"/>
+            <text x="38" y="148" font-size="13" font-weight="700" fill="var(--ink)">Padrão</text>
+            <text x="242" y="148" text-anchor="end" font-size="12" font-weight="700" fill="var(--ink)">R$ 39,90<tspan font-size="8.5" fill="var(--muted)">/mês</tspan></text>
+            <rect x="38" y="160" width="112" height="20" rx="10" fill="var(--pend-soft)" stroke="var(--pend-border)"/>
+            <text x="94" y="174" text-anchor="middle" font-size="8.6" font-weight="700" fill="var(--pend-ink)">não renova mais</text>
+            <text x="38" y="202" font-size="9.6" fill="var(--ink-2)">Você cancelou pela store.</text>
+            <text x="38" y="216" font-size="9.6" fill="var(--ink-2)">O que foi pago vale até o fim:</text>
+            <text x="38" y="232" font-size="10.5" font-weight="700" fill="var(--ink)">válida até 30/09</text>
+            <rect x="38" y="242" width="204" height="4" rx="2" fill="var(--hair)"/>
+            <rect x="38" y="242" width="130" height="4" rx="2" fill="var(--pend)"/>
+          </g>
+          <rect x="22" y="284" width="236" height="36" rx="10" fill="var(--app)"/>
+          <text x="140" y="307" text-anchor="middle" font-size="11.5" font-weight="700" fill="#FFFFFF">Reativar quando quiser</text>
+          <text x="140" y="348" text-anchor="middle" font-size="8.8" fill="var(--muted)">Nada foi cortado no meio do período —</text>
+          <text x="140" y="360" text-anchor="middle" font-size="8.8" fill="var(--muted)">e se o cartão só falhou, o app não trata como saída.</text>
+          <g>
+            <rect x="22" y="378" width="236" height="34" rx="10" fill="var(--surface)" stroke="var(--hair)"/>
+            <text x="38" y="399" font-size="9.5" fill="var(--ink-2)">Seu benefício deste mês: <tspan font-weight="700" fill="var(--ink)">intacto</tspan></text>
+          </g>
+        </svg>
+        <figcaption><b>O app sabe em segundos</b>Cancelou pela store, longe do app — e o app já diz o estado certo: não renova, continua válida, nada confiscado.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ============================================================ BILLING: TROCA -->
+  <section id="billing-troca">
+    <div class="head">
+      <p class="eyebrow">billing · troca de plano</p>
+      <h2>Quem quer pagar menos, cancela</h2>
+    </div>
+    <div class="prose">
+      <p>
+        Se mudar de plano é difícil ou dá medo, a pessoa escolhe o caminho que ela entende:
+        cancelar. Você perde o cliente inteiro quando ele só queria pagar menos.
+      </p>
+    </div>
+    <ul class="plain">
+      <li><strong>A régua inteira, sempre.</strong> Todos os planos visíveis com o atual marcado, mesmo para quem já assina. Esconder os outros planos é o que empurra para o cancelamento.</li>
+      <li><strong>Timing assimétrico de propósito:</strong> subir vale agora (cobra e entrega na hora); descer vale na próxima renovação (nada cobrado no meio, nada confiscado) — é o aviso da tela abaixo, dito <em>antes</em> de abrir a store.</li>
+      <li><strong>Nunca uma segunda assinatura em paralelo.</strong> Trocar é substituição — as duas stores fazem, mas só se o app pedir do jeito certo. E quem assinou numa store vê o plano em qualquer aparelho, sem receber ali o botão de assinar de novo.</li>
+      <li><strong>Desistir da descida sem pagar de novo.</strong> A Play recusa «trocar» para o plano atual — a volta passa por um <em>plano gêmeo</em> invisível (mesmo preço, benefício e nome), sempre agendada, nunca cobrada. Só o Android precisa; a Apple resolve pela reescolha no grupo.</li>
+    </ul>
+    <div class="shots">
+      <figure class="shot">
+        <svg viewBox="0 0 280 500" role="img" aria-label="Tela de troca de plano com todos os níveis visíveis, o atual marcado e o aviso de que nada é cobrado agora">
+          <rect x="4" y="4" width="272" height="492" rx="30" fill="var(--raise)" stroke="var(--hair)"/>
+          <rect x="14" y="14" width="252" height="472" rx="22" fill="var(--canvas)"/>
+          <rect x="14" y="120" width="252" height="366" rx="18" fill="var(--surface)"/>
+          <rect x="118" y="132" width="44" height="6" rx="3" fill="var(--hair)"/>
+          <text x="140" y="162" text-anchor="middle" font-size="14.5" font-weight="700" fill="var(--ink)">Mudar de plano</text>
+          <g>
+            <rect x="26" y="178" width="228" height="48" rx="10" fill="var(--raise)" stroke="var(--hair)"/>
+            <circle cx="46" cy="202" r="7" fill="none" stroke="var(--hair)" stroke-width="1.6"/>
+            <text x="64" y="198" font-size="11" font-weight="700" fill="var(--ink)">Início</text>
+            <text x="64" y="213" font-size="9" fill="var(--muted)">o essencial para começar</text>
+            <text x="246" y="200" text-anchor="end" font-size="11" font-weight="700" fill="var(--ink)">R$ 19,90</text>
+            <text x="246" y="213" text-anchor="end" font-size="8.5" fill="var(--muted)">mensal</text>
+          </g>
+          <g>
+            <rect x="26" y="234" width="228" height="48" rx="10" fill="var(--app-soft)" stroke="var(--app)"/>
+            <circle cx="46" cy="258" r="7" fill="none" stroke="var(--app)" stroke-width="1.6"/>
+            <circle cx="46" cy="258" r="3.4" fill="var(--app)"/>
+            <text x="64" y="254" font-size="11" font-weight="700" fill="var(--ink)">Padrão</text>
+            <text x="64" y="269" font-size="9" fill="var(--muted)">o mais escolhido</text>
+            <text x="246" y="254" text-anchor="end" font-size="9" font-weight="700" fill="var(--app-ink)" letter-spacing="0.8">ATUAL</text>
+            <text x="246" y="269" text-anchor="end" font-size="9" fill="var(--muted)">R$ 39,90 mensal</text>
+          </g>
+          <g>
+            <rect x="26" y="290" width="228" height="48" rx="10" fill="var(--raise)" stroke="var(--hair)"/>
+            <circle cx="46" cy="314" r="7" fill="none" stroke="var(--hair)" stroke-width="1.6"/>
+            <text x="64" y="310" font-size="11" font-weight="700" fill="var(--ink)">Avançado</text>
+            <text x="64" y="325" font-size="9" fill="var(--muted)">para quem usa todo dia</text>
+            <text x="246" y="312" text-anchor="end" font-size="11" font-weight="700" fill="var(--ink)">R$ 49,90</text>
+            <text x="246" y="325" text-anchor="end" font-size="8.5" fill="var(--muted)">mensal</text>
+          </g>
+          <g>
+            <rect x="26" y="346" width="228" height="48" rx="10" fill="var(--raise)" stroke="var(--hair)"/>
+            <circle cx="46" cy="370" r="7" fill="none" stroke="var(--hair)" stroke-width="1.6"/>
+            <text x="64" y="366" font-size="11" font-weight="700" fill="var(--ink)">Completo</text>
+            <text x="64" y="381" font-size="9" fill="var(--muted)">tudo, sem limite</text>
+            <text x="246" y="368" text-anchor="end" font-size="11" font-weight="700" fill="var(--ink)">R$ 99,90</text>
+            <text x="246" y="381" text-anchor="end" font-size="8.5" fill="var(--muted)">mensal</text>
+          </g>
+          <rect x="26" y="408" width="228" height="34" rx="10" fill="var(--app)"/>
+          <text x="140" y="430" text-anchor="middle" font-size="11.5" font-weight="700" fill="#FFFFFF">Trocar de plano</text>
+          <text x="140" y="460" text-anchor="middle" font-size="8.8" fill="var(--muted)">Nada é cobrado agora. Subir vale já;</text>
+          <text x="140" y="471" text-anchor="middle" font-size="8.8" fill="var(--muted)">descer vale na próxima renovação.</text>
+        </svg>
+        <figcaption><b>A régua inteira, sempre</b>Todos os planos visíveis com o atual marcado — e o timing dito antes de abrir a store. Nenhum caminho passa por cancelamento.</figcaption>
+      </figure>
+    </div>
+    <div class="fromcode">
+      <p class="eyebrow">história real de produção</p>
+      <p>
+        <strong>A armadilha do downgrade agendado:</strong> a store chega a devolver o plano novo
+        <em>antes de ele ser pago</em>. Entregar o benefício nesse momento seria dar o plano de
+        graça. A regra que ficou: <strong>benefício só quando existe cobrança do plano novo</strong>
+        — e a troca agendada aparece na tela com a data em que passa a valer.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================================================ BILLING: DINHEIRO -->
+  <section id="billing-dinheiro">
+    <div class="head">
+      <p class="eyebrow">billing · a trava</p>
+      <h2>A regra do dinheiro</h2>
+    </div>
+    <div class="prose">
+      <p>
+        Errar aqui não dá erro de compilação — dá benefício entregue de graça, ou cliente que pagou
+        e não recebeu. Três travas sustentam tudo:
+      </p>
+    </div>
+    <ul class="plain">
+      <li><strong>Um período pago, um período de benefício.</strong> Cada cobrança da store tem um número próprio, e é ele que libera o benefício — uma vez. Consequência elegante: carência, pausa e cartão em retentativa não cobram → não liberam nada, sem regra especial para cada caso.</li>
+      <li><strong>Repetir nunca duplica.</strong> Reabrir o app, reenviar a compra, receber o mesmo aviso duas vezes ou fora de ordem — tudo cai na mesma trava e volta «já entregue».</li>
+      <li><strong>Excluir a conta não zera a trava.</strong> Um recibo anônimo — sem dono, sem nome, sem valor — sobrevive à exclusão e impede que o mesmo pagamento vire benefício de novo numa conta nova. E é justamente por não ter dono que ele pode ficar: não é dado pessoal.</li>
+    </ul>
+    <div class="fromcode">
+      <p class="eyebrow">história real de produção</p>
+      <p>
+        <strong>A confiança viaja embarcada no produto, nunca herdada do ambiente.</strong> O
+        comprovante de compra da Apple é verificado contra o certificado oficial que acompanha o
+        próprio serviço — então a validação não depende de como o servidor foi montado e não se
+        perde quando ele é reinstalado.
+      </p>
+      <p>
+        <strong>E o recibo anônimo tem um detalhe deliberado:</strong> a compra avulsa repetida é
+        recusada; a assinatura repetida é registrada <em>sem</em> liberar aquele ciclo — porque ela
+        é real e continua cobrando, e recusá-la deixaria a pessoa pagando sem receber nada. A
+        renovação seguinte libera normal.
+      </p>
+    </div>
+  </section>
+
+  <!-- ############################################################ PARTE: ADMIN -->
+  <section id="admin" class="part">
+    <div class="head">
+      <p class="eyebrow"><b>parte 3</b> · admin centralizado</p>
+      <h2>Uma operação, um lugar</h2>
+    </div>
+    <div class="prose">
+      <p>
+        Antes do painel, a operação do laboratório vivia em três lugares que não são tela: um CLI
+        de manutenção na máquina do dev, a UI do agendador de jobs e <strong>SQL na mão</strong> —
+        o roteiro de conferência de compras era literalmente uma lista de SELECTs. Todo produto
+        pequeno opera assim, até o dia em que um cliente real liga.
+      </p>
+      <p>
+        O admin centralizado junta isso em <strong>duas superfícies complementares</strong> sobre os
+        mesmos contratos: a <strong>mesa</strong> (web) para trabalho de cadastro — catálogos de
+        ofertas, jobs, desenho do que vem — e o <strong>bolso</strong> (app interno de operação)
+        para atendimento por pessoa: busca, ficha, ações e conversa. No celular, o atendente nunca
+        está «no módulo de usuários»: ele está atendendo alguém — <strong>a pessoa é o eixo, não o
+        módulo</strong>.
+      </p>
+      <p class="note">
+        Nas telas desenhadas deste documento, o formato diz de quem é a tela: <strong>celular</strong>
+        é o app do seu usuário; <strong>janela de desktop com o selo OPERAÇÃO</strong> é o painel de
+        quem opera.
+      </p>
+    </div>
+    <div class="myths">
+      <div class="myth">
+        <div class="said"><span class="tag">dizem que</span><p>«Operação de app pequeno é planilha, SQL e achismo — painel de verdade é coisa de empresa grande.»</p></div>
+        <div class="truth"><span class="tag">na prática</span><p>Busca, ficha completa da pessoa e toda ação com confirmação e registro — <strong>do celular do operador</strong>. Quem atende não precisa saber banco de dados, e «quem mandou isso?» tem resposta seis meses depois.</p></div>
+      </div>
+      <div class="myth">
+        <div class="said"><span class="tag">dizem que</span><p>«Suporte do app e WhatsApp são dois mundos que não se misturam.»</p></div>
+        <div class="truth"><span class="tag">na prática</span><p>É <strong>uma fila só</strong>: a conversa que chegou pelo WhatsApp aparece ao lado da conversa do app, com a ficha da pessoa a um toque — e a resposta sai dali mesmo, chegando no WhatsApp dela.</p></div>
+      </div>
+      <div class="myth">
+        <div class="said"><span class="tag">dizem que</span><p>«Reembolso e cancelamento são caixa-preta — só a store resolve, e o suporte fica de mãos atadas.»</p></div>
+        <div class="truth"><span class="tag">na prática</span><p>O operador reembolsa (integral ou proporcional), cancela a renovação, adia uma cobrança para compensar alguém e restaura a assinatura — <strong>da ficha, com confirmação e trilha</strong>. E o pouco que só a store pode fazer, a tela diz com todas as letras.</p></div>
+      </div>
+    </div>
+    <div class="board">
+      <div class="row"><span class="chip live">No ar</span><div><b>As duas superfícies em produção</b><p>Mesa com acesso restrito e login próprio; bolso validado no aparelho do operador, ação por ação.</p></div></div>
+      <div class="row"><span class="chip future">Decidido</span><div><b>Como produto Bullgate Admin</b><p>Superfícies operando sobre contratos de Access e Billing — nunca escrevendo direto no banco de ninguém.</p></div></div>
+    </div>
+  </section>
+
+  <!-- ============================================================ ADMIN: FICHA -->
+  <section id="admin-ficha">
+    <div class="head">
+      <p class="eyebrow">admin · leitura</p>
+      <h2>A ficha da pessoa</h2>
+    </div>
+    <div class="prose">
+      <p>
+        Uma chamada, tudo que o atendimento precisa: identidade, plano vigente com nome
+        operacional, contas, benefício, compras e ciclos pagos, ofertas enviadas com o resultado
+        por canal, conversas, gravações de sessão e erros. Organizada por assunto — Acesso, Contas,
+        Benefícios, Assinatura, Atendimento — porque é assim que uma ligação de suporte anda.
+      </p>
+    </div>
+    <ul class="plain">
+      <li><strong>A disponibilidade de cada ação vem do servidor, com o motivo escrito.</strong> «Apple não permite» e «sem assinatura ativa» são fatos do estado — e são textos diferentes de «não suportado», que se leria como <em>ainda não fizemos</em>. Recalcular isso no cliente divergiria no primeiro ajuste.</li>
+      <li><strong>Valor sai cru, como está armazenado.</strong> O número viaja exato até a tela, sem nenhuma camada arredondar no caminho — arredondar esconderia justamente a divergência que se veio conferir.</li>
+      <li><strong>Data em UTC, marcada como UTC</strong>, com o relativo ao lado e nunca no lugar — o absoluto confere contra banco e log, o relativo lê sem contar dia de cabeça.</li>
+      <li><strong>«Sem registro» onde ninguém mediu — nunca travessão.</strong> Travessão se lê como «nunca aconteceu», que é afirmar um fato não medido.</li>
+      <li><strong>Pendência não se sinaliza no app de operação.</strong> Nada de «em breve» nem botão morto: uma tela só entra quando faz o que promete. O que aparece é indisponibilidade <em>daquela pessoa</em>, com motivo.</li>
+    </ul>
+    <div class="shots desk">
+      <figure class="shot">
+        <svg viewBox="0 0 480 270" role="img" aria-label="Ficha da pessoa no painel de operação em desktop, com o plano vigente e as ações — uma delas indisponível com o motivo escrito">
+          <rect x="2" y="2" width="476" height="266" rx="9" fill="var(--raise)" stroke="var(--gate-border)"/>
+          <path d="M11 2 h458 a9 9 0 0 1 9 9 v13 H2 v-13 a9 9 0 0 1 9 -9 z" fill="var(--gate-soft)"/>
+          <circle cx="16" cy="13" r="3.5" fill="var(--gate-border)"/>
+          <circle cx="28" cy="13" r="3.5" fill="var(--gate-border)"/>
+          <circle cx="40" cy="13" r="3.5" fill="var(--gate-border)"/>
+          <text x="240" y="17" text-anchor="middle" font-size="8.5" font-weight="700" letter-spacing="1.2" fill="var(--gate-ink)">PAINEL DE OPERAÇÃO</text>
+          <rect x="398" y="6" width="66" height="14" rx="7" fill="var(--surface)" stroke="var(--gate-border)"/>
+          <text x="431" y="16" text-anchor="middle" font-size="6.8" font-weight="700" letter-spacing="1" fill="var(--gate-ink)">OPERAÇÃO</text>
+          <rect x="8" y="30" width="464" height="232" rx="7" fill="var(--canvas)"/>
+          <rect x="8" y="30" width="96" height="232" fill="var(--surface)"/>
+          <line x1="104" y1="30" x2="104" y2="262" stroke="var(--hair)"/>
+          <rect x="14" y="40" width="84" height="22" rx="6" fill="var(--gate-soft)"/>
+          <text x="22" y="55" font-size="10" font-weight="700" fill="var(--gate-ink)">Pessoas</text>
+          <text x="22" y="84" font-size="10" fill="var(--muted)">Conversas</text>
+          <text x="22" y="106" font-size="10" fill="var(--muted)">Ofertas</text>
+          <text x="22" y="128" font-size="10" fill="var(--muted)">Jobs</text>
+          <g>
+            <rect x="114" y="38" width="352" height="48" rx="8" fill="var(--surface)" stroke="var(--hair)"/>
+            <circle cx="136" cy="62" r="13" fill="var(--gate-soft)"/>
+            <text x="136" y="66.5" text-anchor="middle" font-size="11" font-weight="700" fill="var(--gate-ink)">M</text>
+            <text x="156" y="58" font-size="12" font-weight="700" fill="var(--ink)">Maria — cliente desde 2024</text>
+            <text x="156" y="74" font-size="9" fill="var(--muted)">entra por: Google · último acesso: 2h · 2 aparelhos</text>
+            <rect x="348" y="44" width="110" height="16" rx="8" fill="var(--live-soft)" stroke="var(--live-border)"/>
+            <text x="403" y="55.5" text-anchor="middle" font-size="7.8" font-weight="700" fill="var(--live-ink)">plano Padrão ativo</text>
+            <rect x="348" y="64" width="110" height="16" rx="8" fill="var(--gate-soft)"/>
+            <text x="403" y="75.5" text-anchor="middle" font-size="7.8" font-weight="600" fill="var(--gate-ink)">renova em 12/10</text>
+          </g>
+          <text x="114" y="106" font-size="8" font-weight="700" letter-spacing="1.5" fill="var(--muted)">ASSINATURA</text>
+          <g>
+            <rect x="114" y="114" width="170" height="34" rx="8" fill="var(--surface)" stroke="var(--hair)"/>
+            <text x="126" y="135" font-size="10.5" font-weight="600" fill="var(--ink)">Ofertar «Ficar» — 50%</text>
+            <path d="M270 128 l5 5 l-5 5" stroke="var(--muted)" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+            <rect x="294" y="114" width="170" height="34" rx="8" fill="var(--surface)" stroke="var(--hair)"/>
+            <text x="306" y="135" font-size="10.5" font-weight="600" fill="var(--ink)">Adiar cobrança</text>
+            <path d="M450 128 l5 5 l-5 5" stroke="var(--muted)" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+            <rect x="114" y="154" width="170" height="34" rx="8" fill="var(--surface)" stroke="var(--hair)"/>
+            <text x="126" y="175" font-size="10.5" font-weight="600" fill="var(--ink)">Reembolsar</text>
+            <path d="M270 168 l5 5 l-5 5" stroke="var(--muted)" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+            <g opacity="0.8">
+              <rect x="294" y="154" width="170" height="34" rx="8" fill="var(--raise)" stroke="var(--hair)" stroke-dasharray="3 3"/>
+              <text x="306" y="169" font-size="10" font-weight="600" fill="var(--muted)">Cancelar renovação</text>
+              <text x="306" y="181" font-size="8" fill="var(--muted)">indisponível: Apple não permite</text>
+            </g>
+          </g>
+          <text x="114" y="212" font-size="8" font-weight="700" letter-spacing="1.5" fill="var(--muted)">ATENDIMENTO</text>
+          <g>
+            <rect x="114" y="220" width="170" height="32" rx="8" fill="var(--surface)" stroke="var(--hair)"/>
+            <text x="126" y="240" font-size="10.5" font-weight="600" fill="var(--ink)">Conversas — 1 não lida</text>
+            <path d="M270 233 l5 5 l-5 5" stroke="var(--muted)" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+            <rect x="294" y="220" width="170" height="32" rx="8" fill="var(--surface)" stroke="var(--hair)"/>
+            <text x="306" y="240" font-size="10.5" font-weight="600" fill="var(--ink)">Enviar push</text>
+            <path d="M450 233 l5 5 l-5 5" stroke="var(--muted)" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+          </g>
+        </svg>
+        <figcaption><b>A ficha da pessoa, no painel</b>Tudo que o atendimento precisa numa tela — e, quando uma ação não está disponível, o motivo escrito, nunca um botão morto.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ============================================================ ADMIN: ACOES -->
+  <section id="admin-acoes">
+    <div class="head">
+      <p class="eyebrow">admin · escrita</p>
+      <h2>Ações que deixam trilha</h2>
+    </div>
+    <div class="prose">
+      <p>
+        Toda ação operacional — do reset de senha ao reembolso — passa pelo mesmo envelope de
+        auditoria: quem fez (da sessão de quem operou, nunca declarado à mão), o quê, em quem,
+        quando e com que desfecho. E <strong>repetir não repete</strong>: toque duplo ou queda de
+        rede devolvem o mesmo resultado, não executam duas vezes.
+      </p>
+    </div>
+    <div class="cards">
+      <div class="card">
+        <p class="eyebrow">acesso</p>
+        <h3>Conta comprometida</h3>
+        <p>Enviar link de redefinição · encerrar sessões · bloquear · desbloquear · desconectar provedores. Bloquear barra as portas <em>e</em> derruba sessões num ato; desbloquear nunca devolve a sessão antiga.</p>
+      </div>
+      <div class="card">
+        <p class="eyebrow">assinatura</p>
+        <h3>Dinheiro com guarda</h3>
+        <p>Adiar cobrança (compensar sem devolver dinheiro) · cancelar renovação · reembolsar (integral ou proporcional, <strong>sem default</strong>) · restaurar. As guardas de store e estado vêm do domínio, não da tela.</p>
+      </div>
+      <div class="card">
+        <p class="eyebrow">comunicação</p>
+        <h3>Alcançar a pessoa</h3>
+        <p>Push avulso com destino fechado, e as duas ações de oferta — assinatura e pacote avulso — que ganharam a parte seguinte inteira.</p>
+      </div>
+    </div>
+    <div class="shots desk">
+      <figure class="shot">
+        <svg viewBox="0 0 480 270" role="img" aria-label="Tela de reembolso no painel de operação em desktop, com a escolha explícita entre integral e proporcional, o aviso do efeito e a confirmação">
+          <rect x="2" y="2" width="476" height="266" rx="9" fill="var(--raise)" stroke="var(--gate-border)"/>
+          <path d="M11 2 h458 a9 9 0 0 1 9 9 v13 H2 v-13 a9 9 0 0 1 9 -9 z" fill="var(--gate-soft)"/>
+          <circle cx="16" cy="13" r="3.5" fill="var(--gate-border)"/>
+          <circle cx="28" cy="13" r="3.5" fill="var(--gate-border)"/>
+          <circle cx="40" cy="13" r="3.5" fill="var(--gate-border)"/>
+          <text x="240" y="17" text-anchor="middle" font-size="8.5" font-weight="700" letter-spacing="1.2" fill="var(--gate-ink)">PAINEL DE OPERAÇÃO</text>
+          <rect x="398" y="6" width="66" height="14" rx="7" fill="var(--surface)" stroke="var(--gate-border)"/>
+          <text x="431" y="16" text-anchor="middle" font-size="6.8" font-weight="700" letter-spacing="1" fill="var(--gate-ink)">OPERAÇÃO</text>
+          <rect x="8" y="30" width="464" height="232" rx="7" fill="var(--canvas)"/>
+          <rect x="70" y="42" width="340" height="212" rx="10" fill="var(--surface)" stroke="var(--hair)"/>
+          <text x="86" y="66" font-size="13" font-weight="700" fill="var(--ink)">Reembolsar — Maria</text>
+          <text x="86" y="83" font-size="9.5" fill="var(--ink-2)">Plano Padrão · ativa · store: Play</text>
+          <text x="86" y="96" font-size="9" fill="var(--muted)">última cobrança: R$ 39,90 em 12/09</text>
+          <text x="86" y="116" font-size="7.5" font-weight="700" letter-spacing="1.3" fill="var(--muted)">MODO — SEM ESCOLHA AUTOMÁTICA</text>
+          <g>
+            <rect x="86" y="122" width="148" height="50" rx="8" fill="var(--gate-soft)" stroke="var(--gate)"/>
+            <circle cx="100" cy="140" r="5.5" fill="none" stroke="var(--gate)" stroke-width="1.5"/>
+            <circle cx="100" cy="140" r="2.6" fill="var(--gate)"/>
+            <text x="112" y="143" font-size="10.5" font-weight="700" fill="var(--ink)">Integral</text>
+            <text x="98" y="162" font-size="8.5" fill="var(--ink-2)">devolve tudo: R$ 39,90</text>
+            <rect x="246" y="122" width="148" height="50" rx="8" fill="var(--raise)" stroke="var(--hair)"/>
+            <circle cx="260" cy="140" r="5.5" fill="none" stroke="var(--hair)" stroke-width="1.5"/>
+            <text x="272" y="143" font-size="10.5" font-weight="700" fill="var(--ink)">Proporcional</text>
+            <text x="258" y="162" font-size="8.5" fill="var(--ink-2)">o que falta do ciclo: R$ 18,60</text>
+          </g>
+          <rect x="86" y="180" width="308" height="34" rx="8" fill="var(--pend-soft)" stroke="var(--pend-border)"/>
+          <text x="96" y="194" font-size="8.8" font-weight="700" fill="var(--pend-ink)">Devolve o dinheiro e encerra o acesso na hora.</text>
+          <text x="96" y="207" font-size="8.5" fill="var(--pend-ink)">O benefício do ciclo é estornado, uma vez só.</text>
+          <rect x="86" y="222" width="152" height="24" rx="7" fill="var(--gate)"/>
+          <text x="162" y="238" text-anchor="middle" font-size="10" font-weight="700" fill="#FFFFFF">Confirmar reembolso</text>
+          <text x="250" y="233" font-size="8" fill="var(--muted)">fica registrado: quem fez, quando</text>
+          <text x="250" y="243" font-size="8" fill="var(--muted)">e o desfecho — sem execução dupla</text>
+        </svg>
+        <figcaption><b>Dinheiro com guarda</b>O modo é escolha explícita — sem padrão silencioso —, o efeito está escrito antes do clique, e a trilha fica.</figcaption>
+      </figure>
+    </div>
+    <div class="fromcode">
+      <p class="eyebrow">história real de produção</p>
+      <p>
+        <strong>O destino do link de redefinição não é escolha do operador.</strong> Ele sai sempre
+        para o e-mail atual da conta, decidido no servidor — um campo de destino transformaria a
+        ação em «mande o link para onde eu quiser», que é entregar a conta. E cada erro diz ao
+        operador o que fazer: «não existe», «o estado não permite — não adianta insistir», «store
+        fora do ar — a ação ficou registrada».
+      </p>
+      <p>
+        <strong>A cota anual de extensões da Apple não é copiada localmente, de propósito.</strong>
+        Quem sabe quantas aquele cliente já teve é a store — inclusive as feitas fora do painel. Um
+        contador local bloquearia tendo cota, ou liberaria sem ter. A chamada é feita; a recusa da
+        store vira uma mensagem clara na tela.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================================================ ADMIN: SUPORTE -->
+  <section id="admin-suporte">
+    <div class="head">
+      <p class="eyebrow">admin · atendimento</p>
+      <h2>Suporte no mesmo balcão</h2>
+    </div>
+    <div class="prose">
+      <p>
+        O inbox unifica as conversas do app (logado ou visitante) e as que chegam
+        <strong>pelo WhatsApp</strong> — rotuladas com o número, na mesma fila, com push nativo
+        avisando o atendente. E a conversa está costurada à ficha: o cabeçalho da thread já diz
+        plano, bloqueio, contas e último acesso, com a ficha a um toque.
+      </p>
+    </div>
+    <ul class="plain">
+      <li><strong>Responder é persistir → transmitir → avisar → entregar</strong>, nessa ordem: só se transmite o que já está gravado, e falha de push não desfaz a resposta.</li>
+      <li><strong>A falha do WhatsApp volta para a tela do operador com a causa distinguida:</strong> janela de 24h fechada (a pessoa precisa escrever primeiro) não é a mesma coisa que token vencido (troca de configuração) — e nenhuma das duas é «tentar de novo às cegas».</li>
+      <li><strong>Visitante e WhatsApp não têm pessoa — e a tela diz isso.</strong> Casar conversa de WhatsApp com um cadastro só quando o telefone for verificado; antes disso o palpite viria de um campo que qualquer um edita.</li>
+    </ul>
+    <div class="shots desk">
+      <figure class="shot">
+        <svg viewBox="0 0 480 270" role="img" aria-label="Inbox do atendente em desktop: conversas do app, de visitante e do WhatsApp na mesma fila, com a conversa do WhatsApp aberta ao lado">
+          <rect x="2" y="2" width="476" height="266" rx="9" fill="var(--raise)" stroke="var(--gate-border)"/>
+          <path d="M11 2 h458 a9 9 0 0 1 9 9 v13 H2 v-13 a9 9 0 0 1 9 -9 z" fill="var(--gate-soft)"/>
+          <circle cx="16" cy="13" r="3.5" fill="var(--gate-border)"/>
+          <circle cx="28" cy="13" r="3.5" fill="var(--gate-border)"/>
+          <circle cx="40" cy="13" r="3.5" fill="var(--gate-border)"/>
+          <text x="240" y="17" text-anchor="middle" font-size="8.5" font-weight="700" letter-spacing="1.2" fill="var(--gate-ink)">PAINEL DE OPERAÇÃO</text>
+          <rect x="398" y="6" width="66" height="14" rx="7" fill="var(--surface)" stroke="var(--gate-border)"/>
+          <text x="431" y="16" text-anchor="middle" font-size="6.8" font-weight="700" letter-spacing="1" fill="var(--gate-ink)">OPERAÇÃO</text>
+          <rect x="8" y="30" width="464" height="232" rx="7" fill="var(--canvas)"/>
+          <rect x="8" y="30" width="152" height="232" fill="var(--surface)"/>
+          <line x1="160" y1="30" x2="160" y2="262" stroke="var(--hair)"/>
+          <text x="18" y="48" font-size="10" font-weight="700" fill="var(--ink)">Conversas</text>
+          <g>
+            <rect x="14" y="56" width="140" height="50" rx="8" fill="var(--gate-soft)" stroke="var(--gate)"/>
+            <text x="24" y="73" font-size="9.5" font-weight="700" fill="var(--ink)">WhatsApp</text>
+            <text x="24" y="86" font-size="8.2" fill="var(--muted)">+55 11 9•• ••99</text>
+            <text x="24" y="99" font-size="8" fill="var(--muted)">meu cartão trocou…</text>
+            <circle cx="140" cy="70" r="7" fill="var(--gate)"/>
+            <text x="140" y="73.5" text-anchor="middle" font-size="8" font-weight="700" fill="#FFFFFF">1</text>
+          </g>
+          <g>
+            <rect x="14" y="112" width="140" height="44" rx="8" fill="var(--raise)" stroke="var(--hair)"/>
+            <text x="24" y="129" font-size="9.5" font-weight="700" fill="var(--ink)">Maria · Padrão</text>
+            <text x="24" y="143" font-size="8.2" fill="var(--muted)">consegui, obrigada!</text>
+          </g>
+          <g>
+            <rect x="14" y="162" width="140" height="44" rx="8" fill="var(--raise)" stroke="var(--hair)"/>
+            <text x="24" y="179" font-size="9.5" font-weight="700" fill="var(--ink)">Visitante</text>
+            <text x="24" y="193" font-size="8.2" fill="var(--muted)">dá para testar antes?</text>
+          </g>
+          <g>
+            <text x="174" y="50" font-size="10.5" font-weight="700" fill="var(--ink)">WhatsApp · +55 11 9•• ••99</text>
+            <rect x="364" y="38" width="100" height="15" rx="7.5" fill="var(--future-soft)" stroke="var(--future-border)"/>
+            <text x="414" y="48.5" text-anchor="middle" font-size="7" font-weight="600" fill="var(--future)">sem cadastro vinculado</text>
+            <line x1="168" y1="60" x2="472" y2="60" stroke="var(--hair)"/>
+          </g>
+          <g>
+            <rect x="174" y="72" width="180" height="30" rx="9" fill="var(--surface)" stroke="var(--hair)"/>
+            <text x="184" y="91" font-size="9.5" fill="var(--ink-2)">meu cartão trocou, e agora?</text>
+            <rect x="252" y="112" width="212" height="42" rx="9" fill="var(--gate-soft)"/>
+            <text x="262" y="128" font-size="9.5" fill="var(--gate-ink)">te oriento por aqui — a resposta</text>
+            <text x="262" y="141" font-size="9.5" fill="var(--gate-ink)">chega no seu WhatsApp</text>
+            <text x="464" y="168" text-anchor="end" font-size="7.8" fill="var(--live-ink)">entregue no WhatsApp ✓</text>
+          </g>
+          <g>
+            <rect x="174" y="222" width="262" height="26" rx="13" fill="var(--surface)" stroke="var(--hair)"/>
+            <text x="186" y="239" font-size="9" fill="var(--muted)">Escreva a resposta…</text>
+            <circle cx="454" cy="235" r="12" fill="var(--gate)"/>
+            <path d="M449 235 h9 M454 231 l5 4 l-5 4" stroke="#FFFFFF" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          </g>
+        </svg>
+        <figcaption><b>Uma fila só</b>App, visitante e WhatsApp lado a lado — a resposta sai daqui e chega no WhatsApp da pessoa, com a ficha a um toque quando existe cadastro.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ############################################################ PARTE: OFERTA -->
+  <section id="oferta" class="part">
+    <div class="head">
+      <p class="eyebrow"><b>parte 4</b> · oferta via admin</p>
+      <h2>Sem cupom, com alvo</h2>
+    </div>
+    <div class="prose">
+      <p>
+        Cupom vaza. Código circula em grupo, link é repassado, e o desconto que era para reter uma
+        pessoa vira preço novo da base inteira. No outro extremo, o suporte «dá um desconto» direto
+        no banco — e a cobrança da store continua cheia, porque <strong>a store é a dona do
+        preço</strong>. A saída é a oferta dirigida: feita para <strong>uma pessoa específica</strong>,
+        que só ela vê, com validade, enviada <strong>pela ficha do admin</strong> e aceita na tela
+        da própria store. O preço da base inteira não muda, e cada passo deixa trilha.
+      </p>
+    </div>
+    <div class="cards">
+      <div class="card">
+        <p class="eyebrow">introdução</p>
+        <h3>«Comece com 25%»</h3>
+        <p>Para quem nunca assinou. 25% por 2 meses no Android — a Play recusou desconto recorrente de 1 período só; regra de store absorvida pelo catálogo.</p>
+        <p class="rule">elegível se: sem assinatura atual E sem histórico</p>
+      </div>
+      <div class="card">
+        <p class="eyebrow">retenção</p>
+        <h3>«Ficar»</h3>
+        <p>50% por 3 meses para quem deu sinal de saída: cancelou a renovação ou agendou descida. Continua no plano que já tem, pagando metade por um tempo.</p>
+        <p class="rule">elegível se: assinatura atual na mesma store E mesmo plano visível</p>
+      </div>
+      <div class="card">
+        <p class="eyebrow">upgrade</p>
+        <h3>«Subir de plano»</h3>
+        <p>30% por 2 meses para quem usa muito e caberia no plano de cima. O desconto tira o medo do degrau.</p>
+        <p class="rule">elegível se: assinatura atual na mesma store E nível maior que o atual</p>
+      </div>
+      <div class="card">
+        <p class="eyebrow">win-back</p>
+        <h3>«Voltar»</h3>
+        <p>50% por 3 meses para quem já assinou e saiu. A conversa mais difícil — e a única em que o canal importa tanto quanto o preço.</p>
+        <p class="rule">elegível se: sem assinatura atual E histórico na mesma store</p>
+      </div>
+    </div>
+    <p class="note">
+      As regras acima não são etiqueta de marketing: o sistema confere o estado real da assinatura
+      antes de deixar enviar. «Voltar» não se oferece a quem está ativo; «subir» não se oferece a
+      quem já está no topo. Há um quinto momento, a <strong>cortesia</strong>, para gesto de
+      atendimento.
+    </p>
+    <div class="myths">
+      <div class="myth">
+        <div class="said"><span class="tag">dizem que</span><p>«Reter quem vai cancelar e trazer de volta quem saiu? Dentro da store não dá.»</p></div>
+        <div class="truth"><span class="tag">na prática</span><p>Dá — e é o uso mais valioso de tudo isto. Quem cancelou a renovação recebe «Ficar»: metade do preço por alguns meses, <strong>no plano que ela já tem</strong>. Quem saiu há meses recebe «Voltar». A oferta chega por push; a pessoa toca e <strong>já assina</strong> — o desconto aparece na própria tela da store, sem código, sem formulário.</p></div>
+      </div>
+    </div>
+    <div class="journey">
+      <i>a pessoa cancelou a renovação</i>
+      <b>o operador envia «Ficar» pela ficha</b><i>→</i>
+      <b>push no celular dela</b><i>→</i>
+      <b>toca e vê o preço com desconto, direto da store</b><i>→</i>
+      <b class="hit">assina na hora</b><i>→</i>
+      <i>sem cupom, sem suporte, sem sair do app</i>
+    </div>
+    <div class="shots">
+      <figure class="shot">
+        <svg viewBox="0 0 280 520" role="img" aria-label="Push de oferta no topo e, abaixo, a tela da oferta com o preço com desconto e o botão de assinar">
+          <rect x="4" y="4" width="272" height="512" rx="30" fill="var(--raise)" stroke="var(--hair)"/>
+          <rect x="14" y="14" width="252" height="492" rx="22" fill="var(--canvas)"/>
+          <rect x="118" y="26" width="44" height="7" rx="3.5" fill="var(--hair)"/>
+          <g>
+            <rect x="22" y="42" width="236" height="56" rx="12" fill="var(--surface)" stroke="var(--hair)"/>
+            <rect x="32" y="54" width="22" height="22" rx="6" fill="var(--app)"/>
+            <circle cx="43" cy="65" r="3.5" fill="var(--surface)"/>
+            <text x="62" y="62" font-size="10.5" font-weight="700" fill="var(--ink)">Uma oferta para você</text>
+            <text x="62" y="76" font-size="9.3" fill="var(--muted)">Ficar: 50% por 3 meses. Toque para ver.</text>
+            <text x="246" y="58" text-anchor="end" font-size="8.5" fill="var(--muted)">agora</text>
+          </g>
+          <path d="M140 108 v14 M135 117 l5 6 l5 -6" stroke="var(--muted)" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+          <g>
+            <rect x="26" y="136" width="228" height="286" rx="12" fill="var(--surface)" stroke="var(--hair)"/>
+            <rect x="88" y="152" width="104" height="20" rx="10" fill="var(--app-soft)"/>
+            <text x="140" y="166" text-anchor="middle" font-size="8.5" font-weight="700" fill="var(--app-ink)" letter-spacing="1">OFERTA PARA VOCÊ</text>
+            <text x="140" y="212" text-anchor="middle" font-size="24" font-weight="800" fill="var(--ink)">R$ 19,95<tspan font-size="11" font-weight="600" fill="var(--muted)">/mês</tspan></text>
+            <text x="140" y="232" text-anchor="middle" font-size="11" fill="var(--muted)">R$ 39,90</text>
+            <line x1="116" y1="228.5" x2="164" y2="228.5" stroke="var(--muted)" stroke-width="1.1"/>
+            <text x="140" y="252" text-anchor="middle" font-size="10" fill="var(--ink-2)">por 3 meses, no plano que você já tem</text>
+            <g font-size="9.6" fill="var(--ink-2)">
+              <circle cx="58" cy="280" r="5.5" fill="var(--live-soft)" stroke="var(--live-border)"/>
+              <path d="M55.5 280 l2 2.2 l3.4 -4.2" stroke="var(--live)" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+              <text x="72" y="283.5">benefício cheio do plano, sem corte</text>
+              <circle cx="58" cy="302" r="5.5" fill="var(--live-soft)" stroke="var(--live-border)"/>
+              <path d="M55.5 302 l2 2.2 l3.4 -4.2" stroke="var(--live)" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+              <text x="72" y="305.5">só para você — vale até 12/09</text>
+              <circle cx="58" cy="324" r="5.5" fill="var(--live-soft)" stroke="var(--live-border)"/>
+              <path d="M55.5 324 l2 2.2 l3.4 -4.2" stroke="var(--live)" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+              <text x="72" y="327.5">o preço vem da store, não do app</text>
+            </g>
+            <rect x="42" y="350" width="196" height="36" rx="10" fill="var(--app)"/>
+            <text x="140" y="373" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF">Assinar com desconto</text>
+            <text x="140" y="406" text-anchor="middle" font-size="8.8" fill="var(--muted)">A confirmação acontece na tela da store,</text>
+            <text x="140" y="417" text-anchor="middle" font-size="8.8" fill="var(--muted)">com o preço cheio e o desconto lado a lado.</text>
+          </g>
+          <rect x="26" y="438" width="228" height="52" rx="12" fill="var(--surface)" stroke="var(--hair)"/>
+          <text x="42" y="460" font-size="9.5" font-weight="700" fill="var(--ink)">Seu plano atual</text>
+          <text x="42" y="474" font-size="9" fill="var(--muted)">R$ 39,90/mês · renova em 12/10</text>
+        </svg>
+        <figcaption><b>Do push à assinatura, sem código</b>A pessoa toca no aviso, vê o valor real com desconto — buscado da store — e assina na hora.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ============================================================ OFERTA: CATALOGO -->
+  <section id="oferta-catalogo">
+    <div class="head">
+      <p class="eyebrow">oferta · trabalho de mesa</p>
+      <h2>O catálogo: uma campanha, um cadastro por store</h2>
+    </div>
+    <div class="prose">
+      <p>
+        Para a operação, «Ficar — Tubarão» é <strong>uma campanha</strong>. Para a Apple e o Google
+        são registros distintos, com identificadores próprios que pertencem à store. O catálogo — a
+        tela de mesa do admin — guarda uma linha por store e agrupa as duas como canais do mesmo
+        cartão. Isso não é burocracia:
+      </p>
+    </div>
+    <ul class="plain">
+      <li><strong>Ativar uma store e não a outra</strong> — caso real no ar: a mesma campanha com Apple inativa e Google ativa.</li>
+      <li><strong>Absorver as divergências que a store impõe</strong> — as boas-vindas têm duração diferente por store porque a Play recusou o formato de 1 mês; a diferença fica registrada, não é forçada uma simetria que a store não aceita.</li>
+      <li><strong>Oferta não se apaga, se desativa.</strong> O identificador é imutável na store e o histórico de quem recebeu aponta para ela. Desligar preserva a trilha; apagar a quebraria.</li>
+      <li><strong>O cadastro valida na entrada</strong> o que o envio recusaria depois — inclusive a regra de store mais traiçoeira: o tipo de oferta que a Apple aceita para quem já assinou não serve para quem nunca assinou, e o catálogo recusa essa combinação na hora do cadastro em vez de deixá-la falhar na frente do operador.</li>
+    </ul>
+    <div class="fromcode">
+      <p class="eyebrow">história real de produção</p>
+      <p>
+        <strong>A pergunta «o que posso ofertar para ela?» chegou a ter duas respostas</strong> —
+        a regra oficial e uma cópia dela numa tela, que divergiram: a tela oferecia uma combinação
+        que o envio recusava depois. A correção virou princípio de plataforma: a elegibilidade mora
+        num lugar só, e todo mundo — tela, envio, app — pergunta a ele.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================================================ OFERTA: ENVIO -->
+  <section id="oferta-envio">
+    <div class="head">
+      <p class="eyebrow">oferta · pela ficha</p>
+      <h2>O envio parte de uma pessoa, não de uma lista</h2>
+    </div>
+    <div class="prose">
+      <p>
+        O envio acontece <strong>na ficha da pessoa</strong>, dentro do admin — onde já se vê o
+        plano, o histórico de cobrança e os aparelhos. E o formulário é travado <strong>pelo estado,
+        não pelo bom senso</strong>: o operador não consegue mandar «volte» para quem está ativo,
+        porque a opção nem aparece.
+      </p>
+    </div>
+    <div class="recipe">
+      <p class="eyebrow">como o envio funciona</p>
+      <ul>
+        <li><strong>Só o que a pessoa pode receber:</strong> das campanhas do catálogo inteiro, o formulário lista as elegíveis pelo estado real — na captura do laboratório, um perfil com assinatura encerrada via exatamente duas ofertas de «voltar». O resto nem aparece.</li>
+        <li><strong>Quatro canais que não competem:</strong> pop-up e bolha vivem dentro do app — é a tela abaixo; e-mail alcança quem foi embora; push é o atalho. E-mail e push só ficam marcáveis quando existem de verdade: «sem aparelho registrado» trava a caixa e diz por quê.</li>
+        <li><strong>A copy é a do catálogo.</strong> Ver antes de mandar é diferente de reescrever no celular: campo de texto que ninguém revisa convida a copy pior que a cadastrada.</li>
+        <li><strong>Validade fechada</strong> (1/3/7/15 dias, padrão 15), resolvida em data concreta <em>no servidor</em> — «vale por 15 dias» não pode virar prazo que se move sozinho. Vencido, o convite some das telas; o histórico permanece.</li>
+        <li><strong>Todo envio deixa registro:</strong> quem enviou, para quem, qual oferta, motivo interno, resultado por canal. Ação que mexe com dinheiro de cliente sem trilha vira «quem mandou isso?» seis meses depois.</li>
+      </ul>
+    </div>
+    <div class="shots">
+      <figure class="shot">
+        <svg viewBox="0 0 280 470" role="img" aria-label="App aberto com o pop-up da oferta em destaque no topo e a bolha flutuante no canto, enquanto o conteúdo segue atrás">
+          <rect x="4" y="4" width="272" height="462" rx="30" fill="var(--raise)" stroke="var(--hair)"/>
+          <rect x="14" y="14" width="252" height="442" rx="22" fill="var(--canvas)"/>
+          <rect x="118" y="26" width="44" height="7" rx="3.5" fill="var(--hair)"/>
+          <g opacity="0.55">
+            <rect x="30" y="46" width="18" height="18" rx="5" fill="var(--app)"/>
+            <text x="56" y="60" font-size="11" font-weight="700" fill="var(--ink)">Início</text>
+            <rect x="26" y="150" width="228" height="64" rx="12" fill="var(--surface)" stroke="var(--hair)"/>
+            <rect x="38" y="164" width="120" height="9" rx="4.5" fill="var(--hair)"/>
+            <rect x="38" y="182" width="180" height="7" rx="3.5" fill="var(--hair)"/>
+            <rect x="38" y="196" width="150" height="7" rx="3.5" fill="var(--hair)"/>
+            <rect x="26" y="226" width="228" height="64" rx="12" fill="var(--surface)" stroke="var(--hair)"/>
+            <rect x="38" y="240" width="100" height="9" rx="4.5" fill="var(--hair)"/>
+            <rect x="38" y="258" width="180" height="7" rx="3.5" fill="var(--hair)"/>
+            <rect x="38" y="272" width="130" height="7" rx="3.5" fill="var(--hair)"/>
+            <rect x="26" y="302" width="228" height="64" rx="12" fill="var(--surface)" stroke="var(--hair)"/>
+            <rect x="38" y="316" width="140" height="9" rx="4.5" fill="var(--hair)"/>
+            <rect x="38" y="334" width="170" height="7" rx="3.5" fill="var(--hair)"/>
+          </g>
+          <g>
+            <rect x="22" y="74" width="236" height="66" rx="12" fill="var(--surface)" stroke="var(--app)"/>
+            <rect x="34" y="86" width="52" height="17" rx="8.5" fill="var(--app-soft)"/>
+            <text x="60" y="98" text-anchor="middle" font-size="7.8" font-weight="700" letter-spacing="0.8" fill="var(--app-ink)">OFERTA</text>
+            <text x="34" y="118" font-size="10.5" font-weight="700" fill="var(--ink)">Ficar: 50% por 3 meses</text>
+            <text x="34" y="131" font-size="9" fill="var(--muted)">no plano que você já tem · até 12/09</text>
+            <text x="216" y="122" font-size="10" font-weight="700" fill="var(--app-ink)">ver →</text>
+            <path d="M240 88 l8 8 M248 88 l-8 8" stroke="var(--muted)" stroke-width="1.6" stroke-linecap="round"/>
+          </g>
+          <g>
+            <circle cx="226" cy="408" r="24" fill="var(--app)"/>
+            <text x="226" y="415" text-anchor="middle" font-size="16" font-weight="800" fill="#FFFFFF">%</text>
+            <circle cx="244" cy="392" r="8" fill="var(--brass)"/>
+            <text x="244" y="395.5" text-anchor="middle" font-size="9" font-weight="700" fill="#FFFFFF">1</text>
+          </g>
+          <g fill="var(--muted)">
+            <rect x="14" y="426" width="252" height="30" rx="0" fill="var(--surface)"/>
+            <circle cx="70" cy="441" r="3" fill="var(--app)"/>
+            <circle cx="140" cy="441" r="3" fill="var(--hair)"/>
+            <circle cx="210" cy="441" r="3" fill="var(--hair)"/>
+          </g>
+        </svg>
+        <figcaption><b>A oferta mora dentro do app</b>O pop-up garante a primeira vista (sai só no X); a bolha fica à mão enquanto o convite valer — e some sozinha quando vence. Push e e-mail são atalhos, não o único caminho.</figcaption>
+      </figure>
+    </div>
+    <div class="fromcode">
+      <p class="eyebrow">história real de produção</p>
+      <p>
+        <strong>Envio é UM fato; canal é técnica.</strong> Antes dessa regra, um e-mail que voltava
+        <em>desfazia o envio inteiro</em> — e a oferta sumia do app, embora existisse, válida, no
+        card. Hoje cada canal carrega o próprio resultado, e a oferta vive dentro do app enquanto
+        valer. E <strong>e-mail sem botão não sai</strong>: se não dá para montar o link que leva à
+        oferta, o canal é recusado — meio aviso é pior que nenhum.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================================================ OFERTA: ACEITE -->
+  <section id="oferta-aceite">
+    <div class="head">
+      <p class="eyebrow">oferta · o resgate</p>
+      <h2>O aceite acontece onde a pessoa já paga</h2>
+    </div>
+    <div class="prose">
+      <p>
+        Do lado de quem recebe não existe resgate, código nem formulário. A oferta é um cartão na
+        tela; o toque abre uma tela dedicada que mostra <strong>o valor real vindo da store</strong>
+        (R$ 19,95 num plano de R$ 39,90) com condição, benefício e store declaradas — o app nunca
+        calcula preço; se a store não devolver a oferta, a tela não inventa o número. O botão abre a
+        folha de compra da própria store, com o desconto e o preço cheio lado a lado.
+      </p>
+    </div>
+    <pre class="flow">o ciclo de vida de cada convite, auditável ponta a ponta:
+
+  criada ──▶ enviada ──▶ aberta ──▶ <b>resgatada</b>
+                   └──▶ expirada · cancelada · inelegível · recusada pela store
+
+  «resgatada» é quando a store confirma a cobrança COM a condição —
+  tocar no botão não resgata; abrir a folha da store não resgata.</pre>
+    <ul class="plain">
+      <li><strong>O desconto não mexe no benefício.</strong> Quem aceita 50% recebe o benefício cheio do plano. Desconto que corta benefício é rebaixamento disfarçado, e a pessoa percebe na primeira renovação.</li>
+      <li><strong>Aceitar usa a mecânica de sempre.</strong> Ficar com desconto compra o próprio plano; subir com desconto é a troca normal. Nunca nasce uma segunda assinatura em paralelo.</li>
+      <li><strong>O mesmo desenho vale para compra avulsa:</strong> pacote único com desconto, apontando sempre para um produto real da store, e o benefício continuando a nascer só da compra confirmada.</li>
+    </ul>
+    <div class="fromcode">
+      <p class="eyebrow">história real de produção</p>
+      <p>
+        <strong>No iPhone, a oferta só compra com uma autorização assinada pelo servidor</strong> —
+        ninguém injeta desconto por fora do sistema. E no resgate, o comprovante da store precisa
+        trazer exatamente a condição enviada àquela pessoa. <strong>Divergência não pune a
+        pessoa:</strong> a compra vale; a trilha registra que o desconto não foi aplicado, para a
+        operação ver.
+      </p>
+    </div>
+    <div class="board">
+      <div class="row"><span class="chip live">No ar</span><div><b>Catálogo com 4 campanhas reais nas 2 stores</b><p>Ativação independente por store, cadastro validado na entrada.</p></div></div>
+      <div class="row"><span class="chip live">No ar</span><div><b>Envio pela ficha, superfícies, push e e-mail com CTA obrigatório</b><p>Elegibilidade pelo estado, canais travados pelo que existe, trilha completa.</p></div></div>
+      <div class="row"><span class="chip live">No ar</span><div><b>Aceite Android de ponta a ponta</b><p>Do card no app até a cobrança com desconto confirmada pela store — validado em aparelho real.</p></div></div>
+      <div class="row"><span class="chip live">No ar</span><div><b>Aceite iOS de ponta a ponta</b><p>Validado em aparelho real, com a autorização assinada pelo servidor — para assinatura e pacote, como no Android.</p></div></div>
+      <div class="row"><span class="chip future">Decidido</span><div><b>Como serviço da plataforma</b><p>Catálogo, convite e benefício genéricos — o app define o que o benefício significa.</p></div></div>
+    </div>
+  </section>
+
+  <!-- ############################################################ PARTE: DOCUMENTACAO TECNICA -->
+  <section id="docs-access" class="part" data-doc-id="access-integration-overview" data-status="implemented-not-distributed" hidden>
+    <div class="head">
+      <p class="eyebrow"><b>parte 5</b> · documentação técnica · access</p>
+      <h2>Comece pela fronteira, não pelos endpoints</h2>
+    </div>
+    <div class="prose">
+      <p>
+        O Bullgate Access é autoridade sobre <strong>identity, identificadores, senha, credenciais
+        sociais, sessões, recovery, provas e AccessFlow</strong>. Seu produto continua autoridade
+        sobre perfil, permissões de negócio, dados do domínio, layout, copy e navegação.
+      </p>
+      <p>
+        A integração pública da fase 1 usa uma regra sem exceção: <strong>o aplicativo chama o
+        backend do produto; o backend chama o Access</strong>. A credencial de integração nunca
+        entra no JavaScript, no bundle móvel ou numa variável pública.
+      </p>
+    </div>
+    <div class="tech-intro">
+      <div class="tech-status">
+        <span class="chip plat">Fase 1</span>
+        <h3 style="margin-top:0.85rem;">Implementada e validada no laboratório; distribuição externa ainda pendente</h3>
+        <p>O fluxo integrado do BAYBO foi validado em aparelho Android em 04/09/2026. Os pacotes ainda não têm registry/release pública e o destino remoto para empresas externas ainda precisa ser provisionado.</p>
+      </div>
+      <div class="tech-facts">
+        <div><b>Backend</b><span>ASP.NET Core · .NET 10</span></div>
+        <div><b>Aplicativo</b><span>React Native · Expo · Web</span></div>
+        <div><b>Prefixo BFF</b><span><code>/bullgate/access/v1</code></span></div>
+      </div>
+    </div>
+    <div class="architecture-line" aria-label="Aplicativo chama o backend do produto, que chama o Bullgate Access e seu PostgreSQL">
+      <div><b>Seu aplicativo</b><span>Usa SDK headless e chama somente o seu BFF.</span></div>
+      <div class="focus"><b>Seu backend + BFF</b><span>Guarda cookies HttpOnly e a credencial server-to-server.</span></div>
+      <div><b>Bullgate Access</b><span>Resolve identity, sessão, provas e jornadas.</span></div>
+      <div><b>PostgreSQL próprio</b><span>Banco isolado do domínio do seu produto.</span></div>
+    </div>
+    <div class="tech-grid">
+      <div class="tech-card">
+        <span class="chip plat">Bullgate</span>
+        <h3>Identidade e continuidade</h3>
+        <p><code>identityId</code>, e-mail principal, telefone verificado, senha, Google/Apple, sessões, recovery e estado do flow.</p>
+        <p class="boundary">Identifiers podem mudar. Seu produto não deve associar perfil local por e-mail ou telefone.</p>
+      </div>
+      <div class="tech-card">
+        <span class="chip live">Seu produto</span>
+        <h3>Perfil e negócio</h3>
+        <p>Nome de exibição, papéis, permissões, onboarding, dados do domínio e tudo que acontece depois da autenticação.</p>
+        <p class="boundary">A associação estável é <code>identityId → profileId</code>, com provisionamento idempotente.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ DOCS: BACKEND -->
+  <section id="docs-backend" data-doc-id="access-backend-integration" data-audience="backend" hidden>
+    <div class="head">
+      <p class="eyebrow">integração técnica · backend</p>
+      <h2>ASP.NET Core: adapter, BFF e sessão composta</h2>
+    </div>
+    <div class="prose">
+      <p>
+        Para .NET, use <strong><code>Bullgate.Access.AspNetCore</code></strong>. O adapter registra o
+        client do Access, publica as rotas BFF e converte a sessão Bullgate no principal local do
+        produto. Em outra stack, reproduza a mesma fronteira server-to-server; o guia raw completo
+        ainda será publicado.
+      </p>
+    </div>
+    <pre class="tech-code" aria-label="Configuração resumida do adapter ASP.NET Core"><code>using Bullgate.Access.AspNetCore;
+
+builder.Services.AddBullgateAccess(options =&gt;
+{
+    options.BaseAddress = new Uri(configuration["Bullgate:Access:BaseUrl"]!);
+    options.IntegrationCredential = configuration["Bullgate:Access:IntegrationCredential"]!;
+});
+
+builder.Services
+    .AddAuthentication(BullgateAccessDefaults.AuthenticationScheme)
+    .AddBullgateSession();
+
+app.UseBullgateAccessFailures();
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.<span class="hot">MapBullgateAccess&lt;ProductRegistration, ProductProfile&gt;()</span>;</code></pre>
+    <div class="recipe">
+      <p class="eyebrow">dois contratos que o produto implementa</p>
+      <ul>
+        <li><strong><code>IBullgatePrincipalResolver</code></strong> resolve o subject local quando a sessão já é Product.</li>
+        <li><strong><code>IBullgateAccessApplication&lt;TRegistration,TProfile&gt;</code></strong> resolve ou cria o perfil associado ao <code>identityId</code>.</li>
+        <li><strong>Provisionamento é idempotente:</strong> duas tentativas para a mesma identity devolvem o mesmo perfil, inclusive depois de conflito de unicidade.</li>
+        <li><strong>Falha operacional não vira decisão de domínio:</strong> indisponibilidade do Access responde <code>503 access-unavailable</code> e não apaga o cookie.</li>
+      </ul>
+    </div>
+    <div class="endpoint-board" aria-label="Grupos de rotas publicados pelo BFF">
+      <div><b>Entrada</b><span><code>POST /register</code> · <code>POST /login</code> · <code>POST /google</code> · <code>POST /apple</code> · <code>GET /session</code> · <code>POST /logout</code></span></div>
+      <div><b>Recovery</b><span><code>POST /password/recovery/email</code> · <code>/phone</code> · <code>/phone/confirm</code> · <code>/reset</code></span></div>
+      <div><b>Conta</b><span>Senha, troca direta de e-mail e vínculo/desvínculo de Google e Apple.</span></div>
+      <div><b>Configuração</b><span><code>GET /config/application-clients/{applicationClientKey}</code> devolve parâmetros públicos da build, sem providers ou segredos.</span></div>
+      <div><b>Jornadas</b><span><code>POST /flows</code> · <code>GET /flows/{flowId}</code> · <code>POST /flows/{flowId}/actions</code></span></div>
+    </div>
+    <div class="callout brass">
+      <p><strong>Exclusão é coordenada pelo produto.</strong> O BFF genérico não publica <code>DELETE /account</code>. Seu backend apaga o domínio conforme sua política e chama <code>DeleteAccountAsync</code>; não existe transação distribuída automática entre os dois bancos.</p>
+    </div>
+  </section>
+
+  <!-- ============================================================ DOCS: FRONTEND -->
+  <section id="docs-frontend" data-doc-id="access-frontend-integration" data-audience="frontend" hidden>
+    <div class="head">
+      <p class="eyebrow">integração técnica · frontend</p>
+      <h2>React Native: o SDK controla o protocolo; seu app controla a experiência</h2>
+    </div>
+    <div class="prose">
+      <p>
+        O pacote <strong><code>@bullgate/react-native</code></strong> é headless. Ele controla sessão,
+        concorrência, providers, revisão do flow, countdown, reset token e os estados técnicos. Seu
+        aplicativo mantém componentes, acessibilidade, copy, navegação, analytics e efeitos de negócio.
+      </p>
+      <p>
+        O <code>baseUrl</code> aponta para <strong>a API do seu produto</strong>, nunca para o Access.
+        O transport chama <code>/bullgate/access/v1</code> com cookies; a integration credential
+        <code>bgic_…</code> não existe na configuração móvel. Cada build usa apenas uma
+        <code>applicationClientKey</code> pública e estável, sem UUID interno do banco.
+      </p>
+    </div>
+    <pre class="tech-code" aria-label="Configuração resumida do SDK React Native"><code>const {
+  BullgateAccessProvider,
+  useBullgateAccess,
+  useBullgateRegistration,
+  useBullgatePhoneManagement,
+  useBullgatePasswordRecoveryByPhone,
+} = createBullgateExpoAccess({
+  transport: createBullgateFetchTransport({
+    <span class="hot">baseUrl: () =&gt; process.env.EXPO_PUBLIC_API_URL</span>,
+  }),
+  applicationClientKey: "android-development",
+});</code></pre>
+    <div class="tech-grid">
+      <div class="tech-card">
+        <span class="chip plat">Hook</span>
+        <h3><code>useBullgateAccess()</code></h3>
+        <p>Sessão, cadastro, login, Google/Apple, e-mail, senha, logout e exclusão coordenada.</p>
+      </div>
+      <div class="tech-card">
+        <span class="chip plat">Hook</span>
+        <h3><code>useBullgateRegistration()</code></h3>
+        <p>Continua o cadastro por AccessFlow sem expor intent ou capability às telas.</p>
+      </div>
+      <div class="tech-card">
+        <span class="chip plat">Hook</span>
+        <h3><code>useBullgatePhoneManagement()</code></h3>
+        <p>Adiciona ou troca telefone durante uma sessão Product.</p>
+      </div>
+      <div class="tech-card">
+        <span class="chip plat">Hook</span>
+        <h3><code>useBullgatePasswordRecoveryByPhone()</code></h3>
+        <p>Conduz telefone, OTP e nova senha mantendo o reset token privado.</p>
+      </div>
+    </div>
+    <div class="fromcode">
+      <p class="eyebrow">regra de composição</p>
+      <p><strong>Render pronto ou UI própria.</strong> A empresa pode usar journeys prontas, substituir slots ou renderizar cada step com hooks semânticos. Em todos os modos, a tela executa apenas ações oferecidas pela revisão atual do flow.</p>
+    </div>
+  </section>
+
+  <!-- ============================================================ DOCS: FASE 1 -->
+  <section id="docs-fase-1" data-doc-id="access-v1-contract" data-status="implemented" hidden>
+    <div class="head">
+      <p class="eyebrow">contrato vigente · fase 1</p>
+      <h2>O que existe — e o que não deve ser inferido</h2>
+    </div>
+    <div class="scope-pair">
+      <div class="scope-box yes">
+        <h3>Implementado no código</h3>
+        <ul>
+          <li>Cadastro e login por e-mail e senha.</li>
+          <li>Google e Apple quando habilitados no ambiente.</li>
+          <li>Sessões de cadastro e de produto.</li>
+          <li>Recovery por e-mail e telefone.</li>
+          <li>Telefone verificado e fluxos de conflito.</li>
+          <li>Troca direta de e-mail e exclusão da identity.</li>
+        </ul>
+      </div>
+      <div class="scope-box no">
+        <h3>Fora da fase 1</h3>
+        <ul>
+          <li>E-mails alternativos ou consolidação de e-mails.</li>
+          <li>Merge automático de identities.</li>
+          <li>Verificação de e-mail por challenge ou link.</li>
+          <li>Login sem senha por magic link ou código de uso único.</li>
+          <li>Billing e entitlements dentro do Access.</li>
+          <li>Portal administrativo Bullgate.</li>
+          <li>Bullgate Cloud gerenciado.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout brass">
+      <p><strong>Troca de e-mail substitui; não acumula.</strong> Na fase 1, o novo endereço substitui imediatamente o identifier principal. O antigo deixa de ser login por senha e o novo não vira endereço alternativo.</p>
+    </div>
+    <div class="callout neutral">
+      <p><strong>Recuperar a identity anterior não faz login silencioso.</strong> O caminho solicita reset no e-mail antigo, encerra o flow, revoga a sessão provisória e descarta o e-mail novo. Depois do reset e de um novo login, a identity original volta a resolver o perfil e o histórico existentes.</p>
+    </div>
+  </section>
+
+  <!-- ============================================================ DOCS: FUTURO -->
+  <section id="docs-futuro" class="part" data-doc-id="access-future-catalog" data-status="research" hidden>
+    <div class="head">
+      <p class="eyebrow"><b>visão de produto</b> · não implementado</p>
+      <h2>Futuros do Access: autenticação primeiro, prova civil sob demanda</h2>
+    </div>
+    <div class="prose">
+      <p>
+        A ordem recomendada começa pelo que beneficia qualquer integração: <strong>verificação de
+        e-mail, login sem senha, passkeys, 2FA, step-up, controle de sessões e recovery forte</strong>.
+        Data de nascimento, CPF, documento, OCR e face entram apenas quando o produto precisa provar
+        identidade civil — como adapters substituíveis, nunca como obrigação do cadastro comum.
+      </p>
+    </div>
+    <div class="future-stack">
+      <article class="future-item priority" data-capability-id="email-verification" data-status="recommended-next">
+        <div class="future-top"><h3>Verificação de e-mail</h3><span class="chip plat">Recomendado a seguir</span></div>
+        <p>Comprovar a posse do e-mail no cadastro e antes de mudanças sensíveis, por código ou link de uso único.</p>
+        <ul><li>Expiração, limite de tentativas, cooldown e reenvio seguem policy explícita.</li><li>Trocar o e-mail exige prova recente e revoga challenges anteriores.</li><li>A verificação confirma o endereço; não cria e-mail alternativo nem vincula identities automaticamente.</li></ul>
+        <p class="future-boundary"><strong>Fronteira:</strong> o provider entrega a mensagem; o Bullgate controla challenge, prova, expiração e decisão.</p>
+      </article>
+      <article class="future-item priority" data-capability-id="passwordless-email" data-status="recommended-next">
+        <div class="future-top"><h3>Login sem senha</h3><span class="chip plat">Recomendado a seguir</span></div>
+        <p>Entrar por magic link ou código de uso único enviado a um e-mail já verificado, sem armazenar nem reutilizar senha.</p>
+        <ul><li>O link abre o app ou a web no contexto correto e só pode ser consumido uma vez.</li><li>Pedido de login não revela se o endereço está cadastrado.</li><li>Dispositivo, expiração, tentativas e replay entram na trilha de segurança.</li></ul>
+        <p class="future-boundary"><strong>Fronteira:</strong> passwordless é um autenticador; verificação de e-mail é uma prova de posse. Um não deve ser documentado como sinônimo do outro.</p>
+      </article>
+      <article class="future-item priority" data-capability-id="passkeys-webauthn" data-status="recommended-next">
+        <div class="future-top"><h3>Passkeys com WebAuthn</h3><span class="chip plat">Recomendado a seguir</span></div>
+        <p>Entrada mais simples e resistente a phishing, sem senha reutilizável guardada pelo Bullgate.</p>
+        <ul><li>Cadastrar, nomear, listar e revogar várias passkeys por identity.</li><li>Suportar passkeys sincronizadas e vinculadas a dispositivo.</li><li>Exigir autenticação recente para adicionar ou remover autenticador.</li></ul>
+        <p class="future-boundary"><strong>Fronteira:</strong> o Bullgate guarda chave pública e metadados mínimos. Biometria e PIN permanecem no dispositivo.</p>
+      </article>
+      <article class="future-item priority" data-capability-id="mfa-step-up" data-status="recommended-next">
+        <div class="future-top"><h3>2FA e step-up por ação</h3><span class="chip plat">Recomendado a seguir</span></div>
+        <p>TOTP e códigos de recuperação como fallback; política por realm para exigir prova adicional somente quando a ação justificar.</p>
+        <ul><li>Step-up para e-mail, senha, telefone, recovery, exclusão e administração.</li><li>SMS e WhatsApp como fallback de menor garantia, nunca o fator mais forte.</li></ul>
+        <p class="future-boundary"><strong>Fronteira:</strong> a política decide o nível; o AccessFlow descreve a próxima prova sem entregar a decisão à tela.</p>
+      </article>
+      <article class="future-item priority" data-capability-id="session-recovery" data-status="recommended-next">
+        <div class="future-top"><h3>Sessões visíveis e recovery por múltiplas provas</h3><span class="chip plat">Recomendado a seguir</span></div>
+        <p>Listar e revogar sessões, notificar mudanças críticas e impedir que a recuperação seja mais fraca que o login.</p>
+        <ul><li>Combinar autenticador disponível, código de recuperação, canal confirmado ou nova prova.</li><li>Modelar caso, evidências, política versionada, grant de uso único e execução idempotente.</li><li>Endereço de recuperação é canal de prova; não vira login alternativo.</li></ul>
+      </article>
+      <article class="future-item adapter" data-capability-id="age-assurance" data-status="adapter-track">
+        <div class="future-top"><h3>Data de nascimento e garantia de idade</h3><span class="chip future">Adapter</span></div>
+        <p>Digitar uma data é declaração, não verificação. O adapter valida em fonte autorizada e, quando basta, devolve apenas uma conclusão como <code>isOver18</code>.</p>
+        <p class="future-boundary"><strong>Fronteira:</strong> guardar o mínimo necessário; política, jurisdição e idade exigida pertencem ao realm.</p>
+      </article>
+      <article class="future-item adapter" data-capability-id="document-proofing" data-status="adapter-track">
+        <div class="future-top"><h3>Documento: captura, OCR e autenticidade</h3><span class="chip future">Adapter</span></div>
+        <p>OCR extrai campos, mas não prova autenticidade. A validação precisa observar formato, adulteração, elementos de segurança, MRZ/código de barras, captura ao vivo e mídia injetada.</p>
+        <p class="future-boundary"><strong>Fronteira:</strong> fornecedor especializado e substituível; o núcleo recebe evidência normalizada, método, proveniência e validade.</p>
+      </article>
+      <article class="future-item adapter" data-capability-id="selfie-liveness-face-match" data-status="adapter-track">
+        <div class="future-top"><h3>Selfie, vivacidade e comparação facial</h3><span class="chip future">Adapter</span></div>
+        <p>Selfie isolada não prova identidade. Quando o risco exigir, combinar captura ao vivo, defesa contra apresentação/injeção e comparação com documento validado ou fonte emissora.</p>
+        <p class="future-boundary"><strong>Fronteira:</strong> biometria é dado sensível. Preferir guardar resultado e trilha, não a amostra; prever retenção curta, base legal, região e revisão de falso negativo.</p>
+      </article>
+      <article class="future-item adapter" data-capability-id="cpf-authoritative-proof" data-status="adapter-track">
+        <div class="future-top"><h3>CPF como atributo e prova de titularidade</h3><span class="chip future">Adapter</span></div>
+        <p>CPF pode identificar; conhecer o número não prova titularidade. A política combina fonte autorizada ou credencial assinada com outra evidência adequada ao caso.</p>
+        <p class="future-boundary"><strong>Fronteira:</strong> adapters como GOV.BR, Datavalid e ICP-Brasil sem acoplamento ao modelo central.</p>
+      </article>
+      <article class="future-item" data-capability-id="enterprise-federation" data-status="later">
+        <div class="future-top"><h3>Federação e ciclo de vida enterprise</h3><span class="chip future">Depois do núcleo</span></div>
+        <p>OIDC primeiro; SAML, organizações, domínios verificados, SCIM e Shared Signals quando houver demanda empresarial e ecossistema reais.</p>
+      </article>
+    </div>
+    <div class="callout brass">
+      <p><strong>Limites deliberados:</strong> não criar e-mail alternativo ou merge por efeito colateral; não chamar OCR de autenticidade; não tratar selfie como prova; não guardar data completa quando uma conclusão de idade basta; não deixar score oculto ou decisão manual sem evidências determinar titularidade.</p>
+    </div>
+    <div class="source-links" aria-label="Referências públicas da visão futura">
+      <a href="https://pages.nist.gov/800-63-4/sp800-63b.html">NIST 800-63B · autenticação</a>
+      <a href="https://pages.nist.gov/800-63-4/sp800-63a.html">NIST 800-63A · identity proofing</a>
+      <a href="https://fidoalliance.org/passkeys/">FIDO Alliance · passkeys</a>
+      <a href="https://www.w3.org/TR/webauthn-3/">W3C · WebAuthn</a>
+      <a href="https://cheatsheetseries.owasp.org/cheatsheets/Multifactor_Authentication_Cheat_Sheet.html">OWASP · MFA</a>
+      <a href="https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709compilado.htm">LGPD</a>
+      <a href="https://openid.net/wg/sharedsignals/specifications/">OpenID · Shared Signals</a>
+    </div>
+  </section>
+
+  <!-- ============================================================ PROXIMOS -->
+  <section id="proximos">
+    <div class="head">
+      <p class="eyebrow">este documento cresce</p>
+      <h2>O que entra nas próximas edições</h2>
+    </div>
+    <div class="board">
+      <div class="row"><span class="chip future">Em escrita</span><div><b>A operação de bolso, tela a tela</b><p>Capturas reais do app de operação: ficha, ações e confirmações no celular do operador.</p></div></div>
+      <div class="row"><span class="chip future">Em escrita</span><div><b>Cobrar direto, fora da comissão</b><p>PIX e cartão via provedor web (Mercado Pago) — o desenho já fala em «onde a pessoa paga» de forma genérica.</p></div></div>
+      <div class="row"><span class="chip future">Em escrita</span><div><b>Self-hosted em uma tarde</b><p>Instalação guiada e repetível, cada serviço com seu banco, e o que a versão gratuita inclui (spoiler: tudo).</p></div></div>
+      <div class="row"><span class="chip future">Em escrita</span><div><b>Figuras e capturas próprias</b><p>Hoje o material visual real é do laboratório; as telas entram com as próximas edições.</p></div></div>
+      <div class="row"><span class="chip future">Próxima edição</span><div><b>Guias para outras stacks</b><p>Publicar o contrato raw server-to-server e exemplos de BFF fora do ASP.NET Core, sem levar a credencial de integração para o cliente.</p></div></div>
+    </div>
+  </section>
+
+  <!-- ============================================================ PARTICIPAR -->
+  <section id="participar">
+    <div class="head">
+      <p class="eyebrow">para quem chegou até aqui</p>
+      <h2>O que falta</h2>
+    </div>
+    <div class="prose">
+      <p>Lista do que o projeto precisa para andar mais rápido — da ajuda que mais acelera para a
+      mais simples.</p>
+    </div>
+    <ul class="needs">
+      <li>
+        <span class="n">01</span>
+        <b>Uso como laboratório</b>
+        <span class="d">Rodar seu app sobre a plataforma, com usuário e cobrança reais, e reportar o que
+        quebrar. Bug de produção vale mais que roteiro de teste.</span>
+      </li>
+      <li>
+        <span class="n">02</span>
+        <b>Trabalhar como desenvolvedor</b>
+        <span class="d">Pôr a mão no código: .NET, PostgreSQL e React Native — continuidade de
+        conta, billing nas duas stores, oferta dirigida.</span>
+      </li>
+      <li>
+        <span class="n">03</span>
+        <b>Ideias e sugestões</b>
+        <span class="d">Apontar o que está errado, o que falta, o que ninguém pensou. Não precisa
+        programar para melhorar o produto.</span>
+      </li>
+      <li>
+        <span class="n">04</span>
+        <b>Infraestrutura</b>
+        <span class="d">Servidor, máquina de build, banco, ambiente de teste, aparelho para validar compra
+        nas stores. Emprestado serve.</span>
+      </li>
+      <li>
+        <span class="n">05</span>
+        <b>Créditos de IA</b>
+        <span class="d">Crédito de API que sobra no mês, licença ociosa.</span>
+      </li>
+      <li>
+        <span class="n">06</span>
+        <b>Contas para integrar</b>
+        <span class="d">Adquirente e meio de pagamento, conta bancária, WhatsApp Business, redes sociais.
+        Sandbox ou produção — sem conta real, integração não se testa.</span>
+      </li>
+      <li>
+        <span class="n">07</span>
+        <b>Custos fixos</b>
+        <span class="d">Conta de desenvolvedor nas stores, certificado, envio de SMS.</span>
+      </li>
+    </ul>
+    <div class="contact">
+      <p class="eyebrow">contato</p>
+      <a href="mailto:acp.marco@outlook.com">acp.marco@outlook.com</a>
+      <a href="https://wa.me/5511976695464">WhatsApp (11) 97669-5464</a>
+    </div>
+  </section>
+
+  <!-- ============================================================ FOOTER -->
+  <footer>
+    <p class="eyebrow">sobre este documento</p>
+    <ul>
+      <li>O comportamento descrito foi conferido no código-fonte do laboratório e da plataforma, não só na documentação das stores.</li>
+      <li>As «histórias reais de produção» são incidentes verdadeiros, registrados com data e causa na documentação interna dos projetos.</li>
+      <li>Documentos-irmãos com o detalhe de cada frente: «Fluxo de Cadastro», «Assinatura Sem Fuga» e «Oferta Sem Cupom».</li>
+      <li>Estado desta edição: 04/09/2026 · quatro partes navegáveis (Acesso, Billing, Admin e Oferta) · documentação técnica publicada separadamente.</li>
+      <li><a href="/privacy/">Política de Privacidade do Bullgate Lab</a>.</li>
+    </ul>
+  </footer>
+
+  </div>
+  </main>
+</div>
+
+<details class="contact-fab">
+  <summary>Chat Bullgate</summary>
+  <div class="contact-panel">
+    <div class="chat-head"><b>Assistente Bullgate</b><span>prévia</span></div>
+    <div class="chat-log" aria-live="polite">
+      <div class="chat-message bot">
+        <p>Olá! O assistente ainda está sendo preparado. Enquanto isso, fale comigo:</p>
+        <div class="contact-card">
+          <strong>Marco · Bullgate</strong>
+          <div class="contact-links">
+            <a href="https://wa.me/5511976695464" target="_blank" rel="noopener">WhatsApp</a>
+            <a href="mailto:acp.marco@outlook.com">E-mail</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <form class="chat-composer">
+      <textarea name="message" required aria-label="Mensagem" placeholder="Escreva uma mensagem…"></textarea>
+      <button type="submit" aria-label="Enviar mensagem">↑</button>
+    </form>
+    <p class="chat-note">Prévia: nenhuma mensagem é enviada por este campo.</p>
+  </div>
+</details>
+
+<script>
+(function () {
+  var links = Array.prototype.slice.call(document.querySelectorAll('[data-nav]'));
+  var ids = [];
+  links.forEach(function (a) {
+    var id = (a.getAttribute('href') || '').slice(1);
+    if (id && ids.indexOf(id) === -1) ids.push(id);
+  });
+  var sections = ids.map(function (id) { return document.getElementById(id); }).filter(Boolean);
+
+  function setOn(id) {
+    links.forEach(function (a) {
+      a.classList.toggle('on', a.getAttribute('href') === '#' + id);
+    });
+  }
+
+  if ('IntersectionObserver' in window) {
+    var current = sections.length ? sections[0].id : null;
+    var visible = {};
+    var obs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { visible[e.target.id] = e.isIntersecting; });
+      for (var i = 0; i < sections.length; i++) {
+        if (visible[sections[i].id]) { current = sections[i].id; break; }
+      }
+      if (current) setOn(current);
+    }, { rootMargin: '-10% 0px -75% 0px' });
+    sections.forEach(function (s) { obs.observe(s); });
+  }
+
+  var menu = document.getElementById('mmenu');
+  if (menu) {
+    menu.querySelectorAll('a').forEach(function (a) {
+      a.addEventListener('click', function () { menu.removeAttribute('open'); });
+    });
+  }
+})();
+
+(function () {
+  document.querySelectorAll('.chat-composer').forEach(function (form) {
+    form.addEventListener('submit', function (event) {
+      event.preventDefault();
+      var field = form.querySelector('[name="message"]');
+      var log = form.parentElement.querySelector('.chat-log');
+      var message = field ? field.value.trim() : '';
+      if (!field || !log || !message) return;
+
+      var userMessage = document.createElement('div');
+      userMessage.className = 'chat-message user';
+      userMessage.textContent = message;
+      log.appendChild(userMessage);
+      field.value = '';
+
+      var botMessage = document.createElement('div');
+      botMessage.className = 'chat-message bot';
+      botMessage.textContent = 'Este chat ainda não está conectado. Para eu receber sua mensagem, use o WhatsApp ou o e-mail na primeira mensagem.';
+      log.appendChild(botMessage);
+      log.scrollTop = log.scrollHeight;
+      field.focus();
+    });
+  });
+})();
+</script>

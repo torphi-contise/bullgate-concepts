@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="only light">
+  <meta name="robots" content="noindex">
+  <title>Bullgate — documentação técnica</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&display=swap">
+  <style>
+    :root {
+      --canvas:#f5f7fb; --surface:#fff; --ink:#172033; --ink-2:#3d475b; --muted:#667085;
+      --hair:#d9dfeb; --gate:#1f4b99; --gate-dark:#15366f; --gate-soft:#eaf1fd;
+      --brass:#b4560e; --brass-soft:#fff3e8; --green:#147a54; --green-soft:#e8f7f1;
+      --mono:"SFMono-Regular",Consolas,"Liberation Mono",monospace;
+      --sans:"Segoe UI Variable Text",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,system-ui,sans-serif;
+      --display:"Archivo",var(--sans);
+    }
+    *{box-sizing:border-box} html,body{width:100%;max-width:100%;overflow-x:hidden;overflow-x:clip}
+    html{-webkit-text-size-adjust:100%;text-size-adjust:100%;scroll-behavior:smooth}
+    body{margin:0;background:var(--canvas);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased}
+    a{color:var(--gate);text-underline-offset:.18em} a:hover{color:var(--gate-dark)}
+    code{font-family:var(--mono);font-size:.84em;overflow-wrap:anywhere}
+    .layout{width:100%;max-width:92rem;min-width:0;margin:0 auto;display:grid;grid-template-columns:18rem minmax(0,1fr)}
+    .sidebar{position:sticky;top:0;align-self:start;height:100vh;overflow-y:auto;padding:1.65rem 1.2rem 2rem 1.5rem;border-right:1px solid var(--hair);background:#f8faff}
+    .brand{display:flex;align-items:center;gap:.65rem;color:var(--ink);text-decoration:none}
+    .brand-mark{width:1.55rem;height:.58rem;flex:0 0 auto;background:repeating-linear-gradient(90deg,var(--gate) 0 4px,transparent 4px 7px,var(--gate) 7px 11px,transparent 11px 14px,var(--brass) 14px 18px,transparent 18px 21px)}
+    .brand b{font-family:var(--display);font-size:1rem;letter-spacing:.02em;text-transform:uppercase}.brand em{color:var(--brass);font-style:normal}
+    .edition{margin:.85rem 0 1.45rem;color:var(--muted);font-family:var(--mono);font-size:.75rem}.sidebar nav{display:flex;flex-direction:column;gap:.12rem}.sidebar nav p{margin:1rem 0 .3rem;padding-left:.65rem;color:var(--gate);font-family:var(--mono);font-size:.75rem;letter-spacing:.1em;text-transform:uppercase}.sidebar nav a{display:block;padding:.36rem .65rem;border-left:2px solid transparent;border-radius:0 4px 4px 0;color:var(--ink-2);font-size:.9rem;line-height:1.35;text-decoration:none}.sidebar nav a:hover{border-left-color:var(--gate);background:var(--gate-soft);color:var(--gate-dark)}.sidebar nav a[aria-current="page"]{border-left-color:var(--green);background:var(--green-soft);color:var(--gate-dark);font-weight:700}.sidebar .back{margin-top:1.4rem;padding-top:1rem;border-top:1px solid var(--hair);font-size:.9rem}.page{min-width:0}.mobilebar{display:none}.wrap{width:100%;max-width:76rem;min-width:0;margin:0;padding:0 clamp(1.1rem,4vw,3.5rem) 5rem}
+    .hero{padding:clamp(3rem,8vw,6rem) 0 3.2rem}
+    .kicker{margin:0 0 .65rem;color:var(--gate);font-family:var(--mono);font-size:.78rem;letter-spacing:.1em;text-transform:uppercase}
+    h1,h2,h3{margin:0;font-family:var(--display);letter-spacing:-.025em;line-height:1.12}
+    h1{font-size:clamp(2.3rem,6vw,4.7rem);text-transform:uppercase} h1 em{color:var(--brass);font-style:normal}
+    h2{font-size:clamp(1.55rem,3.5vw,2.2rem)} h3{font-size:1.15rem}
+    .lead{max-width:48rem;margin:1rem 0 0;color:var(--ink-2);font-size:1.08rem}
+    section{min-width:0;scroll-margin-top:1.3rem;padding:2.8rem 0;border-top:1px solid var(--hair)}
+    .section-head{max-width:48rem;margin-bottom:1.25rem}.section-head p{margin:.5rem 0 0;color:var(--ink-2)}
+    .architecture{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.7rem}
+    .architecture article,.doc-card,.path{min-width:0;padding:1rem;border:1px solid var(--hair);border-radius:7px;background:var(--surface)}
+    .architecture article:nth-child(2){border-top:3px solid var(--gate);background:var(--gate-soft)}
+    .architecture b,.architecture span{display:block}.architecture b{font-family:var(--display);font-size:.94rem}.architecture span{margin-top:.5rem;color:var(--muted);font-size:.85rem;line-height:1.48}
+    .docs-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.9rem}
+    .access-guides{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.9rem}
+    .doc-card{display:flex;flex-direction:column;gap:.7rem;border-top:3px solid var(--hair)}
+    .doc-card.live{border-top-color:var(--green)}.doc-card.next{border-top-color:var(--brass)}
+    .status{align-self:flex-start;padding:.18rem .45rem;border-radius:999px;background:var(--gate-soft);color:var(--gate-dark);font-family:var(--mono);font-size:.74rem}
+    .status.ready{background:var(--green-soft);color:var(--green)}.status.soon{background:var(--brass-soft);color:#743506}
+    .doc-card p{margin:0;color:var(--ink-2);font-size:.92rem}.doc-card ul{margin:0;padding-left:1.05rem;color:var(--ink-2);font-size:.88rem}
+    .doc-card a{margin-top:auto;font-family:var(--display);font-weight:700;text-decoration:none}
+    .paths{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.8rem}.path{display:block;color:var(--ink);text-decoration:none}.path:hover{border-color:var(--gate)}
+    .path span{display:block;margin-top:.35rem;color:var(--muted);font-size:.87rem}.path b{font-family:var(--display)}
+    .scope{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.9rem}.scope article{padding:1rem 1.05rem;border:1px solid var(--hair);border-radius:7px;background:var(--surface)}
+    .scope article:first-child{border-top:3px solid var(--green)}.scope article:last-child{border-top:3px solid var(--brass)}
+    .scope ul{margin:.65rem 0 0;padding-left:1.1rem;color:var(--ink-2);font-size:.9rem}
+    .notice{margin-top:1rem;padding:1rem 1.05rem;border:1px solid #e8bd95;border-left:4px solid var(--brass);border-radius:6px;background:var(--brass-soft);color:#5d3518}.notice strong{display:block}
+    footer{padding:2rem 0;border-top:1px solid var(--hair);color:var(--muted);font-size:.84rem}
+    .contact-fab{position:fixed;right:1.1rem;bottom:1.1rem;z-index:90}.contact-fab summary{display:inline-flex;align-items:center;gap:.5rem;min-height:3rem;padding:.7rem 1rem;border:1px solid var(--gate);border-radius:999px;background:var(--gate);color:#fff;font-family:var(--display);font-size:.9rem;font-weight:750;cursor:pointer;box-shadow:0 10px 28px rgba(23,42,75,.22);list-style:none}.contact-fab summary::-webkit-details-marker{display:none}.contact-fab summary::before{content:"?";display:grid;width:1.35rem;height:1.35rem;place-items:center;border:1px solid rgba(255,255,255,.7);border-radius:50%;font-family:var(--mono)}
+    .contact-panel{position:absolute;right:0;bottom:calc(100% + .65rem);width:min(20rem,calc(100vw - 2.2rem));padding:1rem;border:1px solid var(--hair);border-top:3px solid var(--brass);border-radius:6px;background:var(--surface);box-shadow:0 16px 40px rgba(23,42,75,.18)}.contact-panel b{display:block;font-family:var(--display)}.contact-panel .soon{display:inline-block;margin:.4rem 0 .65rem;padding:.15rem .45rem;border-radius:999px;background:var(--brass-soft);color:#6f3508;font-family:var(--mono);font-size:.75rem}.contact-panel p{margin:0;color:var(--ink-2);font-size:.87rem}.contact-actions{display:flex;gap:.45rem;margin-top:.8rem}.contact-actions a{padding:.42rem .62rem;border:1px solid #afc6ed;border-radius:4px;background:var(--gate-soft);font-size:.82rem;text-decoration:none}
+    @media(max-width:62rem){.layout{display:block}.sidebar{display:none}.mobilebar{display:block;position:sticky;top:0;z-index:50;border-bottom:1px solid var(--hair);background:rgba(248,250,255,.97);backdrop-filter:blur(10px)}.mobilebar summary{display:flex;align-items:center;gap:.65rem;min-width:0;padding:.78rem 1.2rem;cursor:pointer;list-style:none}.mobilebar summary::-webkit-details-marker{display:none}.mobilebar summary::after{content:"índice";margin-left:auto;padding:.2rem .55rem;border:1px solid #afc6ed;border-radius:999px;color:var(--gate-dark);background:var(--gate-soft);font-family:var(--mono);font-size:.72rem}.mobilebar details[open] summary::after{content:"fechar"}.mobilebar nav{max-height:calc(100vh - 3.6rem);overflow-y:auto;padding:.35rem 1.2rem 1rem;border-top:1px solid var(--hair)}.mobilebar nav a{display:block;padding:.42rem 0;color:var(--ink-2);text-decoration:none}.mobilebar nav a[aria-current="page"]{color:var(--green);font-weight:700}.architecture{grid-template-columns:repeat(2,minmax(0,1fr))}.access-guides{grid-template-columns:1fr}.paths{grid-template-columns:1fr}section{scroll-margin-top:4.2rem}}
+    @media(max-width:44rem){.docs-grid,.scope,.architecture{grid-template-columns:1fr}.hero{padding-top:3rem}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+    .contact-panel{width:min(23rem,calc(100vw - 2.2rem));max-height:min(35rem,calc(100vh - 6rem));overflow-y:auto}.chat-head{display:flex;align-items:center;justify-content:space-between;gap:.75rem;padding-bottom:.75rem;border-bottom:1px solid var(--hair)}.chat-head b{font-family:var(--display);font-size:1.05rem}.chat-head span{color:var(--green);font-family:var(--mono);font-size:.75rem}.chat-log{display:flex;flex-direction:column;gap:.7rem;max-height:19rem;overflow-y:auto;padding:.9rem .15rem .9rem 0}.chat-message{max-width:88%;padding:.75rem .85rem;font-size:.9rem;line-height:1.5;overflow-wrap:anywhere}.chat-message.bot{align-self:flex-start;border-radius:4px 12px 12px 12px;background:var(--gate-soft);color:var(--gate-dark)}.chat-message.user{align-self:flex-end;border-radius:12px 4px 12px 12px;background:var(--gate);color:#fff}.chat-message p{margin:0}.contact-card{margin-top:.7rem;padding-top:.65rem;border-top:1px solid #afc6ed}.contact-card strong{display:block;font-family:var(--display)}.contact-links{display:flex;flex-wrap:wrap;gap:.45rem;margin-top:.55rem}.contact-links a{padding:.38rem .55rem;border:1px solid #afc6ed;border-radius:4px;background:var(--surface);color:var(--gate-dark);font-size:.78rem;text-decoration:none}.chat-composer{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:.5rem;padding-top:.8rem;border-top:1px solid var(--hair)}.chat-composer textarea{width:100%;min-height:3rem;max-height:7rem;resize:vertical;border:1px solid var(--hair);border-radius:6px;background:var(--canvas);color:var(--ink);font:400 1rem/1.35 var(--sans);padding:.72rem}.chat-composer textarea:focus{outline:2px solid #afc6ed;border-color:var(--gate)}.chat-composer button{width:3rem;height:3rem;border:1px solid var(--green);border-radius:6px;background:var(--green);color:#fff;font-family:var(--display);font-size:1.25rem;font-weight:750;cursor:pointer}.chat-note{margin:.55rem 0 0;color:var(--muted);font-family:var(--mono);font-size:.68rem;line-height:1.4}
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar" aria-label="Índice da documentação">
+      <a class="brand" href="/"><span class="brand-mark" aria-hidden="true"></span><b>Bull<em>gate</em> Docs</b></a>
+      <p class="edition">Índice técnico · v0.1</p>
+      <nav>
+        <p>Documentação</p>
+        <a href="/docs/" aria-current="page">Visão geral</a>
+        <a href="/docs/access/">Integração</a>
+        <a href="/docs/access/politicas/">Políticas</a>
+        <a href="/docs/access/resolucao-de-identidade/">Resolução de identidade</a>
+        <a href="/docs/access/erros/">Erros e mensagens</a>
+        <p>Nesta página</p>
+        <a href="#guias-access">Guias do Access</a>
+        <a href="#topologia">Topologia</a>
+        <a href="#servicos">Serviços da plataforma</a>
+        <a href="#atalhos">Atalhos de implementação</a>
+        <a href="#fase-1">Escopo da fase 1</a>
+      </nav>
+      <div class="back"><a href="/">Visão do produto</a><br><a href="/privacy/">Privacidade</a></div>
+    </aside>
+
+    <div class="page">
+      <div class="mobilebar">
+        <details id="mobile-index">
+          <summary><span class="brand"><span class="brand-mark" aria-hidden="true"></span><b>Bull<em>gate</em> Docs</b></span></summary>
+          <nav aria-label="Índice da documentação no celular">
+            <a href="/docs/" aria-current="page">Visão geral</a>
+            <a href="/docs/access/">Integração</a>
+            <a href="/docs/access/politicas/">Políticas</a>
+            <a href="/docs/access/resolucao-de-identidade/">Resolução de identidade</a>
+            <a href="/docs/access/erros/">Erros e mensagens</a>
+            <a href="#guias-access">Guias do Access</a>
+            <a href="#topologia">Topologia</a>
+            <a href="#servicos">Serviços da plataforma</a>
+            <a href="#atalhos">Atalhos de implementação</a>
+            <a href="#fase-1">Escopo da fase 1</a>
+            <a href="/">Visão do produto</a>
+            <a href="/privacy/">Privacidade</a>
+          </nav>
+        </details>
+      </div>
+
+      <div class="wrap">
+        <main>
+      <section class="hero" style="border-top:0">
+        <div>
+          <p class="kicker">Documentação técnica</p>
+          <h1>Integre o <em>Bullgate</em></h1>
+          <p class="lead">Escolha o serviço e encontre arquitetura, configuração, contratos, endpoints, SDKs e limites da versão implementada.</p>
+        </div>
+      </section>
+
+      <section id="guias-access">
+        <div class="section-head"><p class="kicker">Guias essenciais do Access</p><h2>Escolha o documento certo</h2><p>Integração, configuração e conflitos são contratos distintos. Cada guia tem uma responsabilidade clara.</p></div>
+        <div class="access-guides">
+          <article class="doc-card live"><span class="status ready">comece aqui</span><h3>Integração do Access</h3><p>Arquitetura, backend, BFF, endpoints, SDK React Native, sessão e AccessFlow.</p><a href="/docs/access/">Abrir integração →</a></article>
+          <article class="doc-card live"><span class="status ready">guia dedicado</span><h3>Políticas do Access</h3><p>Identifiers, authenticators, providers, limites e comportamento por environment.</p><a href="/docs/access/politicas/">Abrir políticas →</a></article>
+          <article class="doc-card live"><span class="status ready">guia dedicado</span><h3>Resolução de identidade</h3><p>Conflito de telefone, provas, ações, transferência, concorrência e limites da fase 1.</p><a href="/docs/access/resolucao-de-identidade/">Abrir resolução →</a></article>
+          <article class="doc-card live"><span class="status ready">guia dedicado</span><h3>Erros e mensagens</h3><p>Códigos HTTP, feedback de jornada, copies sugeridas, ações da interface e cuidados de segurança.</p><a href="/docs/access/erros/">Abrir erros e mensagens →</a></article>
+        </div>
+      </section>
+
+      <section id="topologia">
+        <div class="section-head"><p class="kicker">Fronteira comum</p><h2>A topologia de qualquer integração</h2><p>O segredo fica no servidor do produto. O cliente usa um SDK headless e nunca conversa diretamente com o serviço Bullgate.</p></div>
+        <div class="architecture">
+          <article><b>Seu aplicativo</b><span>Experiência, navegação e SDK cliente.</span></article>
+          <article><b>Seu backend + BFF</b><span>Credencial de integração, cookies e perfil local.</span></article>
+          <article><b>Serviço Bullgate</b><span>Contrato genérico de plataforma.</span></article>
+          <article><b>Banco isolado</b><span>Dados do serviço separados do domínio do produto.</span></article>
+        </div>
+      </section>
+
+      <section id="servicos">
+        <div class="section-head"><p class="kicker">Serviços da plataforma</p><h2>Documentação disponível</h2><p>Cada serviço terá seu próprio conjunto de guias. O índice deixa claro o que já pode ser integrado e o que ainda está em escrita.</p></div>
+        <div class="docs-grid">
+          <article class="doc-card live"><span class="status ready">guia completo</span><h3>Bullgate Access</h3><p>Identidade, cadastro, login, sessão, Google/Apple e continuação de cadastro por telefone.</p><ul><li>Adapter ASP.NET Core</li><li>SDK React Native</li><li>Rotas BFF de acesso, conta, configuração e jornadas</li><li>AccessFlow e erros</li></ul><a href="/docs/access/">Ler documentação do Access →</a></article>
+          <article class="doc-card next"><span class="status soon">em escrita</span><h3>Billing e entitlements</h3><p>Assinaturas, stores, provedores web, eventos e entrega idempotente de benefícios.</p><a href="/#billing">Entender a visão de Billing →</a></article>
+          <article class="doc-card next"><span class="status soon">em escrita</span><h3>Admin e suporte</h3><p>Operação centralizada, comandos auditáveis, permissões e histórico por pessoa.</p><a href="/#admin">Entender a visão de Admin →</a></article>
+          <article class="doc-card next"><span class="status soon">em escrita</span><h3>Self-hosted e deploy</h3><p>Topologia, bancos independentes, migrations, segredos, observabilidade e atualização.</p><a href="/">Acompanhar o projeto →</a></article>
+        </div>
+      </section>
+
+      <section id="atalhos">
+        <div class="section-head"><p class="kicker">Atalhos de implementação</p><h2>Encontre o assunto dentro da integração</h2></div>
+        <div class="paths">
+          <a class="path" href="/docs/access/#inicio-rapido"><b>Quero integrar agora →</b><span>Sequência mínima do ambiente até a restauração de sessão.</span></a>
+          <a class="path" href="/docs/access/#configuracao-dotnet"><b>Estou no backend →</b><span>Options, middleware, contratos do host, cookies e autenticação.</span></a>
+          <a class="path" href="/docs/access/#react-native"><b>Estou no aplicativo →</b><span>Transport, métodos do client, sessão e AccessFlow.</span></a>
+          <a class="path" href="/docs/access/#endpoints"><b>Preciso da API →</b><span>Rotas, parâmetros, bodies e respostas do BFF.</span></a>
+          <a class="path" href="/docs/access/erros/"><b>Estou tratando falhas →</b><span>Erros HTTP, feedback recuperável, copies e resposta da UI.</span></a>
+          <a class="path" href="/docs/access/#roadmap"><b>Quero ver o futuro →</b><span>Verificação de e-mail, login sem senha, passkeys, 2FA, recovery forte e prova civil.</span></a>
+        </div>
+      </section>
+
+      <section id="fase-1">
+        <div class="section-head"><p class="kicker">Contrato honesto</p><h2>Fase 1 do Access</h2><p>O índice separa o que está implementado do que pertence ao roadmap.</p></div>
+        <div class="scope">
+          <article><h3>Disponível</h3><ul><li>E-mail e senha</li><li>Google e Apple quando habilitados</li><li>Sessões Registration e Product</li><li>Introspecção e logout</li><li>Telefone, OTP e conflito</li></ul></article>
+          <article><h3>Fora desta fase</h3><ul><li>E-mails alternativos</li><li>Merge automático de identities</li><li>Verificação de e-mail e login sem senha</li><li>Passkeys e 2FA</li><li>OCR, documento e selfie</li><li>Billing dentro do Access</li></ul></article>
+        </div>
+        <div class="notice"><strong>Sem e-mail alternativo.</strong> A fase 1 mantém um e-mail principal por identity e não cria alias por efeito colateral.</div>
+      </section>
+        </main>
+
+        <footer>Documentação conferida contra o código vigente. Atualizada em 04/09/2026.</footer>
+      </div>
+    </div>
+  </div>
+
+  <details class="contact-fab">
+    <summary>Chat Bullgate</summary>
+    <div class="contact-panel">
+      <div class="chat-head"><b>Assistente Bullgate</b><span>prévia</span></div>
+      <div class="chat-log" aria-live="polite">
+        <div class="chat-message bot">
+          <p>Olá! O assistente ainda está sendo preparado. Enquanto isso, fale comigo:</p>
+          <div class="contact-card">
+            <strong>Marco · Bullgate</strong>
+            <div class="contact-links">
+              <a href="https://wa.me/5511976695464" target="_blank" rel="noopener">WhatsApp</a>
+              <a href="mailto:acp.marco@outlook.com">E-mail</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <form class="chat-composer">
+        <textarea name="message" required aria-label="Mensagem" placeholder="Escreva uma mensagem…"></textarea>
+        <button type="submit" aria-label="Enviar mensagem">↑</button>
+      </form>
+      <p class="chat-note">Prévia: nenhuma mensagem é enviada por este campo.</p>
+    </div>
+  </details>
+  <script>
+    (function(){
+      var mobile=document.getElementById('mobile-index');
+      if(mobile)mobile.querySelectorAll('a').forEach(function(link){link.addEventListener('click',function(){mobile.removeAttribute('open');});});
+      document.querySelectorAll('.chat-composer').forEach(function(form){
+        form.addEventListener('submit',function(event){
+          event.preventDefault();
+          var field=form.querySelector('[name="message"]');
+          var log=form.parentElement.querySelector('.chat-log');
+          var message=field?field.value.trim():'';
+          if(!field||!log||!message)return;
+          var userMessage=document.createElement('div');
+          userMessage.className='chat-message user';
+          userMessage.textContent=message;
+          log.appendChild(userMessage);
+          field.value='';
+          var botMessage=document.createElement('div');
+          botMessage.className='chat-message bot';
+          botMessage.textContent='Este chat ainda não está conectado. Para eu receber sua mensagem, use o WhatsApp ou o e-mail na primeira mensagem.';
+          log.appendChild(botMessage);
+          log.scrollTop=log.scrollHeight;
+          field.focus();
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

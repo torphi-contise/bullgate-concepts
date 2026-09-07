@@ -1,0 +1,71 @@
+name: Erro na documentação
+description: Relate conteúdo incorreto, link quebrado ou problema visual nas páginas do Bullgate.
+title: "[Documentação] "
+labels:
+  - documentation
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Obrigado por ajudar a melhorar a documentação do Bullgate.
+        Não inclua credenciais, dados pessoais ou detalhes de vulnerabilidades neste formulário. Para segurança, siga SECURITY.md.
+
+  - type: input
+    id: location
+    attributes:
+      label: Página ou arquivo
+      description: Informe a URL publicada, rota, seção ou caminho do arquivo afetado.
+      placeholder: https://bullgate.baybo.app/docs/access/ ou html/docs.html
+    validations:
+      required: true
+
+  - type: dropdown
+    id: problem-type
+    attributes:
+      label: Tipo de problema
+      options:
+        - Conteúdo técnico incorreto
+        - Conteúdo desatualizado
+        - Link ou navegação
+        - Layout desktop
+        - Layout mobile ou rolagem horizontal
+        - Acessibilidade
+        - Exemplo ou copy
+        - Outro problema de documentação
+    validations:
+      required: true
+
+  - type: textarea
+    id: current
+    attributes:
+      label: O que acontece hoje?
+      description: Descreva o problema de forma objetiva e reproduzível.
+      placeholder: Informe o texto, comportamento ou resultado atual.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: O que deveria acontecer?
+      description: Explique a correção esperada sem apresentar comportamento futuro como já implementado.
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidências e contexto
+      description: Adicione fontes, versão, navegador, largura da tela ou imagens sem dados sensíveis.
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Confirmações
+      options:
+        - label: Pesquisei as issues existentes e não encontrei uma equivalente.
+          required: true
+        - label: Removi credenciais, dados pessoais e informações de segurança do relato público.
+          required: true
+        - label: Li e concordo em seguir o CODE_OF_CONDUCT.md.
+          required: true

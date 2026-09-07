@@ -1,0 +1,5 @@
+.cloudflare-token
+.cloudflare-account
+deploy-dist/
+node_modules/
+.wrangler/
