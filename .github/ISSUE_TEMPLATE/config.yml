@@ -1,5 +1,5 @@
 blank_issues_enabled: false
 contact_links:
-  - name: Vulnerabilidade de segurança
-    url: https://bullgate.baybo.app/#contato
-    about: Não abra uma issue pública. Consulte SECURITY.md e envie o relato pelo canal privado.
+  - name: Security vulnerability
+    url: https://github.com/torphi-contise/bullgate-concepts/security/policy
+    about: Do not open a public issue. Read SECURITY.md and report it through the private channel.

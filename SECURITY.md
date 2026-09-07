@@ -1,99 +1,100 @@
-# Política de segurança
+# Security Policy
 
-A segurança de quem consulta, integra e mantém o Bullgate faz parte do produto.
-Esta política explica como relatar uma possível vulnerabilidade sem expor outras
-pessoas antes que o problema possa ser compreendido e corrigido.
+The security of people who browse, integrate, and maintain Bullgate is part of
+the product. This policy explains how to report a potential vulnerability
+without exposing others before the issue can be understood and corrected.
 
-## Versões cobertas
+## Supported versions
 
-Recebem correções de segurança:
+Security fixes apply to:
 
-- a versão atualmente publicada em <https://bullgate.dev/>;
-- os arquivos vigentes da branch padrão deste repositório.
+- the version currently published at <https://bullgate.dev/>;
+- the current files on this repository's default branch.
 
-Artefatos históricos e cópias mantidas por terceiros não recebem correções
-retroativas. Se um problema antigo também afetar a versão vigente, ele permanece
-dentro do escopo.
+Historical artifacts and copies maintained by third parties do not receive
+retroactive fixes. If an older issue also affects the current version, it
+remains in scope.
 
-## O que relatar
+## What to report
 
-Relate de forma privada situações como:
+Report privately any issue involving:
 
-- credenciais, tokens, dados pessoais ou outros segredos presentes no
-  repositório ou no site publicado;
-- execução de script, injeção de conteúdo ou redirecionamento não autorizado no
-  site;
-- falhas no processo de build ou publicação que permitam alterar o conteúdo sem
-  autorização ou revelar credenciais;
-- documentação ou exemplos oficiais que orientem o uso inseguro de segredos,
-  autenticação, sessões ou dados pessoais;
-- qualquer falha reproduzível que possa comprometer confidencialidade,
-  integridade ou disponibilidade do projeto.
+- credentials, tokens, personal data, or other secrets present in the
+  repository or published website;
+- script execution, content injection, or unauthorized redirects on the
+  website;
+- build or publication failures that could allow unauthorized content changes
+  or credential disclosure;
+- official documentation or examples that recommend unsafe handling of
+  secrets, authentication, sessions, or personal data;
+- any reproducible issue that could compromise the project's confidentiality,
+  integrity, or availability.
 
-Se a descoberta afetar um serviço Bullgate que ainda não possua sua própria
-política pública, o mesmo canal privado pode ser usado. O relato será encaminhado
-ao repositório responsável sem publicação prematura.
+If a finding affects a Bullgate service that does not yet have its own public
+policy, you may use the same private channel. The report will be forwarded to
+the responsible repository without premature disclosure.
 
-## Como relatar
+## How to report
 
-Envie um e-mail para `acp.marco@outlook.com` com o assunto
-`Segurança — Bullgate`.
+Email `acp.marco@outlook.com` with the subject `Security — Bullgate`.
 
-Inclua, quando possível:
+When possible, include:
 
-1. componente, página, rota ou arquivo afetado;
-2. descrição do impacto observado ou potencial;
-3. passos mínimos para reproduzir;
-4. ambiente, navegador, versão ou commit relacionado;
-5. evidências estritamente necessárias, removendo dados pessoais e segredos;
-6. uma forma segura de contato para perguntas adicionais.
+1. the affected component, page, route, or file;
+2. the observed or potential impact;
+3. the minimum steps required to reproduce the issue;
+4. the relevant environment, browser, version, or commit;
+5. only the evidence required to understand the issue, with personal data and
+   secrets removed;
+6. a safe way to contact you with follow-up questions.
 
-Não envie tokens válidos, senhas, documentos pessoais ou dados de terceiros. Se
-uma evidência sensível for indispensável, descreva primeiro sua existência e
-combine um meio adequado de transferência.
+Do not send valid tokens, passwords, identity documents, or third-party data. If
+sensitive evidence is indispensable, describe its existence first so that an
+appropriate transfer method can be arranged.
 
-## O que esperar
+## What to expect
 
-O objetivo inicial é:
+Our initial goals are to:
 
-- confirmar o recebimento em até cinco dias úteis;
-- fazer uma avaliação inicial de impacto e reprodução em até dez dias úteis;
-- manter quem relatou informado quando houver mudança relevante de estado;
-- coordenar a divulgação depois de existir correção ou mitigação adequada.
+- acknowledge receipt within five business days;
+- provide an initial impact and reproducibility assessment within ten business
+  days;
+- keep the reporter informed when the status changes materially;
+- coordinate disclosure after an appropriate fix, mitigation, or agreed date
+  exists.
 
-Esses prazos são metas de comunicação, não garantia de resolução. Complexidade,
-dependências externas e disponibilidade de mantenedores podem alterar o tempo de
-correção. Se o relato não estiver no escopo, responderemos indicando o motivo e,
-quando conhecido, o canal apropriado.
+These are communication targets, not resolution guarantees. Complexity,
+external dependencies, and maintainer availability may affect resolution time.
+If a report is out of scope, we will explain why and identify a more appropriate
+channel when one is known.
 
-## Divulgação responsável
+## Responsible disclosure
 
-Pedimos que detalhes capazes de facilitar exploração não sejam publicados antes
-de uma correção, mitigação ou data de divulgação combinada. O crédito pela
-descoberta será oferecido quando desejado e quando sua publicação não aumentar o
-risco.
+Please do not publish details that could facilitate exploitation before a fix,
+mitigation, or coordinated disclosure date exists. Credit will be offered when
+requested and when publishing it does not increase risk.
 
-O projeto não possui programa de recompensa financeira por vulnerabilidades.
-Não prometa pagamento, benefício ou reconhecimento em nome do Bullgate.
+This project does not operate a paid bug bounty program. Do not promise payment,
+benefits, or recognition on behalf of Bullgate.
 
-## Limites para testes
+## Testing boundaries
 
-Uma pesquisa responsável deve:
+Responsible research must:
 
-- usar somente contas, dados e sistemas que pertençam à pessoa pesquisadora ou
-  para os quais ela tenha autorização expressa;
-- evitar indisponibilidade, degradação, spam, engenharia social e acesso a dados
-  de terceiros;
-- interromper o teste ao encontrar dados que não deveria acessar;
-- coletar apenas a evidência mínima necessária para demonstrar o problema;
-- respeitar serviços de terceiros e suas próprias políticas.
+- use only accounts, data, and systems owned by the researcher or covered by
+  explicit authorization;
+- avoid outages, degradation, spam, social engineering, and access to
+  third-party data;
+- stop testing upon encountering data the researcher is not authorized to
+  access;
+- collect only the minimum evidence required to demonstrate the issue;
+- respect third-party services and their own policies.
 
-Esta política não concede autorização para testar contas, infraestrutura ou
-serviços de terceiros, nem para realizar ataques de negação de serviço.
+This policy does not authorize testing third-party accounts, infrastructure, or
+services, and it does not authorize denial-of-service attacks.
 
-## Fora do canal privado
+## Outside the private channel
 
-Erros de texto, links quebrados, problemas de layout e propostas sem impacto de
-segurança podem ser tratados por issue ou pull request quando o repositório
-público estiver disponível. Questões de conduta seguem o
-[Código de Conduta](CODE_OF_CONDUCT.md), não esta política.
+Typos, broken links, layout problems, and proposals without security impact may
+be handled in a public issue or pull request. Conduct concerns are governed by
+the [Code of Conduct](CODE_OF_CONDUCT.md), not this policy.

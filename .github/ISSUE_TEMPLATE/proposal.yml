@@ -1,80 +1,80 @@
-name: Proposta de melhoria
-description: Proponha uma nova página, exemplo ou evolução da organização da documentação.
-title: "[Proposta] "
+name: Improvement proposal
+description: Propose a new page, example, or improvement to the documentation structure.
+title: "[Proposal] "
 labels:
   - enhancement
 body:
   - type: markdown
     attributes:
       value: |
-        Descreva primeiro o problema de quem lê ou integra. Mudanças de comportamento, arquitetura, escopo ou identidade visual precisam ser discutidas antes de uma implementação extensa.
+        Start with the problem faced by readers or integrators. Changes to behavior, architecture, scope, or visual identity must be discussed before a substantial implementation.
 
   - type: dropdown
     id: area
     attributes:
-      label: Área principal
+      label: Primary area
       options:
-        - Site e visão geral do produto
-        - Índice da documentação técnica
-        - Integração do Bullgate Access
-        - Políticas
-        - Resolução de identidade
-        - Erros e mensagens
-        - Processo do repositório
-        - Nova área
+        - Website and product overview
+        - Technical documentation index
+        - Bullgate Access integration
+        - Policies
+        - Identity resolution
+        - Errors and messages
+        - Repository process
+        - New area
     validations:
       required: true
 
   - type: textarea
     id: problem
     attributes:
-      label: Qual problema precisa ser resolvido?
-      description: Explique quem é afetado, em qual momento e por que o conteúdo atual não resolve.
+      label: What problem needs to be solved?
+      description: Explain who is affected, when it occurs, and why the current content is insufficient.
     validations:
       required: true
 
   - type: textarea
     id: proposal
     attributes:
-      label: Proposta
-      description: Descreva a mudança e o resultado que ela produziria para quem usa a documentação.
+      label: Proposal
+      description: Describe the change and the outcome it would produce for documentation users.
     validations:
       required: true
 
   - type: dropdown
     id: product-status
     attributes:
-      label: Estado da capacidade descrita
-      description: Se a proposta tratar de uma funcionalidade, classifique-a honestamente.
+      label: Status of the described capability
+      description: If the proposal concerns a capability, classify it honestly.
       options:
-        - Não se aplica; é uma mudança editorial ou de processo
-        - Implementada na versão atual
-        - Decidida, mas ainda não implementada
-        - Possibilidade futura ainda em desenho
-        - Não sei; precisa ser investigado
+        - Not applicable; this is an editorial or process change
+        - Implemented in the current version
+        - Decided, but not yet implemented
+        - Future possibility still under design
+        - Unknown; further investigation is required
     validations:
       required: true
 
   - type: textarea
     id: evidence
     attributes:
-      label: Evidências ou referências
-      description: Para comportamento implementado, informe código, contrato ou outra fonte verificável.
+      label: Evidence or references
+      description: For implemented behavior, provide code, a contract, or another verifiable source.
 
   - type: textarea
     id: alternatives
     attributes:
-      label: Alternativas consideradas
-      description: Opcional. Registre outras soluções e os efeitos relevantes de cada uma.
+      label: Alternatives considered
+      description: Optional. Record other solutions and the relevant effects of each one.
 
   - type: checkboxes
     id: checks
     attributes:
-      label: Confirmações
+      label: Confirmations
       options:
-        - label: Pesquisei as issues existentes e não encontrei uma proposta equivalente.
+        - label: I searched existing issues and did not find an equivalent proposal.
           required: true
-        - label: A proposta não contém credenciais, dados pessoais ou detalhes de vulnerabilidades.
+        - label: This proposal contains no credentials, personal data, or vulnerability details.
           required: true
-        - label: Li e concordo em seguir o CODE_OF_CONDUCT.md.
+        - label: I have read and agree to follow CODE_OF_CONDUCT.md.
           required: true

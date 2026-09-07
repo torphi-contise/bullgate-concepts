@@ -1,83 +1,80 @@
-# Como contribuir com o Bullgate Concepts
+# Contributing to Bullgate Concepts
 
-Obrigado por considerar uma contribuição. Este repositório reúne a apresentação
-pública e a documentação técnica do Bullgate. Uma mudança aqui pode influenciar
-decisões de integração, portanto clareza e precisão são parte do produto.
+Thank you for considering a contribution. This repository contains Bullgate's
+public presentation and technical documentation. Changes here can influence
+integration decisions, so clarity and accuracy are part of the product.
 
-Ao participar, você concorda em seguir o
-[Código de Conduta](CODE_OF_CONDUCT.md) do projeto.
+By participating, you agree to follow the project's
+[Code of Conduct](CODE_OF_CONDUCT.md).
 
-## Antes de começar
+## Before you begin
 
-Use uma issue para propor mudanças de comportamento, arquitetura, escopo ou
-identidade visual antes de investir em uma implementação extensa. Correções
-objetivas de texto, links, acessibilidade e pequenos erros podem seguir direto
-para um pull request.
+Open an issue before investing in a substantial implementation that changes
+behavior, architecture, scope, or visual identity. Objective corrections to
+text, links, accessibility, and small errors may go directly to a pull request.
 
-Não inclua credenciais, tokens, dados pessoais, segredos de integração ou
-informações internas nos exemplos, screenshots, commits ou descrições.
+Do not include credentials, tokens, personal data, integration secrets, or
+internal information in examples, screenshots, commits, or descriptions.
 
-Se a mudança estiver relacionada a uma vulnerabilidade ou puder expor dados,
-não abra uma issue ou pull request público. Siga a
-[política de segurança](SECURITY.md).
+If a change is related to a vulnerability or could expose data, do not open a
+public issue or pull request. Follow the [security policy](SECURITY.md).
 
-## O que pode ser contribuído
+## What you can contribute
 
-- correções de conteúdo, ortografia e links;
-- melhoria de legibilidade, navegação, responsividade e acessibilidade;
-- exemplos técnicos completos e verificáveis;
-- documentação de parâmetros, estados, erros e decisões de integração;
-- propostas de novas páginas ou de uma organização melhor do conteúdo.
+- content, spelling, and link corrections;
+- readability, navigation, responsiveness, and accessibility improvements;
+- complete and verifiable technical examples;
+- documentation of parameters, states, errors, and integration decisions;
+- proposals for new pages or a better organization of existing content.
 
-Mudanças na marca Bullgate, no posicionamento do produto ou na classificação de
-uma funcionalidade como implementada precisam de discussão prévia.
+Changes to the Bullgate brand, product positioning, or the classification of a
+capability as implemented require prior discussion.
 
-## Regra editorial principal
+## Primary editorial rule
 
-Não apresente intenção como comportamento existente. Toda afirmação de produto
-deve deixar claro se descreve:
+Do not present intent as existing behavior. Every product statement must make
+clear whether it describes:
 
-1. algo implementado na versão atual;
-2. um contrato decidido, mas ainda não implementado;
-3. uma hipótese ou capacidade futura.
+1. something implemented in the current version;
+2. a decided contract that has not yet been implemented;
+3. a hypothesis or future capability.
 
-Ao documentar comportamento técnico, informe a evidência usada na descrição do
-pull request. Quando código e documentação divergirem, o comportamento do código
-vigente deve ser investigado antes de alterar a documentação.
+When documenting technical behavior, identify the supporting evidence in the
+pull request description. When code and documentation disagree, investigate the
+current code behavior before changing the documentation.
 
-## Preparar o ambiente
+## Preparing the environment
 
-O site não possui dependências de aplicação. Para montar localmente a mesma
-estrutura de rotas usada na publicação, é necessário Windows PowerShell ou
-PowerShell 7:
+The website has no application dependencies. Building locally with the same
+route structure used for publication requires Windows PowerShell or PowerShell 7.
 
-Primeiro, clone o repositório usando a URL apresentada pelo botão **Code** na
-página do projeto. Dentro do checkout, execute:
+Clone the repository using the URL provided by the **Code** button on the
+project page. From inside the checkout, run:
 
 ```powershell
 cd bullgate-concepts
 .\deploy-bullgate.ps1 -BuildOnly
 ```
 
-O resultado será criado em `deploy-dist/`. Para navegar pelas rotas locais, use
-qualquer servidor HTTP estático. Com Python instalado, por exemplo:
+The result is created in `deploy-dist/`. Use any static HTTP server to browse
+the local routes. With Python installed, for example:
 
 ```powershell
 python -m http.server 3000 --directory deploy-dist
 ```
 
-Abra `http://localhost:3000/`. O modo `-BuildOnly` não acessa a Cloudflare e não
-exige credenciais. A publicação é responsabilidade dos mantenedores.
+Open `http://localhost:3000/`. The `-BuildOnly` mode does not access Cloudflare
+and does not require credentials. Publication is a maintainer responsibility.
 
-## Fazer a mudança
+## Making a change
 
-Crie uma branch curta a partir da branch padrão e mantenha o pull request focado
-em um único assunto. Edite os arquivos-fonte em `html/`; não edite
-`deploy-dist/`, pois ele é gerado e ignorado pelo Git.
+Create a short-lived branch from the default branch and keep the pull request
+focused on one subject. Edit the source files in `html/`; do not edit
+`deploy-dist/`, because it is generated and ignored by Git.
 
-Preserve os contratos de navegação entre estas rotas:
+Preserve the navigation contracts between these routes:
 
-| Fonte                  | Rota publicada                          |
+| Source                 | Published route                         |
 | ---------------------- | --------------------------------------- |
 | `html/bullgate.html`   | `/`                                     |
 | `html/privacy.html`    | `/privacy/`                             |
@@ -87,28 +84,28 @@ Preserve os contratos de navegação entre estas rotas:
 | `html/resolution.html` | `/docs/access/resolucao-de-identidade/` |
 | `html/errors.html`     | `/docs/access/erros/`                   |
 
-## Verificar antes de enviar
+## Verifying before submission
 
-1. Execute `.\scripts\validate-repository.ps1`.
-2. Se alterou arquivos comunitários ou de configuração do GitHub e possui
-   Node.js, execute `npx --yes prettier@3.6.2 --check README.md CONTRIBUTING.md CODE_OF_CONDUCT.md SECURITY.md ".github/**/*.{yml,md}"`.
-3. Navegue pela página alterada em largura desktop e mobile.
-4. Confirme que não há rolagem horizontal involuntária.
-5. Teste links, menu, foco por teclado e conteúdo exibido sem JavaScript.
-6. Confira se exemplos não contêm segredos e se recursos futuros estão marcados
-   como não implementados.
-7. Revise o diff para garantir que o pull request não inclua arquivos gerados ou
-   alterações sem relação com o objetivo.
+1. Run `.\scripts\validate-repository.ps1`.
+2. If you changed community or GitHub configuration files and have Node.js,
+   run `npx --yes prettier@3.6.2 --check README.md README.pt-BR.md CONTRIBUTING.md CODE_OF_CONDUCT.md SECURITY.md ".github/**/*.{yml,md}"`.
+3. Browse the changed page at desktop and mobile widths.
+4. Confirm that there is no unintended horizontal scrolling.
+5. Test links, menus, keyboard focus, and content displayed without JavaScript.
+6. Confirm that examples contain no secrets and that future features are marked
+   as not implemented.
+7. Review the diff to ensure the pull request contains no generated files or
+   unrelated changes.
 
-Na descrição do pull request, explique o problema, a solução, como foi verificada
-e quais páginas ou contratos foram afetados. Inclua imagens quando a mudança for
-visual.
+In the pull request description, explain the problem, the solution, how it was
+verified, and which pages or contracts were affected. Include images for visual
+changes.
 
-## Licença das contribuições
+## Contribution license
 
-Ao enviar uma contribuição intencional para inclusão neste repositório, você
-concorda que ela seja disponibilizada sob a [Apache License 2.0](LICENSE), nos
-termos da seção 5 da própria licença.
+By intentionally submitting a contribution for inclusion in this repository,
+you agree that it may be made available under the
+[Apache License 2.0](LICENSE), according to Section 5 of that license.
 
-A licença do repositório não concede direitos sobre nomes, marcas ou identidade
-visual Bullgate além do uso descritivo permitido pela seção 6.
+The repository license does not grant rights to Bullgate names, marks, or visual
+identity beyond the descriptive use permitted by Section 6.

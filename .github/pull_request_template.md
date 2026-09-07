@@ -1,45 +1,45 @@
-## Objetivo
+## Purpose
 
-<!-- Explique o problema e o resultado entregue por este pull request. -->
+<!-- Explain the problem and the outcome delivered by this pull request. -->
 
-## O que mudou
+## What changed
 
-<!-- Liste as páginas, arquivos, contratos ou decisões afetados. -->
+<!-- List the affected pages, files, contracts, or decisions. -->
 
-## Tipo de mudança
+## Change type
 
-- [ ] Correção de conteúdo ou link
-- [ ] Melhoria visual, responsiva ou de acessibilidade
-- [ ] Novo conteúdo ou exemplo técnico
-- [ ] Organização ou processo do repositório
-- [ ] Outro
+- [ ] Content or link correction
+- [ ] Visual, responsive, or accessibility improvement
+- [ ] New content or technical example
+- [ ] Repository organization or process
+- [ ] Other
 
-## Estado do comportamento documentado
+## Status of the documented behavior
 
-- [ ] Não se aplica; a mudança é editorial ou de processo
-- [ ] Implementado na versão atual e conferido em fonte verificável
-- [ ] Decidido, mas explicitamente marcado como não implementado
-- [ ] Futuro, explicitamente marcado como hipótese ou roadmap
+- [ ] Not applicable; this is an editorial or process change
+- [ ] Implemented in the current version and confirmed against a verifiable source
+- [ ] Decided, but explicitly marked as not implemented
+- [ ] Future work, explicitly marked as a hypothesis or roadmap item
 
-**Evidência usada:**
+**Evidence used:**
 
-<!-- Indique código, contrato, issue ou fonte que sustenta as afirmações técnicas. -->
+<!-- Identify the code, contract, issue, or source supporting technical claims. -->
 
-## Verificação
+## Verification
 
-- [ ] Executei `.\deploy-bullgate.ps1 -BuildOnly`
-- [ ] Testei os links e a navegação afetados
-- [ ] Conferi a página em largura desktop
-- [ ] Conferi a página em largura mobile
-- [ ] Confirmei que não surgiu rolagem horizontal involuntária
-- [ ] Conferi foco por teclado, contraste e conteúdo essencial sem JavaScript
-- [ ] Removi credenciais, dados pessoais e arquivos gerados
-- [ ] Mantive o pull request focado em um único assunto
+- [ ] I ran `.\deploy-bullgate.ps1 -BuildOnly`
+- [ ] I tested the affected links and navigation
+- [ ] I checked the page at desktop width
+- [ ] I checked the page at mobile width
+- [ ] I confirmed that no unintended horizontal scrolling was introduced
+- [ ] I checked keyboard focus, contrast, and essential content without JavaScript
+- [ ] I removed credentials, personal data, and generated files
+- [ ] I kept the pull request focused on one subject
 
-## Evidências visuais
+## Visual evidence
 
-<!-- Para alterações visuais, inclua imagens de desktop e mobile. Remova dados sensíveis. -->
+<!-- For visual changes, include desktop and mobile images with sensitive data removed. -->
 
-## Observações
+## Notes
 
-<!-- Registre limitações conhecidas, decisões pendentes ou riscos relevantes. -->
+<!-- Record known limitations, pending decisions, or relevant risks. -->
