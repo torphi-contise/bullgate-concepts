@@ -1,71 +1,71 @@
-name: Erro na documentação
-description: Relate conteúdo incorreto, link quebrado ou problema visual nas páginas do Bullgate.
-title: "[Documentação] "
+name: Documentation issue
+description: Report incorrect content, a broken link, or a visual problem on Bullgate pages.
+title: "[Documentation] "
 labels:
   - documentation
 body:
   - type: markdown
     attributes:
       value: |
-        Obrigado por ajudar a melhorar a documentação do Bullgate.
-        Não inclua credenciais, dados pessoais ou detalhes de vulnerabilidades neste formulário. Para segurança, siga SECURITY.md.
+        Thank you for helping improve Bullgate documentation.
+        Do not include credentials, personal data, or vulnerability details in this form. For security issues, follow SECURITY.md.
 
   - type: input
     id: location
     attributes:
-      label: Página ou arquivo
-      description: Informe a URL publicada, rota, seção ou caminho do arquivo afetado.
-      placeholder: https://bullgate.baybo.app/docs/access/ ou html/docs.html
+      label: Page or file
+      description: Provide the published URL, route, section, or path of the affected file.
+      placeholder: https://bullgate.dev/docs/access/ or html/docs.html
     validations:
       required: true
 
   - type: dropdown
     id: problem-type
     attributes:
-      label: Tipo de problema
+      label: Problem type
       options:
-        - Conteúdo técnico incorreto
-        - Conteúdo desatualizado
-        - Link ou navegação
-        - Layout desktop
-        - Layout mobile ou rolagem horizontal
-        - Acessibilidade
-        - Exemplo ou copy
-        - Outro problema de documentação
+        - Incorrect technical content
+        - Outdated content
+        - Link or navigation
+        - Desktop layout
+        - Mobile layout or horizontal scrolling
+        - Accessibility
+        - Example or copy
+        - Other documentation issue
     validations:
       required: true
 
   - type: textarea
     id: current
     attributes:
-      label: O que acontece hoje?
-      description: Descreva o problema de forma objetiva e reproduzível.
-      placeholder: Informe o texto, comportamento ou resultado atual.
+      label: What happens today?
+      description: Describe the problem objectively and reproducibly.
+      placeholder: Provide the current text, behavior, or result.
     validations:
       required: true
 
   - type: textarea
     id: expected
     attributes:
-      label: O que deveria acontecer?
-      description: Explique a correção esperada sem apresentar comportamento futuro como já implementado.
+      label: What should happen?
+      description: Explain the expected correction without presenting future behavior as already implemented.
     validations:
       required: true
 
   - type: textarea
     id: evidence
     attributes:
-      label: Evidências e contexto
-      description: Adicione fontes, versão, navegador, largura da tela ou imagens sem dados sensíveis.
+      label: Evidence and context
+      description: Add sources, version, browser, viewport width, or images without sensitive data.
 
   - type: checkboxes
     id: checks
     attributes:
-      label: Confirmações
+      label: Confirmations
       options:
-        - label: Pesquisei as issues existentes e não encontrei uma equivalente.
+        - label: I searched existing issues and did not find an equivalent report.
           required: true
-        - label: Removi credenciais, dados pessoais e informações de segurança do relato público.
+        - label: I removed credentials, personal data, and security-sensitive information from this public report.
           required: true
-        - label: Li e concordo em seguir o CODE_OF_CONDUCT.md.
+        - label: I have read and agree to follow CODE_OF_CONDUCT.md.
           required: true

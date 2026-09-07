@@ -28,7 +28,7 @@ jobs:
         shell: pwsh
         run: >-
           npx --yes prettier@3.6.2 --check
-          README.md CONTRIBUTING.md CODE_OF_CONDUCT.md SECURITY.md
+          README.md README.pt-BR.md CONTRIBUTING.md CODE_OF_CONDUCT.md SECURITY.md
           ".github/**/*.{yml,md}"
 
       - name: Validar build e navegação

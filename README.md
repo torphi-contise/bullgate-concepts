@@ -1,100 +1,106 @@
 # Bullgate
 
-O Bullgate é uma plataforma open source, mobile-first, para identidade, acesso,
-assinaturas, ofertas dirigidas, entitlements e operação de aplicativos.
+**Português (Brasil): [README.pt-BR.md](README.pt-BR.md)**
 
-Este repositório reúne o site público, os conceitos do produto e a documentação
-técnica destinada a pessoas que querem entender ou integrar o Bullgate.
+Bullgate is an open-source, mobile-first platform for application identity,
+access, subscriptions, targeted offers, entitlements, and operations.
 
-- [Conheça o Bullgate](https://bullgate.dev/)
-- [Escolha a documentação técnica](https://bullgate.dev/docs/)
-- [Integre o Bullgate Access](https://bullgate.dev/docs/access/)
+This repository contains the public website, product concepts, and technical
+documentation for people who want to understand or integrate Bullgate.
 
-## Estado atual
+The public website and technical documentation are currently available in
+Brazilian Portuguese.
 
-O **Bullgate Access** está implementado e integrado ao laboratório BAYBO. Ele
-cobre cadastro e login, sessões opacas, integração server-to-server, adapter
-ASP.NET Core, SDK React Native, jornada de verificação de telefone e resolução
-do conflito de telefone da fase 1. O fluxo integrado foi validado em aparelho
-Android em 04/09/2026.
+- [Discover Bullgate](https://bullgate.dev/)
+- [Browse the technical documentation](https://bullgate.dev/docs/)
+- [Integrate Bullgate Access](https://bullgate.dev/docs/access/)
 
-O bootstrap usa um único manifesto v2 por environment para policies,
-providers, segredos e configuração pública. Cada build se identifica por uma
-`applicationClientKey` pública e estável; UUIDs de `ApplicationClient` são
-detalhes internos do banco. O aplicativo continua falando apenas com o BFF e
-nunca recebe a credencial de integração nem segredos dos providers.
+## Current status
 
-As páginas distinguem explicitamente três situações:
+**Bullgate Access** is implemented and integrated with the BAYBO development
+laboratory. It covers registration and login, opaque sessions, server-to-server
+integration, an ASP.NET Core adapter, a React Native SDK, phone verification,
+and the first phase of phone-conflict resolution. The integrated flow was
+validated on a physical Android device on September 4, 2026.
 
-- comportamento implementado e disponível na fase atual;
-- contrato já decidido, mas ainda não implementado;
-- possibilidade futura ainda sujeita a desenho e validação.
+Bootstrap uses one version 2 manifest per environment for policies, providers,
+secrets, and public configuration. Each build identifies itself with a stable,
+public `applicationClientKey`; `ApplicationClient` UUIDs remain internal database
+details. The application communicates only with its BFF and never receives the
+integration credential or provider secrets.
 
-O núcleo de compra avulsa do Bullgate Billing começou em 2026-09-05 e já possui
-persistência PostgreSQL, migrations, API server-to-server, autenticação própria,
-bootstrap por manifesto e testes concorrentes no banco e por HTTP. O catálogo
-pode receber novos produtos/SKUs, e credenciais possuem rotação explícita.
-Em 2026-09-06 também estão implementados SDK .NET, transporte HTTP de benefícios,
-política de recompra, verificadores Google Play/App Store e preparação com
-vínculo de conta. Os testes usam HTTP externo simulado; o fluxo de compra ainda
-não está conectado ao BFF/mobile, nem validado com compra real nas lojas.
-Finalização/recuperação e resolução de compras pagas bloqueadas estão pendentes.
-Billing, ofertas, entitlements e outras frentes aparecem como construção
-inicial, visão de produto ou experiência comprovada no laboratório BAYBO
-enquanto não existem como módulos públicos do Bullgate. A documentação não
-apresenta roadmap como funcionalidade disponível.
+The published pages explicitly distinguish three states:
 
-## Documentação publicada
+- behavior implemented and available in the current phase;
+- a decided contract that has not yet been implemented;
+- a future possibility that still requires design and validation.
 
-| Página                                                                               | Conteúdo                                                                                     |
-| ------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------- |
-| [Visão geral](https://bullgate.dev/)                                                 | Problemas que o Bullgate resolve, princípios do produto e estado de cada frente.             |
-| [Política de Privacidade do Bullgate Lab](https://bullgate.dev/privacy/)             | Dados tratados pelo aplicativo móvel, finalidades, provedores e contato.                     |
-| [Índice técnico](https://bullgate.dev/docs/)                                         | Entrada para escolher o documento adequado à integração.                                     |
-| [Integração do Access](https://bullgate.dev/docs/access/)                            | Arquitetura, configuração, contratos, endpoints, adapter backend e SDK frontend.             |
-| [Políticas](https://bullgate.dev/docs/access/politicas/)                             | Manifesto, authenticators, identifiers, verificação, permissões e invariantes.               |
-| [Resolução de identidade](https://bullgate.dev/docs/access/resolucao-de-identidade/) | Detecção de conflito, provas, ações, concorrência, transferência e limites da fase 1.        |
-| [Erros e mensagens](https://bullgate.dev/docs/access/erros/)                         | Códigos estáveis, status HTTP, copy recomendada, ação da interface e tratamento operacional. |
+The Bullgate Billing one-time-purchase core began on September 5, 2026. It now
+includes PostgreSQL persistence, migrations, a server-to-server API, dedicated
+authentication, manifest bootstrap, and concurrent database and HTTP tests. The
+catalog supports new products and SKUs, and credentials have explicit rotation.
+As of September 6, 2026, it also includes a .NET SDK, HTTP benefit delivery, a
+repurchase policy, Google Play and App Store verifiers, and account-linking
+preparation. Tests use simulated external HTTP services; the purchase flow is
+not yet connected to a BFF or mobile application and has not been validated with
+real store purchases. Finalization and recovery, along with the resolution of
+blocked paid purchases, remain pending.
 
-## Conteúdo do repositório
+Billing, offers, entitlements, and other areas are presented as early
+construction, product vision, or experience proven in the BAYBO laboratory
+until they exist as public Bullgate modules. The documentation does not present
+roadmap items as available functionality.
 
-| Caminho                                                | Finalidade                                                                     |
-| ------------------------------------------------------ | ------------------------------------------------------------------------------ |
-| [`html/`](html/)                                       | Fontes HTML do site e da documentação publicada.                               |
-| [`apresentacao-bullgate.md`](apresentacao-bullgate.md) | Documento mestre de visão, capacidades e placar do produto.                    |
-| [`deploy-bullgate.ps1`](deploy-bullgate.ps1)           | Montagem local das rotas; publicação antiga no Pages exige flag explícita.     |
-| [`DEPLOY.md`](DEPLOY.md)                               | Procedimento operacional de publicação mantido para os responsáveis pelo site. |
+## Published documentation
 
-## Princípios da documentação
+| Page                                                                             | Content                                                                                     |
+| -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| [Overview](https://bullgate.dev/)                                                | Problems Bullgate addresses, product principles, and the status of each area.               |
+| [Bullgate Lab Privacy Policy](https://bullgate.dev/privacy/)                     | Data processed by the mobile application, purposes, providers, and contact information.     |
+| [Technical index](https://bullgate.dev/docs/)                                    | Entry point for choosing the appropriate integration document.                              |
+| [Access integration](https://bullgate.dev/docs/access/)                          | Architecture, configuration, contracts, endpoints, backend adapter, and frontend SDK.       |
+| [Policies](https://bullgate.dev/docs/access/politicas/)                          | Manifest, authenticators, identifiers, verification, permissions, and invariants.           |
+| [Identity resolution](https://bullgate.dev/docs/access/resolucao-de-identidade/) | Conflict detection, proofs, actions, concurrency, transfers, and phase-one limits.          |
+| [Errors and messages](https://bullgate.dev/docs/access/erros/)                   | Stable codes, HTTP statuses, recommended copy, interface actions, and operational handling. |
 
-- **Comportamento antes de promessa:** toda capacidade informa se está
-  implementada, decidida ou apenas prevista.
-- **Contrato antes de exemplo:** parâmetros, estados, erros e efeitos precisam
-  ser explicados antes de uma integração copiar código.
-- **Backend e frontend separados:** cada lado da integração tem responsabilidade
-  explícita; segredo de servidor nunca é configuração do aplicativo.
-- **Texto para humanos, estrutura para ferramentas:** o conteúdo deve ser legível
-  hoje e suficientemente estável para alimentar ferramentas e MCPs no futuro.
+## Repository contents
 
-## Como contribuir
+| Path                                                   | Purpose                                                                                        |
+| ------------------------------------------------------ | ---------------------------------------------------------------------------------------------- |
+| [`html/`](html/)                                       | HTML sources for the website and published documentation.                                      |
+| [`apresentacao-bullgate.md`](apresentacao-bullgate.md) | Master product vision, capabilities, and status document in Brazilian Portuguese.              |
+| [`deploy-bullgate.ps1`](deploy-bullgate.ps1)           | Builds the local route tree; publishing to the legacy Pages project requires an explicit flag. |
+| [`DEPLOY.md`](DEPLOY.md)                               | Operational publishing procedure maintained for the website owners, in Brazilian Portuguese.   |
 
-Correções, exemplos, melhorias de acessibilidade e propostas de documentação são
-bem-vindos. Leia o [guia de contribuição](CONTRIBUTING.md) antes de abrir um pull
-request. A participação no projeto segue nosso
-[Código de Conduta](CODE_OF_CONDUCT.md).
+## Documentation principles
 
-## Segurança
+- **Behavior before promises:** every capability states whether it is
+  implemented, decided, or only planned.
+- **Contracts before examples:** parameters, states, errors, and effects must be
+  explained before an integration copies code.
+- **Backend and frontend remain separate:** each side of the integration has an
+  explicit responsibility; server secrets are never application configuration.
+- **Text for people, structure for tools:** content must be readable today and
+  stable enough to support tools and MCPs in the future.
 
-Não publique vulnerabilidades ou dados sensíveis em issues. Consulte a
-[política de segurança](SECURITY.md) para conhecer o escopo e o canal de relato
-privado.
+## Contributing
 
-## Licença
+Corrections, examples, accessibility improvements, and documentation proposals
+are welcome. Read the [contribution guide](CONTRIBUTING.md) before opening a pull
+request. Participation in this project is governed by our
+[Code of Conduct](CODE_OF_CONDUCT.md).
 
-O código e o conteúdo deste repositório são licenciados sob a
+## Security
+
+Do not disclose vulnerabilities or sensitive data in issues. See the
+[security policy](SECURITY.md) for scope and private reporting instructions.
+
+## License
+
+The code and content in this repository are licensed under the
 [Apache License 2.0](LICENSE).
 
-Conforme a seção 6 da Apache-2.0, a licença não concede permissão para usar nomes
-comerciais, marcas de serviço, marcas registradas, nomes de produtos ou a
-identidade visual Bullgate, exceto no uso descritivo razoável necessário para
-indicar a origem do trabalho.
+Under Section 6 of Apache-2.0, the license does not grant permission to use
+Bullgate trade names, service marks, trademarks, product names, or visual
+identity except for reasonable descriptive use required to identify the origin
+of the work.
